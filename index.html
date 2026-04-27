@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>مساعد الرخص الذكي – اشتراطات الأنشطة</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    body { font-family: "Tajawal", system-ui, -apple-system, sans-serif; background:#f5f7fb; margin:0; }
+    .header {
+        background:linear-gradient(135deg,#0054a6,#00a3e0);
+        color:#fff; padding:20px 15px; text-align:right;
+    }
+    .header h1 { margin:0 0 5px; font-size:24px; }
+    .header p { margin:0; opacity:.9; }
+
+    .container { max-width:1100px; margin:20px auto; padding:0 15px; }
+
+    .search-card {
+        background:#fff; padding:15px; border-radius:12px;
+        box-shadow:0 4px 12px rgba(0,0,0,.05); margin-bottom:15px;
+        display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+    }
+    .search-input {
+        flex:1 1 220px;
+        display:flex; align-items:center; gap:8px;
+        border:1px solid #d0d7e2; border-radius:10px; padding:8px 10px;
+        background:#f9fbff;
+    }
+    .search-input input {
+        border:none; outline:none; background:transparent; width:100%;
+        font-size:15px;
+    }
+    .search-input span { color:#6c7a96; font-size:14px; white-space:nowrap; }
+
+    .filters {
+        display:flex; flex-wrap:wrap; gap:8px;
+    }
+    .chip {
+        padding:6px 12px; border-radius:20px; border:1px solid #d0d7e2;
+        background:#fff; font-size:13px; cursor:pointer; color:#4a5670;
+    }
+    .chip.active {
+        background:#0054a6; color:#fff; border-color:#0054a6;
+    }
+
+    .content {
+        display:flex; flex-wrap:wrap; gap:15px; margin-top:15px;
+    }
+    .results {
+        flex:2 1 320px; background:#fff; border-radius:12px;
+        box-shadow:0 4px 12px rgba(0,0,0,.05); padding:15px;
+        max-height:70vh; overflow:auto;
+    }
+    .side {
+        flex:1 1 260px; background:#fff; border-radius:12px;
+        box-shadow:0 4px 12px rgba(0,0,0,.05); padding:15px;
+        max-height:70vh; overflow:auto;
+    }
+
+    .activity-item {
+        padding:10px 8px; border-bottom:1px solid #eef1f7;
+        cursor:pointer;
+    }
+    .activity-item:last-child { border-bottom:none; }
+    .activity-item:hover { background:#f5f8ff; }
+    .activity-name { font-weight:600; color:#24324a; }
+    .activity-meta { font-size:12px; color:#7a869c; }
+
+    .section-title {
+        font-size:15px; font-weight:600; margin:10px 0 5px; color:#24324a;
+    }
+    .tag {
+        display:inline-block; padding:3px 8px; border-radius:12px;
+        background:#eef3ff; color:#4a5bb0; font-size:11px; margin-left:4px;
+    }
+    ul { padding-right:18px; margin:5px 0 10px; }
+    li { margin-bottom:3px; font-size:14px; color:#3b465c; }
+
+    .empty {
+        text-align:center; padding:25px 10px; color:#8a94aa; font-size:14px;
+    }
+
+    @media (max-width:768px) {
+        .content { flex-direction:column; }
+    }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>مساعد الرخص الذكي</h1>
+    <p>محرك بحث اشتراطات الأنشطة التجارية – يعتمد على الاشتراطات الرسمية كنقطة مرجعية</p>
+</div>
+
+<div class="container">
+
+    <div class="search-card">
+        <div class="search-input">
+            <span>🔍 نشاط / كلمة مفتاحية</span>
+            <input id="searchInput" type="text" placeholder="مثال: مطعم، مقهى، مستودع، عيادة..." oninput="applyFilters()">
+        </div>
+        <div class="filters">
+            <div class="chip active" data-cat="all" onclick="setCategory('all', this)">الكل</div>
+            <div class="chip" data-cat="تجاري" onclick="setCategory('تجاري', this)">تجاري</div>
+            <div class="chip" data-cat="صحي" onclick="setCategory('صحي', this)">صحي</div>
+            <div class="chip" data-cat="مهني" onclick="setCategory('مهني', this)">مهني</div>
+            <div class="chip" data-cat="صناعي" onclick="setCategory('صناعي', this)">صناعي</div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="results" id="resultsList">
+        </div>
+
+        <div class="side" id="detailsBox">
+            <div class="empty">
+                اختر نشاطًا من القائمة لعرض الاشتراطات والمتطلبات بالتفصيل.
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+let ACTIVITIES = [];
+let currentCategory = "all";
+
+async function loadRules() {
+    try {
+        const res = await fetch("rules.json");
+        const data = await res.json();
+
+        ACTIVITIES = [];
+
+        Object.keys(data).forEach(sid => {
+            const group = data[sid];
+            Object.keys(group).forEach(nid => {
+                const item = group[nid];
+                ACTIVITIES.push({
+                    sid,
+                    nid,
+                    name: item.activityName || "نشاط غير مسمى",
+                    category: item.category || "تجاري",
+                    requirements: item.requirements || [],
+                    conditions: item.conditions || [],
+                    relatedAuthorities: item.relatedAuthorities || [],
+                    notes: item.notes || []
+                });
+            });
+        });
+
+        applyFilters();
+    } catch (e) {
+        console.error(e);
+        document.getElementById("resultsList").innerHTML =
+            '<div class="empty">تعذر تحميل ملف الاشتراطات (rules.json). تأكد من وجوده بجانب index.html.</div>';
+    }
+}
+
+function applyFilters() {
+    const q = document.getElementById("searchInput").value.trim().toLowerCase();
+    const list = document.getElementById("resultsList");
+    list.innerHTML = "";
+
+    const filtered = ACTIVITIES.filter(a => {
+        const matchCat = (currentCategory === "all") || (a.category === currentCategory);
+        const matchText =
+            !q ||
+            a.name.toLowerCase().includes(q) ||
+            a.category.toLowerCase().includes(q) ||
+            (a.sid && a.sid.toLowerCase().includes(q)) ||
+            (a.nid && a.nid.toLowerCase().includes(q));
+        return matchCat && matchText;
+    });
+
+    if (filtered.length === 0) {
+        list.innerHTML = '<div class="empty">لا توجد أنشطة مطابقة لخيارات البحث الحالية.</div>';
+        document.getElementById("detailsBox").innerHTML =
+            '<div class="empty">اختر نشاطًا من القائمة لعرض الاشتراطات والمتطلبات بالتفصيل.</div>';
+        return;
+    }
+
+    filtered.forEach(a => {
+        const div = document.createElement("div");
+        div.className = "activity-item";
+        div.onclick = () => showDetails(a);
+        div.innerHTML = `
+            <div class="activity-name">${a.name}</div>
+            <div class="activity-meta">
+                الفئة: ${a.category}
+                <span class="tag">sid: ${a.sid}</span>
+                <span class="tag">nid: ${a.nid}</span>
+            </div>
+        `;
+        list.appendChild(div);
+    });
+
+    showDetails(filtered[0]);
+}
+
+function setCategory(cat, el) {
+    currentCategory = cat;
+    document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+    el.classList.add("active");
+    applyFilters();
+}
+
+function showDetails(a) {
+    const box = document.getElementById("detailsBox");
+    box.innerHTML = `
+        <div>
+            <div class="section-title">النشاط</div>
+            <div style="font-weight:600; color:#24324a; margin-bottom:5px;">${a.name}</div>
+            <div style="font-size:13px; color:#7a869c; margin-bottom:10px;">
+                الفئة: ${a.category}
+                <span class="tag">sid: ${a.sid}</span>
+                <span class="tag">nid: ${a.nid}</span>
+            </div>
+
+            <div class="section-title">المتطلبات الأساسية</div>
+            ${renderList(a.requirements)}
+
+            <div class="section-title">الاشتراطات والشروط الفنية</div>
+            ${renderList(a.conditions)}
+
+            <div class="section-title">الجهات ذات العلاقة</div>
+            ${renderList(a.relatedAuthorities)}
+
+            <div class="section-title">ملاحظات</div>
+            ${renderList(a.notes)}
+        </div>
+    `;
+}
+
+function renderList(arr) {
+    if (!arr || arr.length === 0) return '<div class="empty">لا توجد بيانات متاحة.</div>';
+    return `<ul>${arr.map(i => `<li>${i}</li>`).join("")}</ul>`;
+}
+
+loadRules();
+</script>
+
+</body>
+</html>

@@ -10,6 +10,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;600;700;900&family=El+Messiri:wght@400;500;600;700&family=Lateef:wght@300;400;500;600;700&family=Reem+Kufi:wght@400;500;600;700&family=Scheherazade+New:wght@400;500;600;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 
+    <!-- Firebase SDKs (compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <style>
         :root {
             --bg: #f0f2f5;
@@ -81,26 +86,27 @@
             font-weight: 700;
             letter-spacing: 0.5px;
         }
-        .btn-download-header {
-            background: var(--accent);
-            color: #1a1a2e;
-            border: none;
-            padding: 10px 22px;
+        .btn-logout {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 18px;
             border-radius: 25px;
-            font-size: 0.95rem;
-            font-weight: 700;
+            font-size: 0.85rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all var(--transition);
             white-space: nowrap;
             font-family: inherit;
+        }
+        .btn-logout:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .user-info-bar {
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-        .btn-download-header:hover {
-            background: #e0a800;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(197, 150, 12, 0.4);
+            gap: 16px;
+            font-size: 0.9rem;
         }
 
         /* Main Layout */
@@ -113,276 +119,16 @@
             align-items: flex-start;
         }
 
-        /* Canvas Preview Area */
-        .preview-area {
-            flex: 1 1 65%;
-            min-width: 320px;
-            position: sticky;
-            top: 100px;
+        .card {
             background: #fff;
             border-radius: var(--radius);
             box-shadow: var(--shadow-lg);
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-        .preview-area .preview-label {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            font-weight: 500;
-        }
-        .canvas-wrapper {
-            width: 100%;
-            max-width: 900px;
-            background: #fafafa;
-            border-radius: 6px;
-            overflow: hidden;
-            box-shadow: inset 0 0 0 1px #e0e0e0;
-            line-height: 0;
-        }
-        canvas {
-            width: 100%;
-            height: auto;
-            display: block;
-            image-rendering: auto;
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
-        /* Controls Panel */
-        .controls-panel {
-            flex: 0 0 400px;
-            max-width: 420px;
-            min-width: 340px;
-            background: var(--panel-bg);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-lg);
-            padding: 20px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: sticky;
-            top: 100px;
-        }
-        .controls-panel::-webkit-scrollbar {
-            width: 5px;
-        }
-        .controls-panel::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 10px;
-        }
-
-        .section-title {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #1a3a4a;
-            margin-bottom: 2px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            letter-spacing: 0.3px;
-        }
-        .section-title .icon {
-            font-size: 1.2rem;
-        }
-        .control-group {
-            background: #f8f9fb;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .control-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .control-row label {
-            font-weight: 600;
-            font-size: 0.82rem;
-            color: #444;
-            min-width: 55px;
-            white-space: nowrap;
-        }
-        .control-row input[type="text"],
-        .control-row textarea,
-        .control-row select {
-            flex: 1;
-            min-width: 120px;
-            padding: 9px 12px;
-            border: 1.5px solid #d5d9e0;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 0.88rem;
-            transition: all var(--transition);
-            background: #fff;
-        }
-        .control-row input[type="text"]:focus,
-        .control-row textarea:focus,
-        .control-row select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
-        }
-        .control-row textarea {
-            resize: vertical;
-            min-height: 55px;
-        }
-        .control-row input[type="color"] {
-            width: 40px;
-            height: 36px;
-            border: 2px solid #d5d9e0;
-            border-radius: 6px;
-            cursor: pointer;
-            padding: 2px;
-            background: #fff;
-            flex: 0 0 auto;
-        }
-        .control-row input[type="range"] {
-            flex: 1;
-            min-width: 80px;
-            accent-color: var(--primary);
-        }
-        .range-value {
-            font-weight: 700;
-            font-size: 0.8rem;
-            color: var(--primary);
-            min-width: 28px;
-            text-align: center;
-        }
-        .divider {
-            border: none;
-            border-top: 1px dashed #d5d9e0;
-            margin: 4px 0;
-        }
-
-        /* Border style selector */
-        .border-options {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-        .border-option {
-            padding: 10px 6px;
-            border: 2px solid #d5d9e0;
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: center;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: all var(--transition);
-            background: #fff;
-            font-family: inherit;
-        }
-        .border-option:hover {
-            border-color: var(--accent);
-            background: #fffdf5;
-        }
-        .border-option.active {
-            border-color: var(--accent);
-            background: #fffdf0;
-            box-shadow: 0 0 0 3px rgba(197, 150, 12, 0.15);
-            color: #8b6914;
-        }
-
-        /* Type selector */
-        .type-selector {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .type-btn {
-            flex: 1;
-            min-width: 100px;
-            padding: 12px 16px;
-            border: 2px solid #d5d9e0;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 0.85rem;
-            transition: all var(--transition);
-            background: #fff;
-            text-align: center;
-            font-family: inherit;
-        }
-        .type-btn:hover {
-            border-color: var(--primary);
-            background: #f5f8ff;
-        }
-        .type-btn.active {
-            border-color: var(--primary);
-            background: #e8f0fe;
-            color: var(--primary-dark);
-            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
-        }
-        .type-btn.excellence.active {
-            border-color: #c5960c;
-            background: #fffef5;
-            color: #8b6914;
-            box-shadow: 0 0 0 3px rgba(197, 150, 12, 0.15);
-        }
-
-        /* Toggle switch */
-        .toggle-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            font-size: 0.82rem;
-        }
-        .toggle-switch {
-            position: relative;
-            width: 44px;
-            height: 24px;
-            flex-shrink: 0;
-        }
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #ccc;
-            border-radius: 24px;
-            transition: var(--transition);
-        }
-        .toggle-slider::before {
-            content: "";
-            position: absolute;
-            height: 18px;
-            width: 18px;
-            right: 3px;
-            bottom: 3px;
-            background: #fff;
-            border-radius: 50%;
-            transition: var(--transition);
-        }
-        input:checked+.toggle-slider {
-            background: var(--primary);
-        }
-        input:checked+.toggle-slider::before {
-            transform: translateX(-20px);
-        }
-
-        /* Buttons */
-        .btn-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
         .btn {
-            padding: 10px 18px;
+            padding: 10px 20px;
             border-radius: 25px;
             font-weight: 700;
             font-size: 0.85rem;
@@ -398,168 +144,65 @@
         }
         .btn-primary:hover {
             background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 14px rgba(26, 115, 232, 0.35);
-        }
-        .btn-outline {
-            background: #fff;
-            color: #555;
-            border: 1.5px solid #d5d9e0;
-        }
-        .btn-outline:hover {
-            background: #f5f5f5;
-            border-color: #aaa;
         }
         .btn-accent {
-            background: linear-gradient(135deg, #c5960c, #e0a800);
-            color: #1a1a2e;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-        .btn-accent:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(197, 150, 12, 0.4);
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1a1a2e;
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            z-index: 999;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(-8px);
-        }
-
-        /* Modal (Credits) */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.25s ease, visibility 0.25s ease;
-        }
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        .modal-box {
-            background: #fff;
-            border-radius: 16px;
-            padding: 32px 24px 24px;
-            max-width: 420px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            transform: translateY(20px);
-            transition: transform 0.25s ease;
-        }
-        .modal-overlay.active .modal-box {
-            transform: translateY(0);
-        }
-        .modal-icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-        }
-        .modal-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #1a3a4a;
-            margin-bottom: 8px;
-        }
-        .modal-text {
-            font-size: 0.95rem;
-            color: #444;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-        .modal-email {
-            background: #f0f2f5;
-            padding: 8px 16px;
-            border-radius: 20px;
-            display: inline-block;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-        .btn-modal {
-            padding: 12px 32px;
-            border-radius: 30px;
-            border: none;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all var(--transition);
-            font-family: inherit;
             background: var(--accent);
             color: #1a1a2e;
-            box-shadow: 0 4px 12px rgba(197, 150, 12, 0.3);
         }
-        .btn-modal:hover {
+        .btn-accent:hover {
             background: #e0a800;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 18px rgba(197, 150, 12, 0.4);
+        }
+        .btn-secondary {
+            background: #eee;
+            color: #333;
         }
 
-        /* Responsive */
-        @media (max-width: 1100px) {
-            .main-container {
-                flex-direction: column;
-                padding: 12px;
-            }
-            .controls-panel {
-                flex: 0 0 auto;
-                max-width: 100%;
-                min-width: auto;
-                position: static;
-                max-height: none;
-            }
-            .preview-area {
-                position: static;
-                flex: 1 1 auto;
-            }
-            .controls-panel {
-                order: 2;
-            }
-            .preview-area {
-                order: 1;
-            }
+        .hidden {
+            display: none !important;
         }
-        @media (max-width: 600px) {
-            .header h1 {
-                font-size: 1.1rem;
-            }
-            .border-options {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .control-row {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .control-row label {
-                min-width: auto;
-            }
+
+        canvas {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+
+        input, textarea, select {
+            padding: 10px;
+            border: 1px solid #d5d9e0;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            margin: 5px 0;
+            width: 100%;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+        }
+        .admin-table th, .admin-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .admin-table th {
+            background: #f0f2f5;
+        }
+
+        .request-card {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .request-card img {
+            max-width: 150px;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -572,219 +215,39 @@
             <h1>صانع الشهادات</h1>
             <span class="badge">Certificate Maker</span>
         </div>
-        <button class="btn-download-header" onclick="showCreditsModal()" title="تحميل الشهادة بصيغة PNG">
-            📥 تحميل الشهادة
-        </button>
+        <div class="user-info-bar" id="userInfoBar"></div>
     </header>
 
     <!-- Main Container -->
-    <div class="main-container">
-        <!-- Preview Area -->
-        <div class="preview-area">
-            <span class="preview-label">🔍 معاينة الشهادة</span>
-            <div class="canvas-wrapper">
-                <canvas id="certificateCanvas"></canvas>
-            </div>
-        </div>
-
-        <!-- Controls Panel -->
-        <div class="controls-panel" id="controlsPanel">
-            <!-- Certificate Type -->
-            <div class="control-group">
-                <div class="section-title"><span class="icon">📜</span> نوع الشهادة</div>
-                <div class="type-selector">
-                    <button class="type-btn excellence active" data-type="excellence" onclick="setCertificateType('excellence', this)">
-                        🏆 شهادة تفوق
-                    </button>
-                    <button class="type-btn" data-type="appreciation" onclick="setCertificateType('appreciation', this)">
-                        🌸 شهادة شكر وتقدير
-                    </button>
-                </div>
-            </div>
-
-            <!-- Main Name -->
-            <div class="control-group">
-                <div class="section-title"><span class="icon">✍️</span> الاسم الرئيسي</div>
-                <div class="control-row">
-                    <label>الاسم:</label>
-                    <input type="text" id="mainName" value="أحمد محمد عبدالله" placeholder="اكتب الاسم هنا..." oninput="updateCertificate()">
-                </div>
-                <div class="control-row">
-                    <label>اللون:</label>
-                    <input type="color" id="mainNameColor" value="#1a3a4a" oninput="updateCertificate()">
-                    <label>الحجم:</label>
-                    <input type="range" id="mainNameSize" min="24" max="80" value="46" oninput="document.getElementById('mainNameSizeVal').textContent=this.value; updateCertificate();">
-                    <span class="range-value" id="mainNameSizeVal">46</span>
-                </div>
-            </div>
-
-            <!-- Appreciation Text -->
-            <div class="control-group">
-                <div class="section-title"><span class="icon">💬</span> نص الشكر والتقدير</div>
-                <div class="control-row">
-                    <label>النص:</label>
-                    <textarea id="appreciationText" placeholder="اكتب نص الشكر هنا..." oninput="updateCertificate()">نشكرك على جهودك المتميزة وتفانيك في العمل، متمنين لك مزيداً من التوفيق والنجاح.</textarea>
-                </div>
-                <div class="control-row">
-                    <label>اللون:</label>
-                    <input type="color" id="appreciationColor" value="#3d5a40" oninput="updateCertificate()">
-                    <label>الحجم:</label>
-                    <input type="range" id="appreciationSize" min="14" max="42" value="22" oninput="document.getElementById('appreciationSizeVal').textContent=this.value; updateCertificate();">
-                    <span class="range-value" id="appreciationSizeVal">22</span>
-                </div>
-            </div>
-
-            <!-- Global Font -->
-            <div class="control-group">
-                <div class="section-title"><span class="icon">🔤</span> نوع الخط العام</div>
-                <div class="control-row">
-                    <label>الخط:</label>
-                    <select id="globalFont" onchange="updateCertificate()">
-                        <option value="Cairo">القاهرة (Cairo)</option>
-                        <option value="Amiri" selected>أميري - يشبه أجوال (Amiri)</option>
-                        <option value="El Messiri">المسيري (El Messiri)</option>
-                        <option value="Reem Kufi">ريم كوفي (Reem Kufi)</option>
-                        <option value="Aref Ruqaa">عارف رقعة (Aref Ruqaa)</option>
-                        <option value="Lateef">لطيف (Lateef)</option>
-                        <option value="Scheherazade New">شهرزاد (Scheherazade New)</option>
-                        <option value="Tajawal">تاجوال (Tajawal)</option>
-                    </select>
-                </div>
-            </div>
-
-            <hr class="divider">
-
-            <!-- Right Section (الجهة اليمنى) -->
-            <div class="control-group">
-                <div class="section-title"><span class="icon">📌</span> الجهة اليمنى من الشهادة</div>
-                <div class="control-row">
-                    <label>اللقب:</label>
-                    <input type="text" id="rightTitle" value="مدير المؤسسة" placeholder="اللقب..." oninput="updateCertificate()">
-                </div>
-                <div class="control-row">
-                    <label>الاسم:</label>
-                    <input type="text" id="rightName" value="د. خالد العمري" placeholder="الاسم..." oninput="updateCertificate()">
-                </div>
-                <div class="control-row">
-                    <label>اللون:</label>
-                    <input type="color" id="rightColor" value="#1a3a4a" oninput="updateCertificate()">
-                    <label>الحجم:</label>
-                    <input type="range" id="rightSize" min="12" max="32" value="16" oninput="document.getElementById('rightSizeVal').textContent=this.value; updateCertificate();">
-                    <span class="range-value" id="rightSizeVal">16</span>
-                </div>
-            </div>
-
-            <!-- Left Section (الجهة اليسرى) -->
-            <div class="control-group">
-                <div class="section-title"><span class="icon">📍</span> الجهة اليسرى من الشهادة</div>
-                <div class="control-row">
-                    <label>اللقب:</label>
-                    <input type="text" id="leftTitle" value="رئيس القسم" placeholder="اللقب..." oninput="updateCertificate()">
-                </div>
-                <div class="control-row">
-                    <label>الاسم:</label>
-                    <input type="text" id="leftName" value="أ. سارة القحطاني" placeholder="الاسم..." oninput="updateCertificate()">
-                </div>
-                <div class="toggle-row">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="showOptionalName" onchange="toggleOptionalName()">
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <span>إضافة اسم اختياري في الجهة اليسرى</span>
-                </div>
-                <div class="control-row" id="optionalNameRow" style="display:none;">
-                    <label>اسم إضافي:</label>
-                    <input type="text" id="optionalName" value="أ. فيصل الشمري" placeholder="الاسم الإضافي..." oninput="updateCertificate()">
-                </div>
-                <div class="control-row">
-                    <label>اللون:</label>
-                    <input type="color" id="leftColor" value="#1a3a4a" oninput="updateCertificate()">
-                    <label>الحجم:</label>
-                    <input type="range" id="leftSize" min="12" max="32" value="16" oninput="document.getElementById('leftSizeVal').textContent=this.value; updateCertificate();">
-                    <span class="range-value" id="leftSizeVal">16</span>
-                </div>
-            </div>
-
-            <hr class="divider">
-
-            <!-- Background Color & Logo Upload -->
-            <div class="control-group">
-                <div class="section-title"><span class="icon">🎨</span> تخصيص متقدم</div>
-                <div class="control-row">
-                    <label>لون الخلفية:</label>
-                    <input type="color" id="backgroundColor" value="#fefefb" oninput="updateCertificate()">
-                </div>
-                <div class="control-row">
-                    <label>شعار المؤسسة:</label>
-                    <input type="file" id="logoFile" accept="image/*" onchange="handleLogoUpload(event)">
-                </div>
-                <div class="control-row" id="logoPositionRow" style="display:none;">
-                    <label>موضع الشعار:</label>
-                    <select id="logoPosition" onchange="updateCertificate()">
-                        <option value="none">بدون شعار</option>
-                        <option value="top-right">الزاوية اليمنى العليا</option>
-                        <option value="top-left">الزاوية اليسرى العليا</option>
-                    </select>
-                </div>
-            </div>
-
-            <hr class="divider">
-
-            <!-- Border Style -->
-            <div class="control-group">
-                <div class="section-title"><span class="icon">🖼️</span> شكل البرواز (الإطار)</div>
-                <div class="border-options">
-                    <button class="border-option active" data-border="0" onclick="setBorderStyle(0, this)">كلاسيكي مزدوج</button>
-                    <button class="border-option" data-border="1" onclick="setBorderStyle(1, this)">ذهبي فاخر</button>
-                    <button class="border-option" data-border="2" onclick="setBorderStyle(2, this)">حديث بسيط</button>
-                    <button class="border-option" data-border="3" onclick="setBorderStyle(3, this)">عربي تقليدي</button>
-                    <button class="border-option" data-border="4" onclick="setBorderStyle(4, this)">أنيق متعدد</button>
-                    <button class="border-option" data-border="5" onclick="setBorderStyle(5, this)">زخرفي مزين</button>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="btn-row">
-                <button class="btn btn-accent" onclick="showCreditsModal()">📥 تحميل PNG</button>
-                <button class="btn btn-outline" onclick="resetAll()">🔄 إعادة تعيين</button>
-            </div>
-        </div>
+    <div class="main-container" id="appContainer">
+        <!-- المحتوى سيتم ملؤه ديناميكيًا حسب حالة الدخول والدور -->
     </div>
-
-    <!-- Credits Modal -->
-    <div class="modal-overlay" id="creditsModal">
-        <div class="modal-box">
-            <div class="modal-icon">👨‍💻</div>
-            <div class="modal-title">تم برمجة هذه الصفحة بواسطة</div>
-            <div class="modal-text">تركي الصقر</div>
-            <div class="modal-email">للاستفسارات: tur100@gmail.com</div>
-            <button class="btn-modal" onclick="confirmDownload()">موافق</button>
-        </div>
-    </div>
-
-    <!-- Toast notification -->
-    <div class="toast" id="toast"></div>
 
     <script>
-        // ============ DOM ELEMENTS ============
-        const canvas = document.getElementById('certificateCanvas');
-        const ctx = canvas.getContext('2d');
+        // ==================== إعدادات Firebase ====================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBSGKRBNWZ1OeUFTxMlBBsfE0whNSJTzRA",
+            authDomain: "shahadat-4f10e.firebaseapp.com",
+            projectId: "shahadat-4f10e",
+            storageBucket: "shahadat-4f10e.firebasestorage.app",
+            messagingSenderId: "644757743305",
+            appId: "1:644757743305:web:ecde7ff86595a934714f18",
+            measurementId: "G-XTMF6NH7JW"
+        };
 
-        // Internal canvas resolution
-        const CANVAS_WIDTH = 1100;
-        const CANVAS_HEIGHT = 750;
-        const DPR = Math.min(window.devicePixelRatio || 1, 2);
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-        canvas.width = CANVAS_WIDTH * DPR;
-        canvas.height = CANVAS_HEIGHT * DPR;
-        canvas.style.width = '100%';
-        canvas.style.height = 'auto';
-        canvas.style.aspectRatio = `${CANVAS_WIDTH} / ${CANVAS_HEIGHT}`;
-        ctx.scale(DPR, DPR);
-
-        // ============ STATE ============
-        let state = {
-            certificateType: 'excellence',
+        // ==================== المتغيرات العامة ====================
+        let currentUser = null;
+        let userRole = 'user'; // 'user' or 'admin'
+        let userBalance = 0;
+        let freeCertificatesDefault = 2; // يتم تحميله من الإعدادات
+        let bankAccountNumber = ''; // من الإعدادات
+        let packages = []; // أسعار الباقات
+        let certificateState = {
             mainName: 'أحمد محمد عبدالله',
             mainNameColor: '#1a3a4a',
             mainNameSize: 46,
@@ -792,835 +255,393 @@
             appreciationColor: '#3d5a40',
             appreciationSize: 22,
             globalFont: 'Amiri',
-            rightTitle: 'مدير المؤسسة',
-            rightName: 'د. خالد العمري',
-            rightColor: '#1a3a4a',
-            rightSize: 16,
-            leftTitle: 'رئيس القسم',
-            leftName: 'أ. سارة القحطاني',
-            leftColor: '#1a3a4a',
-            leftSize: 16,
-            showOptionalName: false,
-            optionalName: 'أ. فيصل الشمري',
             borderStyle: 0,
-            backgroundColor: '#fefefb',
-            logoImage: null,
-            logoPosition: 'none',
+            backgroundColor: '#fefefb'
         };
 
-        // ============ UPDATE STATE FROM DOM ============
-        function syncStateFromDOM() {
-            state.mainName = document.getElementById('mainName').value;
-            state.mainNameColor = document.getElementById('mainNameColor').value;
-            state.mainNameSize = parseInt(document.getElementById('mainNameSize').value);
-            state.appreciationText = document.getElementById('appreciationText').value;
-            state.appreciationColor = document.getElementById('appreciationColor').value;
-            state.appreciationSize = parseInt(document.getElementById('appreciationSize').value);
-            state.globalFont = document.getElementById('globalFont').value;
-            state.rightTitle = document.getElementById('rightTitle').value;
-            state.rightName = document.getElementById('rightName').value;
-            state.rightColor = document.getElementById('rightColor').value;
-            state.rightSize = parseInt(document.getElementById('rightSize').value);
-            state.leftTitle = document.getElementById('leftTitle').value;
-            state.leftName = document.getElementById('leftName').value;
-            state.leftColor = document.getElementById('leftColor').value;
-            state.leftSize = parseInt(document.getElementById('leftSize').value);
-            state.showOptionalName = document.getElementById('showOptionalName').checked;
-            state.optionalName = document.getElementById('optionalName').value;
-            state.backgroundColor = document.getElementById('backgroundColor').value;
-            state.logoPosition = document.getElementById('logoPosition').value;
+        // ==================== دوال المساعدة ====================
+        function showElement(id) { document.getElementById(id)?.classList.remove('hidden'); }
+        function hideElement(id) { document.getElementById(id)?.classList.add('hidden'); }
+
+        // ==================== مراقب حالة الدخول ====================
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                // جلب بيانات المستخدم من Firestore
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    const data = userDoc.data();
+                    userRole = data.role || 'user';
+                    userBalance = data.balance || 0;
+                } else {
+                    // مستخدم جديد: إنشاء وثيقة مع الرصيد المجاني الافتراضي
+                    const settingsSnap = await db.collection('settings').doc('general').get();
+                    if (settingsSnap.exists) {
+                        freeCertificatesDefault = settingsSnap.data().freeCertificates || 2;
+                    }
+                    await db.collection('users').doc(user.uid).set({
+                        email: user.email,
+                        role: 'user',
+                        balance: freeCertificatesDefault
+                    });
+                    userRole = 'user';
+                    userBalance = freeCertificatesDefault;
+                }
+
+                // تحميل الإعدادات العامة
+                await loadSettings();
+
+                // تحديث شريط المعلومات العلوي
+                updateUserInfoBar();
+
+                // عرض الواجهة المناسبة
+                if (userRole === 'admin') {
+                    renderAdminPanel();
+                } else {
+                    renderUserPanel();
+                }
+            } else {
+                // لا يوجد مستخدم مسجل
+                currentUser = null;
+                userRole = 'user';
+                userBalance = 0;
+                updateUserInfoBar();
+                renderAuthForm();
+            }
+        });
+
+        // تحميل الإعدادات من Firestore
+        async function loadSettings() {
+            const doc = await db.collection('settings').doc('general').get();
+            if (doc.exists) {
+                const data = doc.data();
+                freeCertificatesDefault = data.freeCertificates || 2;
+                bankAccountNumber = data.bankAccount || '';
+                packages = data.packages || [
+                    { count: 10, price: 50 },
+                    { count: 50, price: 200 },
+                    { count: 100, price: 350 }
+                ];
+            } else {
+                // إعدادات افتراضية
+                freeCertificatesDefault = 2;
+                bankAccountNumber = '';
+                packages = [
+                    { count: 10, price: 50 },
+                    { count: 50, price: 200 },
+                    { count: 100, price: 350 }
+                ];
+            }
         }
 
-        // ============ CERTIFICATE TYPE ============
-        function setCertificateType(type, btn) {
-            state.certificateType = type;
-            document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            updateCertificate();
+        function updateUserInfoBar() {
+            const bar = document.getElementById('userInfoBar');
+            if (currentUser) {
+                bar.innerHTML = `
+                    <span>${currentUser.email} (${userRole === 'admin' ? 'أدمن' : 'مستخدم'})</span>
+                    <span>الرصيد: ${userBalance} شهادة</span>
+                    <button class="btn-logout" onclick="logout()">تسجيل خروج</button>
+                `;
+            } else {
+                bar.innerHTML = '';
+            }
         }
 
-        // ============ BORDER STYLE ============
-        function setBorderStyle(index, btn) {
-            state.borderStyle = index;
-            document.querySelectorAll('.border-option').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            updateCertificate();
+        function logout() {
+            auth.signOut();
         }
 
-        // ============ TOGGLE OPTIONAL NAME ============
-        function toggleOptionalName() {
-            const checked = document.getElementById('showOptionalName').checked;
-            state.showOptionalName = checked;
-            document.getElementById('optionalNameRow').style.display = checked ? 'flex' : 'none';
-            updateCertificate();
+        // ==================== واجهة تسجيل الدخول / إنشاء حساب ====================
+        function renderAuthForm() {
+            document.getElementById('appContainer').innerHTML = `
+                <div class="card" style="max-width:500px; margin:40px auto;">
+                    <h2>تسجيل الدخول أو إنشاء حساب</h2>
+                    <input type="email" id="email" placeholder="البريد الإلكتروني">
+                    <input type="password" id="password" placeholder="كلمة المرور">
+                    <div style="display:flex; gap:12px; margin-top:12px;">
+                        <button class="btn btn-primary" onclick="login()">دخول</button>
+                        <button class="btn btn-accent" onclick="register()">إنشاء حساب جديد</button>
+                    </div>
+                </div>
+            `;
         }
 
-        // ============ LOGO UPLOAD ============
-        function handleLogoUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        function login() {
+            const email = document.getElementById('email').value.trim();
+            const pass = document.getElementById('password').value;
+            auth.signInWithEmailAndPassword(email, pass)
+                .catch(err => alert('خطأ: ' + err.message));
+        }
 
+        function register() {
+            const email = document.getElementById('email').value.trim();
+            const pass = document.getElementById('password').value;
+            auth.createUserWithEmailAndPassword(email, pass)
+                .catch(err => alert('خطأ: ' + err.message));
+        }
+
+        // ==================== لوحة المستخدم ====================
+        function renderUserPanel() {
+            document.getElementById('appContainer').innerHTML = `
+                <div style="flex:1;">
+                    <div class="card">
+                        <h3>صانع الشهادات</h3>
+                        <p>رصيدك المتبقي: <strong>${userBalance}</strong> شهادة</p>
+                        <canvas id="certCanvas" width="1100" height="750"></canvas>
+                        <div style="display:flex; gap:12px; margin-top:12px;">
+                            <button class="btn btn-accent" onclick="downloadCertificate()">📥 تحميل الشهادة</button>
+                            <button class="btn btn-primary" onclick="renderRequestForm()">طلب شهادات إضافية</button>
+                        </div>
+                    </div>
+                </div>
+                <div style="flex:0 0 300px;">
+                    <div class="card">
+                        <h4>تخصيص سريع</h4>
+                        <label>الاسم:</label>
+                        <input type="text" id="quickName" value="${certificateState.mainName}" oninput="certificateState.mainName=this.value; drawCertificate()">
+                        <label>نوع الخط:</label>
+                        <select id="quickFont" onchange="certificateState.globalFont=this.value; drawCertificate()">
+                            <option value="Cairo">القاهرة</option>
+                            <option value="Amiri" selected>أميري</option>
+                            <option value="El Messiri">المسيري</option>
+                            <option value="Reem Kufi">ريم كوفي</option>
+                            <option value="Aref Ruqaa">عارف رقعة</option>
+                            <option value="Lateef">لطيف</option>
+                            <option value="Scheherazade New">شهرزاد</option>
+                            <option value="Tajawal">تاجوال</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+            drawCertificate();
+        }
+
+        // رسم الشهادة (نسخة مبسطة، يمكنك لاحقًا دمج الكود الكامل للصانع)
+        function drawCertificate() {
+            const canvas = document.getElementById('certCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            // خلفية
+            ctx.fillStyle = certificateState.backgroundColor;
+            ctx.fillRect(0, 0, w, h);
+
+            // إطار بسيط
+            ctx.strokeStyle = '#c5960c';
+            ctx.lineWidth = 8;
+            ctx.strokeRect(20, 20, w-40, h-40);
+
+            // العنوان
+            ctx.font = `bold 48px "${certificateState.globalFont}", serif`;
+            ctx.fillStyle = '#8b6914';
+            ctx.textAlign = 'center';
+            ctx.fillText('شهادة تقدير', w/2, 120);
+
+            // الاسم
+            ctx.font = `bold ${certificateState.mainNameSize}px "${certificateState.globalFont}", serif`;
+            ctx.fillStyle = certificateState.mainNameColor;
+            ctx.fillText(certificateState.mainName, w/2, 280);
+
+            // نص الشكر
+            ctx.font = `${certificateState.appreciationSize}px "${certificateState.globalFont}", serif`;
+            ctx.fillStyle = certificateState.appreciationColor;
+            ctx.fillText(certificateState.appreciationText, w/2, 400);
+
+            // توقيعات وهمية
+            ctx.font = `18px "${certificateState.globalFont}", serif`;
+            ctx.fillStyle = '#555';
+            ctx.fillText('مدير المؤسسة', w*0.75, h-120);
+            ctx.fillText('رئيس القسم', w*0.25, h-120);
+        }
+
+        async function downloadCertificate() {
+            if (!currentUser) return alert('يجب تسجيل الدخول');
+            if (userBalance <= 0) {
+                alert('نفد رصيدك. يرجى طلب شهادات إضافية.');
+                return;
+            }
+            // خصم شهادة من الرصيد
+            await db.collection('users').doc(currentUser.uid).update({
+                balance: firebase.firestore.FieldValue.increment(-1)
+            });
+            userBalance--;
+            updateUserInfoBar();
+            document.querySelector('#appContainer p strong').textContent = userBalance;
+
+            // تنزيل الشهادة
+            const canvas = document.getElementById('certCanvas');
+            const link = document.createElement('a');
+            link.download = 'شهادة.png';
+            link.href = canvas.toDataURL();
+            link.click();
+            alert('تم تحميل الشهادة بنجاح');
+        }
+
+        // ==================== طلب شهادات إضافية ====================
+        function renderRequestForm() {
+            document.getElementById('appContainer').innerHTML = `
+                <div class="card" style="max-width:600px; margin:40px auto;">
+                    <h3>طلب شهادات إضافية</h3>
+                    <p>رقم الحساب للتحويل: <strong>${bankAccountNumber || 'لم يحدد بعد'}</strong></p>
+                    <label>اختر الباقة:</label>
+                    <select id="packageSelect" onchange="updatePriceDisplay()">
+                        ${packages.map((p,i) => `<option value="${i}">${p.count} شهادة - ${p.price} ريال</option>`).join('')}
+                    </select>
+                    <p>المبلغ المطلوب: <strong id="totalPrice">${packages[0]?.price || 0}</strong> ريال</p>
+                    <label>ارفع صورة إيصال الدفع:</label>
+                    <input type="file" id="receiptFile" accept="image/*">
+                    <br><br>
+                    <button class="btn btn-accent" onclick="submitRequest()">تقديم الطلب</button>
+                    <button class="btn btn-secondary" onclick="renderUserPanel()">رجوع</button>
+                </div>
+            `;
+        }
+
+        function updatePriceDisplay() {
+            const idx = document.getElementById('packageSelect').value;
+            document.getElementById('totalPrice').textContent = packages[idx].price;
+        }
+
+        async function submitRequest() {
+            const fileInput = document.getElementById('receiptFile');
+            const file = fileInput.files[0];
+            if (!file) return alert('الرجاء رفع صورة الإيصال');
+
+            // تحويل الصورة إلى base64
             const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    state.logoImage = img;
-                    document.getElementById('logoPositionRow').style.display = 'flex';
-                    document.getElementById('logoPosition').value = 'top-right';
-                    state.logoPosition = 'top-right';
-                    updateCertificate();
-                    showToast('✅ تم رفع الشعار بنجاح');
-                };
-                img.onerror = function() {
-                    showToast('❌ فشل تحميل الصورة');
-                };
-                img.src = e.target.result;
+            reader.onload = async (e) => {
+                const base64Image = e.target.result;
+                const idx = document.getElementById('packageSelect').value;
+                const pkg = packages[idx];
+
+                // إضافة الطلب إلى Firestore
+                await db.collection('requests').add({
+                    userId: currentUser.uid,
+                    email: currentUser.email,
+                    packageCount: pkg.count,
+                    price: pkg.price,
+                    imageBase64: base64Image,
+                    status: 'pending',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                alert('تم تقديم الطلب بنجاح، سنقوم بمراجعته وإضافة الرصيد.');
+                renderUserPanel();
             };
             reader.readAsDataURL(file);
         }
 
-        // ============ CREDITS MODAL ============
-        function showCreditsModal() {
-            document.getElementById('creditsModal').classList.add('active');
+        // ==================== لوحة الأدمن ====================
+        function renderAdminPanel() {
+            document.getElementById('appContainer').innerHTML = `
+                <div style="flex:1;">
+                    <div class="card">
+                        <h3>لوحة تحكم الأدمن</h3>
+                        <button class="btn btn-primary" onclick="manageUsers()">👥 إدارة المستخدمين</button>
+                        <button class="btn btn-primary" onclick="manageRequests()">📩 الطلبات الواردة</button>
+                        <button class="btn btn-primary" onclick="manageSettings()">⚙️ الإعدادات العامة</button>
+                    </div>
+                    <div id="adminContent"></div>
+                </div>
+            `;
         }
 
-        function confirmDownload() {
-            document.getElementById('creditsModal').classList.remove('active');
-            // انتظر قليلاً حتى تنتهي أنيميشن الإغلاق ثم نبدأ التحميل
-            setTimeout(() => {
-                executeDownload();
-            }, 150);
-        }
-
-        // ============ ACTUAL DOWNLOAD ============
-        function executeDownload() {
-            syncStateFromDOM();
-            const scale = 2;
-            const downloadCanvas = document.createElement('canvas');
-            downloadCanvas.width = CANVAS_WIDTH * scale;
-            downloadCanvas.height = CANVAS_HEIGHT * scale;
-            const dc = downloadCanvas.getContext('2d');
-            dc.scale(scale, scale);
-
-            renderAllToContext(dc);
-
-            const link = document.createElement('a');
-            const typeLabel = state.certificateType === 'excellence' ? 'تفوق' : 'شكر-وتقدير';
-            link.download = `شهادة-${typeLabel}-${state.mainName.replace(/\s+/g, '-')}.png`;
-            link.href = downloadCanvas.toDataURL('image/png', 1.0);
-            link.click();
-            showToast('✅ تم تحميل الشهادة بدقة عالية!');
-        }
-
-        // لجعل الزر القديم في الهيدر والأزرار الأخرى تعمل، نستبدل downloadCertificate بـ showCreditsModal
-        // تم تعديل الزر في الهيدر وزر التحميل في الأسفل لاستدعاء showCreditsModal مباشرة
-
-        // ============ RENDER TO CONTEXT (for download) ============
-        function renderAllToContext(c) {
-            c.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-            // Background
-            const baseColor = state.backgroundColor;
-            const grad = c.createLinearGradient(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-            grad.addColorStop(0, baseColor);
-            grad.addColorStop(0.5, baseColor);
-            grad.addColorStop(1, baseColor);
-            c.fillStyle = grad;
-            c.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-            c.fillStyle = 'rgba(0,0,0,0.008)';
-            for (let i = 0; i < 200; i++) {
-                c.fillRect(Math.random() * CANVAS_WIDTH, Math.random() * CANVAS_HEIGHT, 1, 1);
-            }
-            c.save();
-            c.globalAlpha = 0.04;
-            c.fillStyle = state.certificateType === 'excellence' ? '#c5960c' : '#4a7c59';
-            c.beginPath();
-            c.arc(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 200, 0, Math.PI * 2);
-            c.fill();
-            c.beginPath();
-            c.arc(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 140, 0, Math.PI * 2);
-            c.fill();
-            c.restore();
-
-            // Border
-            drawBorderToCtx(c, state.borderStyle);
-
-            // Logo
-            if (state.logoImage && state.logoPosition !== 'none') {
-                const logoWidth = 100;
-                const logoHeight = 100;
-                let drawWidth = logoWidth;
-                let drawHeight = logoHeight;
-                const imgRatio = state.logoImage.width / state.logoImage.height;
-                if (imgRatio > 1) {
-                    drawHeight = logoWidth / imgRatio;
-                } else {
-                    drawWidth = logoHeight * imgRatio;
-                }
-                const padding = 40;
-                let x, y;
-                if (state.logoPosition === 'top-right') {
-                    x = CANVAS_WIDTH - padding - drawWidth;
-                    y = padding;
-                } else if (state.logoPosition === 'top-left') {
-                    x = padding;
-                    y = padding;
-                }
-                if (x !== undefined) {
-                    c.drawImage(state.logoImage, x, y, drawWidth, drawHeight);
-                }
-            }
-
-            // Header
-            c.save();
-            c.textAlign = 'center';
-            c.fillStyle = state.certificateType === 'excellence' ? '#8b6914' : '#3d5a40';
-            c.font = `bold 38px "${state.globalFont}", "Amiri", serif`;
-            const title = state.certificateType === 'excellence' ? 'شهادة تفوق' : 'شهادة شكر وتقدير';
-            c.fillText(title, CANVAS_WIDTH / 2, 95);
-            const lineY = 113;
-            const lineLen = 280;
-            c.strokeStyle = state.certificateType === 'excellence' ? '#c5960c' : '#4a7c59';
-            c.lineWidth = 2.5;
-            c.beginPath();
-            c.moveTo(CANVAS_WIDTH / 2 - lineLen / 2, lineY);
-            c.lineTo(CANVAS_WIDTH / 2 + lineLen / 2, lineY);
-            c.stroke();
-            c.fillStyle = c.strokeStyle;
-            c.beginPath();
-            c.moveTo(CANVAS_WIDTH / 2, lineY - 6);
-            c.lineTo(CANVAS_WIDTH / 2 + 6, lineY);
-            c.lineTo(CANVAS_WIDTH / 2, lineY + 6);
-            c.lineTo(CANVAS_WIDTH / 2 - 6, lineY);
-            c.closePath();
-            c.fill();
-            c.beginPath();
-            c.arc(CANVAS_WIDTH / 2 - lineLen / 2 - 16, lineY, 3, 0, Math.PI * 2);
-            c.fill();
-            c.beginPath();
-            c.arc(CANVAS_WIDTH / 2 + lineLen / 2 + 16, lineY, 3, 0, Math.PI * 2);
-            c.fill();
-            c.restore();
-
-            // Main name
-            c.save();
-            c.textAlign = 'center';
-            c.fillStyle = state.mainNameColor;
-            c.font = `bold ${state.mainNameSize}px "${state.globalFont}", "Amiri", serif`;
-            c.fillText(state.mainName, CANVAS_WIDTH / 2, 210);
-            c.restore();
-
-            // Appreciation text
-            c.save();
-            c.textAlign = 'center';
-            c.fillStyle = state.appreciationColor;
-            c.font = `${state.appreciationSize}px "${state.globalFont}", "Amiri", serif`;
-            const maxWidth = 650;
-            const lineHeight = state.appreciationSize * 1.6;
-            const words = state.appreciationText.split(' ');
-            let lines = [];
-            let currentLine = '';
-            for (const word of words) {
-                const testLine = currentLine ? currentLine + ' ' + word : word;
-                if (c.measureText(testLine).width > maxWidth && currentLine) {
-                    lines.push(currentLine);
-                    currentLine = word;
-                } else {
-                    currentLine = testLine;
-                }
-            }
-            if (currentLine) lines.push(currentLine);
-            const totalHeight = lines.length * lineHeight;
-            const startY = 310 - totalHeight / 2 + lineHeight / 2;
-            lines.forEach((line, i) => {
-                c.fillText(line, CANVAS_WIDTH / 2, startY + i * lineHeight);
+        async function manageUsers() {
+            const snapshot = await db.collection('users').get();
+            let html = `<h4>قائمة المستخدمين</h4>
+                <table class="admin-table">
+                <tr><th>البريد</th><th>الرصيد</th><th>الدور</th><th>إضافة رصيد</th></tr>`;
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                html += `<tr>
+                    <td>${data.email}</td>
+                    <td>${data.balance}</td>
+                    <td>${data.role || 'user'}</td>
+                    <td>
+                        <input type="number" id="bal_${doc.id}" placeholder="عدد" style="width:80px;">
+                        <button class="btn btn-secondary" onclick="addBalance('${doc.id}')">إضافة</button>
+                    </td>
+                </tr>`;
             });
-            const textYEnd = 310 + totalHeight / 2;
-            c.restore();
+            html += '</table>';
+            document.getElementById('adminContent').innerHTML = html;
+        }
 
-            // Signatures
-            const sigY = Math.max(textYEnd + 60, CANVAS_HEIGHT - 180);
-            const leftX = CANVAS_WIDTH * 0.22;
-            const rightX = CANVAS_WIDTH * 0.78;
-            c.save();
-            c.textAlign = 'center';
-            c.fillStyle = state.rightColor;
-            c.font = `bold ${state.rightSize}px "${state.globalFont}", "Amiri", serif`;
-            c.fillText(state.rightTitle, rightX, sigY);
-            c.font = `${state.rightSize}px "${state.globalFont}", "Amiri", serif`;
-            c.fillText(state.rightName, rightX, sigY + state.rightSize * 1.7);
-            const sigLineWidth = 170;
-            c.strokeStyle = '#555';
-            c.lineWidth = 0.7;
-            c.setLineDash([2, 3]);
-            c.beginPath();
-            c.moveTo(rightX - sigLineWidth / 2, sigY + state.rightSize * 0.6);
-            c.lineTo(rightX + sigLineWidth / 2, sigY + state.rightSize * 0.6);
-            c.stroke();
-            c.setLineDash([]);
-            c.fillStyle = state.leftColor;
-            c.font = `bold ${state.leftSize}px "${state.globalFont}", "Amiri", serif`;
-            c.fillText(state.leftTitle, leftX, sigY);
-            c.font = `${state.leftSize}px "${state.globalFont}", "Amiri", serif`;
-            c.fillText(state.leftName, leftX, sigY + state.leftSize * 1.7);
-            if (state.showOptionalName && state.optionalName.trim()) {
-                c.fillText(state.optionalName.trim(), leftX, sigY + state.leftSize * 3.4);
-            }
-            c.strokeStyle = '#555';
-            c.lineWidth = 0.7;
-            c.setLineDash([2, 3]);
-            c.beginPath();
-            c.moveTo(leftX - sigLineWidth / 2, sigY + state.leftSize * 0.6);
-            c.lineTo(leftX + sigLineWidth / 2, sigY + state.leftSize * 0.6);
-            c.stroke();
-            c.setLineDash([]);
-            c.restore();
-
-            // Sparkles
-            c.save();
-            c.fillStyle = state.certificateType === 'excellence' ? '#c5960c' : '#6a9a7b';
-            c.globalAlpha = 0.5;
-            [
-                [CANVAS_WIDTH * 0.15, 140],
-                [CANVAS_WIDTH * 0.85, 140],
-                [CANVAS_WIDTH * 0.1, CANVAS_HEIGHT * 0.55],
-                [CANVAS_WIDTH * 0.9, CANVAS_HEIGHT * 0.55]
-            ].forEach(([sx, sy]) => {
-                const size = 5;
-                c.beginPath();
-                c.moveTo(sx, sy - size);
-                c.lineTo(sx + size * 0.3, sy - size * 0.3);
-                c.lineTo(sx + size, sy);
-                c.lineTo(sx + size * 0.3, sy + size * 0.3);
-                c.lineTo(sx, sy + size);
-                c.lineTo(sx - size * 0.3, sy + size * 0.3);
-                c.lineTo(sx - size, sy);
-                c.lineTo(sx - size * 0.3, sy - size * 0.3);
-                c.closePath();
-                c.fill();
+        async function addBalance(userId) {
+            const amount = parseInt(document.getElementById('bal_'+userId).value);
+            if (isNaN(amount) || amount <= 0) return alert('أدخل رقماً صحيحاً');
+            await db.collection('users').doc(userId).update({
+                balance: firebase.firestore.FieldValue.increment(amount)
             });
-            c.restore();
+            alert('تمت الإضافة');
+            manageUsers(); // تحديث
         }
 
-        function drawBorderToCtx(c, style) {
-            const m = 30;
-            const w = CANVAS_WIDTH - 2 * m;
-            const h = CANVAS_HEIGHT - 2 * m;
-            const x = m;
-            const y = m;
-            c.save();
-            c.lineCap = 'round';
-            c.lineJoin = 'round';
-
-            switch (style) {
-                case 0:
-                    c.strokeStyle = '#2c3e50';
-                    c.lineWidth = 5;
-                    c.strokeRect(x, y, w, h);
-                    c.strokeStyle = '#8b7355';
-                    c.lineWidth = 1.5;
-                    c.strokeRect(x + 10, y + 10, w - 20, h - 20);
-                    c.fillStyle = '#c5960c';
-                    const cs0 = 18;
-                    [
-                        [x - 3, y - 3],
-                        [x + w - cs0 + 3, y - 3],
-                        [x - 3, y + h - cs0 + 3],
-                        [x + w - cs0 + 3, y + h - cs0 + 3]
-                    ].forEach(([cx, cy]) => {
-                        c.fillRect(cx, cy, cs0, cs0);
-                        c.strokeStyle = '#2c3e50';
-                        c.lineWidth = 1;
-                        c.strokeRect(cx, cy, cs0, cs0);
-                    });
-                    break;
-                case 1:
-                    const goldGrad = c.createLinearGradient(x, y, x + w, y + h);
-                    goldGrad.addColorStop(0, '#b8860b');
-                    goldGrad.addColorStop(0.3, '#daa520');
-                    goldGrad.addColorStop(0.6, '#ffd700');
-                    goldGrad.addColorStop(1, '#b8860b');
-                    c.strokeStyle = goldGrad;
-                    c.lineWidth = 8;
-                    c.strokeRect(x, y, w, h);
-                    c.strokeStyle = '#5c3d0e';
-                    c.lineWidth = 2;
-                    c.strokeRect(x + 13, y + 13, w - 26, h - 26);
-                    [
-                        [x + 18, y + 18],
-                        [x + w - 18, y + 18],
-                        [x + 18, y + h - 18],
-                        [x + w - 18, y + h - 18]
-                    ].forEach(([cx, cy]) => {
-                        c.fillStyle = '#ffd700';
-                        c.beginPath();
-                        c.arc(cx, cy, 10, 0, Math.PI * 2);
-                        c.fill();
-                        c.strokeStyle = '#5c3d0e';
-                        c.lineWidth = 1.5;
-                        c.stroke();
-                    });
-                    break;
-                case 2:
-                    c.strokeStyle = '#34495e';
-                    c.lineWidth = 2;
-                    c.strokeRect(x, y, w, h);
-                    const bl = 35;
-                    c.strokeStyle = '#c5960c';
-                    c.lineWidth = 3;
-                    [
-                        [x, y, bl, 0, 0, bl],
-                        [x + w, y, -bl, 0, 0, bl],
-                        [x, y + h, bl, 0, 0, -bl],
-                        [x + w, y + h, -bl, 0, 0, -bl]
-                    ].forEach(([cx, cy, dx1, dy1, dx2, dy2]) => {
-                        c.beginPath();
-                        c.moveTo(cx, cy);
-                        c.lineTo(cx + dx1, cy + dy1);
-                        c.moveTo(cx, cy);
-                        c.lineTo(cx + dx2, cy + dy2);
-                        c.stroke();
-                    });
-                    break;
-                case 3:
-                    c.strokeStyle = '#4a3728';
-                    c.lineWidth = 4;
-                    c.strokeRect(x, y, w, h);
-                    c.strokeStyle = '#8b6914';
-                    c.lineWidth = 1;
-                    c.strokeRect(x + 7, y + 7, w - 14, h - 14);
-                    c.strokeRect(x + 14, y + 14, w - 28, h - 28);
-                    [
-                        [x + 20, y + 20],
-                        [x + w - 20, y + 20],
-                        [x + 20, y + h - 20],
-                        [x + w - 20, y + h - 20]
-                    ].forEach(([cx, cy]) => {
-                        c.fillStyle = '#c5960c';
-                        c.beginPath();
-                        c.moveTo(cx, cy - 7);
-                        c.lineTo(cx + 7, cy);
-                        c.lineTo(cx, cy + 7);
-                        c.lineTo(cx - 7, cy);
-                        c.closePath();
-                        c.fill();
-                    });
-                    break;
-                case 4:
-                    c.strokeStyle = '#2c3e50';
-                    c.lineWidth = 3;
-                    c.strokeRect(x, y, w, h);
-                    c.strokeStyle = '#c5960c';
-                    c.lineWidth = 1;
-                    c.strokeRect(x + 6, y + 6, w - 12, h - 12);
-                    c.strokeStyle = '#7f8c8d';
-                    c.lineWidth = 0.8;
-                    c.strokeRect(x + 13, y + 13, w - 26, h - 26);
-                    [
-                        [x + 16, y + 16],
-                        [x + w - 16, y + 16],
-                        [x + 16, y + h - 16],
-                        [x + w - 16, y + h - 16]
-                    ].forEach(([cx, cy]) => {
-                        c.fillStyle = '#c5960c';
-                        c.beginPath();
-                        c.arc(cx, cy, 4, 0, Math.PI * 2);
-                        c.fill();
-                    });
-                    break;
-                case 5:
-                    c.strokeStyle = '#5c3d0e';
-                    c.lineWidth = 6;
-                    c.strokeRect(x, y, w, h);
-                    c.strokeStyle = '#c5960c';
-                    c.lineWidth = 2;
-                    const step = 28;
-                    for (let sx = x + step; sx < x + w - step / 2; sx += step) {
-                        c.beginPath();
-                        c.arc(sx, y + 10, step / 3, Math.PI, 0);
-                        c.stroke();
-                        c.beginPath();
-                        c.arc(sx, y + h - 10, step / 3, 0, Math.PI);
-                        c.stroke();
-                    }
-                    c.strokeStyle = '#8b7355';
-                    c.lineWidth = 1.2;
-                    c.strokeRect(x + 16, y + 16, w - 32, h - 32);
-                    [
-                        [x + 22, y + 22],
-                        [x + w - 22, y + 22],
-                        [x + 22, y + h - 22],
-                        [x + w - 22, y + h - 22]
-                    ].forEach(([cx, cy]) => {
-                        c.fillStyle = '#daa520';
-                        c.beginPath();
-                        c.arc(cx, cy, 9, 0, Math.PI * 2);
-                        c.fill();
-                        c.fillStyle = '#fffef5';
-                        c.beginPath();
-                        c.arc(cx, cy, 4, 0, Math.PI * 2);
-                        c.fill();
-                    });
-                    break;
-            }
-            c.restore();
-        }
-
-        // ============ DRAWING FUNCTIONS (for live preview) ============
-        function drawBackground() {
-            const baseColor = state.backgroundColor;
-            const grad = ctx.createLinearGradient(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-            grad.addColorStop(0, baseColor);
-            grad.addColorStop(0.5, baseColor);
-            grad.addColorStop(1, baseColor);
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-            ctx.fillStyle = 'rgba(0,0,0,0.008)';
-            for (let i = 0; i < 200; i++) {
-                const x = Math.random() * CANVAS_WIDTH;
-                const y = Math.random() * CANVAS_HEIGHT;
-                ctx.fillRect(x, y, 1, 1);
-            }
-
-            ctx.save();
-            ctx.globalAlpha = 0.04;
-            ctx.fillStyle = state.certificateType === 'excellence' ? '#c5960c' : '#4a7c59';
-            ctx.beginPath();
-            ctx.arc(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 200, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 140, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-        }
-
-        function drawBorder(style) {
-            // same as drawBorderToCtx but using global ctx
-            drawBorderToCtx(ctx, style);
-        }
-
-        function drawHeaderText() {
-            const y = 95;
-            ctx.save();
-            ctx.textAlign = 'center';
-            ctx.fillStyle = state.certificateType === 'excellence' ? '#8b6914' : '#3d5a40';
-            ctx.font = `bold 38px "${state.globalFont}", "Amiri", serif`;
-            const title = state.certificateType === 'excellence' ? 'شهادة تفوق' : 'شهادة شكر وتقدير';
-            ctx.fillText(title, CANVAS_WIDTH / 2, y);
-
-            const lineY = y + 18;
-            const lineLen = 280;
-            ctx.strokeStyle = state.certificateType === 'excellence' ? '#c5960c' : '#4a7c59';
-            ctx.lineWidth = 2.5;
-            ctx.beginPath();
-            ctx.moveTo(CANVAS_WIDTH / 2 - lineLen / 2, lineY);
-            ctx.lineTo(CANVAS_WIDTH / 2 + lineLen / 2, lineY);
-            ctx.stroke();
-
-            const dx = CANVAS_WIDTH / 2;
-            const dy = lineY;
-            ctx.fillStyle = ctx.strokeStyle;
-            ctx.beginPath();
-            ctx.moveTo(dx, dy - 6);
-            ctx.lineTo(dx + 6, dy);
-            ctx.lineTo(dx, dy + 6);
-            ctx.lineTo(dx - 6, dy);
-            ctx.closePath();
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.arc(dx - lineLen / 2 - 16, dy, 3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(dx + lineLen / 2 + 16, dy, 3, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.restore();
-        }
-
-        function drawMainName() {
-            const y = 210;
-            ctx.save();
-            ctx.textAlign = 'center';
-            ctx.fillStyle = state.mainNameColor;
-            ctx.font = `bold ${state.mainNameSize}px "${state.globalFont}", "Amiri", serif`;
-            ctx.fillText(state.mainName, CANVAS_WIDTH / 2, y);
-            ctx.restore();
-        }
-
-        function drawAppreciationText() {
-            const y = 310;
-            ctx.save();
-            ctx.textAlign = 'center';
-            ctx.fillStyle = state.appreciationColor;
-            ctx.font = `${state.appreciationSize}px "${state.globalFont}", "Amiri", serif`;
-
-            const maxWidth = 650;
-            const lineHeight = state.appreciationSize * 1.6;
-            const words = state.appreciationText.split(' ');
-            let lines = [];
-            let currentLine = '';
-
-            for (const word of words) {
-                const testLine = currentLine ? currentLine + ' ' + word : word;
-                const metrics = ctx.measureText(testLine);
-                if (metrics.width > maxWidth && currentLine) {
-                    lines.push(currentLine);
-                    currentLine = word;
-                } else {
-                    currentLine = testLine;
-                }
-            }
-            if (currentLine) lines.push(currentLine);
-
-            const totalHeight = lines.length * lineHeight;
-            const startY = y - totalHeight / 2 + lineHeight / 2;
-
-            lines.forEach((line, i) => {
-                ctx.fillText(line, CANVAS_WIDTH / 2, startY + i * lineHeight);
-            });
-
-            ctx.restore();
-            return y + (lines.length * lineHeight) / 2;
-        }
-
-        function drawSignatureSection(textYEnd) {
-            const sigY = Math.max(textYEnd + 60, CANVAS_HEIGHT - 180);
-            const leftX = CANVAS_WIDTH * 0.22;
-            const rightX = CANVAS_WIDTH * 0.78;
-
-            ctx.save();
-            ctx.textAlign = 'center';
-            ctx.fillStyle = state.rightColor;
-            const rFontSize = state.rightSize;
-            ctx.font = `bold ${rFontSize}px "${state.globalFont}", "Amiri", serif`;
-            ctx.fillText(state.rightTitle, rightX, sigY);
-            ctx.font = `${rFontSize}px "${state.globalFont}", "Amiri", serif`;
-            ctx.fillText(state.rightName, rightX, sigY + rFontSize * 1.7);
-
-            const sigLineWidth = 170;
-            ctx.strokeStyle = '#555';
-            ctx.lineWidth = 0.7;
-            ctx.setLineDash([2, 3]);
-            ctx.beginPath();
-            ctx.moveTo(rightX - sigLineWidth / 2, sigY + rFontSize * 0.6);
-            ctx.lineTo(rightX + sigLineWidth / 2, sigY + rFontSize * 0.6);
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            ctx.fillStyle = state.leftColor;
-            const lFontSize = state.leftSize;
-            ctx.font = `bold ${lFontSize}px "${state.globalFont}", "Amiri", serif`;
-            ctx.fillText(state.leftTitle, leftX, sigY);
-            ctx.font = `${lFontSize}px "${state.globalFont}", "Amiri", serif`;
-            ctx.fillText(state.leftName, leftX, sigY + lFontSize * 1.7);
-
-            if (state.showOptionalName && state.optionalName.trim()) {
-                ctx.fillText(state.optionalName.trim(), leftX, sigY + lFontSize * 3.4);
-            }
-
-            ctx.strokeStyle = '#555';
-            ctx.lineWidth = 0.7;
-            ctx.setLineDash([2, 3]);
-            ctx.beginPath();
-            ctx.moveTo(leftX - sigLineWidth / 2, sigY + lFontSize * 0.6);
-            ctx.lineTo(leftX + sigLineWidth / 2, sigY + lFontSize * 0.6);
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            ctx.restore();
-        }
-
-        function drawLogo() {
-            if (!state.logoImage || state.logoPosition === 'none') return;
-
-            const logoWidth = 100;
-            const logoHeight = 100;
-            let drawWidth = logoWidth;
-            let drawHeight = logoHeight;
-
-            const imgRatio = state.logoImage.width / state.logoImage.height;
-            if (imgRatio > 1) {
-                drawHeight = logoWidth / imgRatio;
+        async function manageRequests() {
+            const snapshot = await db.collection('requests').where('status','==','pending').get();
+            let html = '<h4>الطلبات المعلقة</h4>';
+            if (snapshot.empty) {
+                html += '<p>لا توجد طلبات معلقة حالياً.</p>';
             } else {
-                drawWidth = logoHeight * imgRatio;
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    html += `
+                    <div class="request-card">
+                        <img src="${data.imageBase64}" alt="إيصال">
+                        <div>
+                            <p><strong>البريد:</strong> ${data.email}</p>
+                            <p><strong>الباقة:</strong> ${data.packageCount} شهادة - ${data.price} ريال</p>
+                            <button class="btn btn-accent" onclick="approveRequest('${doc.id}', ${data.packageCount}, '${data.userId}')">موافقة</button>
+                            <button class="btn btn-secondary" onclick="rejectRequest('${doc.id}')">رفض</button>
+                        </div>
+                    </div>`;
+                });
             }
-
-            const padding = 40;
-            let x, y;
-            if (state.logoPosition === 'top-right') {
-                x = CANVAS_WIDTH - padding - drawWidth;
-                y = padding;
-            } else if (state.logoPosition === 'top-left') {
-                x = padding;
-                y = padding;
-            } else {
-                return;
-            }
-
-            ctx.save();
-            ctx.drawImage(state.logoImage, x, y, drawWidth, drawHeight);
-            ctx.restore();
+            document.getElementById('adminContent').innerHTML = html;
         }
 
-        function drawDecorativeElements() {
-            ctx.save();
-            const sparkleColor = state.certificateType === 'excellence' ? '#c5960c' : '#6a9a7b';
-            ctx.fillStyle = sparkleColor;
-            ctx.globalAlpha = 0.5;
-
-            const sparklePositions = [
-                [CANVAS_WIDTH * 0.15, 140],
-                [CANVAS_WIDTH * 0.85, 140],
-                [CANVAS_WIDTH * 0.1, CANVAS_HEIGHT * 0.55],
-                [CANVAS_WIDTH * 0.9, CANVAS_HEIGHT * 0.55],
-            ];
-
-            sparklePositions.forEach(([sx, sy]) => {
-                const size = 5;
-                ctx.beginPath();
-                ctx.moveTo(sx, sy - size);
-                ctx.lineTo(sx + size * 0.3, sy - size * 0.3);
-                ctx.lineTo(sx + size, sy);
-                ctx.lineTo(sx + size * 0.3, sy + size * 0.3);
-                ctx.lineTo(sx, sy + size);
-                ctx.lineTo(sx - size * 0.3, sy + size * 0.3);
-                ctx.lineTo(sx - size, sy);
-                ctx.lineTo(sx - size * 0.3, sy - size * 0.3);
-                ctx.closePath();
-                ctx.fill();
+        async function approveRequest(reqId, count, userId) {
+            await db.collection('requests').doc(reqId).update({ status: 'approved' });
+            await db.collection('users').doc(userId).update({
+                balance: firebase.firestore.FieldValue.increment(count)
             });
-
-            ctx.restore();
+            alert('تمت الموافقة وإضافة الرصيد للمستخدم');
+            manageRequests();
         }
 
-        function renderCertificate() {
-            ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-            drawBackground();
-            drawBorder(state.borderStyle);
-            drawLogo();
-            drawHeaderText();
-            drawMainName();
-            const textYEnd = drawAppreciationText();
-            drawSignatureSection(textYEnd);
-            drawDecorativeElements();
+        async function rejectRequest(reqId) {
+            await db.collection('requests').doc(reqId).update({ status: 'rejected' });
+            alert('تم رفض الطلب');
+            manageRequests();
         }
 
-        function updateCertificate() {
-            syncStateFromDOM();
-            document.getElementById('mainNameSizeVal').textContent = state.mainNameSize;
-            document.getElementById('appreciationSizeVal').textContent = state.appreciationSize;
-            document.getElementById('rightSizeVal').textContent = state.rightSize;
-            document.getElementById('leftSizeVal').textContent = state.leftSize;
-            document.getElementById('optionalNameRow').style.display = state.showOptionalName ? 'flex' : 'none';
-
-            const logoRow = document.getElementById('logoPositionRow');
-            if (state.logoImage) {
-                logoRow.style.display = 'flex';
-            } else {
-                logoRow.style.display = 'none';
-                state.logoPosition = 'none';
-            }
-
-            renderCertificate();
+        async function manageSettings() {
+            const doc = await db.collection('settings').doc('general').get();
+            const data = doc.exists ? doc.data() : {};
+            const free = data.freeCertificates || 2;
+            const bank = data.bankAccount || '';
+            document.getElementById('adminContent').innerHTML = `
+                <h4>الإعدادات العامة</h4>
+                <label>عدد الشهادات المجانية للمستخدم الجديد:</label>
+                <input type="number" id="freeCount" value="${free}">
+                <label>رقم الحساب البنكي:</label>
+                <input type="text" id="bankAccount" value="${bank}">
+                <button class="btn btn-primary" onclick="saveSettings()">حفظ الإعدادات</button>
+            `;
         }
 
-        // ============ TOAST ============
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            clearTimeout(toast._timeout);
-            toast._timeout = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 2500);
+        async function saveSettings() {
+            const free = parseInt(document.getElementById('freeCount').value);
+            const bank = document.getElementById('bankAccount').value;
+            await db.collection('settings').doc('general').set({
+                freeCertificates: free,
+                bankAccount: bank,
+                packages: packages
+            }, { merge: true });
+            alert('تم حفظ الإعدادات');
+            loadSettings(); // إعادة تحميل
         }
-
-        // ============ RESET ============
-        function resetAll() {
-            document.getElementById('mainName').value = 'أحمد محمد عبدالله';
-            document.getElementById('mainNameColor').value = '#1a3a4a';
-            document.getElementById('mainNameSize').value = 46;
-            document.getElementById('appreciationText').value = 'نشكرك على جهودك المتميزة وتفانيك في العمل، متمنين لك مزيداً من التوفيق والنجاح.';
-            document.getElementById('appreciationColor').value = '#3d5a40';
-            document.getElementById('appreciationSize').value = 22;
-            document.getElementById('globalFont').value = 'Amiri';
-            document.getElementById('rightTitle').value = 'مدير المؤسسة';
-            document.getElementById('rightName').value = 'د. خالد العمري';
-            document.getElementById('rightColor').value = '#1a3a4a';
-            document.getElementById('rightSize').value = 16;
-            document.getElementById('leftTitle').value = 'رئيس القسم';
-            document.getElementById('leftName').value = 'أ. سارة القحطاني';
-            document.getElementById('leftColor').value = '#1a3a4a';
-            document.getElementById('leftSize').value = 16;
-            document.getElementById('showOptionalName').checked = false;
-            document.getElementById('optionalName').value = 'أ. فيصل الشمري';
-            document.getElementById('optionalNameRow').style.display = 'none';
-            document.getElementById('backgroundColor').value = '#fefefb';
-            document.getElementById('logoFile').value = '';
-            document.getElementById('logoPosition').value = 'none';
-            document.getElementById('logoPositionRow').style.display = 'none';
-
-            document.getElementById('mainNameSizeVal').textContent = '46';
-            document.getElementById('appreciationSizeVal').textContent = '22';
-            document.getElementById('rightSizeVal').textContent = '16';
-            document.getElementById('leftSizeVal').textContent = '16';
-
-            state.certificateType = 'excellence';
-            state.borderStyle = 0;
-            state.showOptionalName = false;
-            state.logoImage = null;
-            state.logoPosition = 'none';
-            state.backgroundColor = '#fefefb';
-
-            document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-            const excellenceBtn = document.querySelector('.type-btn.excellence');
-            if (excellenceBtn) excellenceBtn.classList.add('active');
-
-            document.querySelectorAll('.border-option').forEach(b => b.classList.remove('active'));
-            const firstBorder = document.querySelector('.border-option[data-border="0"]');
-            if (firstBorder) firstBorder.classList.add('active');
-
-            syncStateFromDOM();
-            renderCertificate();
-            showToast('🔄 تم إعادة تعيين جميع الإعدادات');
-        }
-
-        // ============ INITIALIZATION ============
-        async function init() {
-            try {
-                await document.fonts.ready;
-            } catch (e) {}
-            await new Promise(resolve => setTimeout(resolve, 300));
-            syncStateFromDOM();
-            renderCertificate();
-        }
-
-        window.addEventListener('DOMContentLoaded', init);
-
-        document.fonts.addEventListener('loadingdone', () => {
-            syncStateFromDOM();
-            renderCertificate();
-        });
-
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                renderCertificate();
-            }, 250);
-        });
-
-        // جعل النافذة المنبثقة تغلق أيضاً عند النقر خارج الصندوق
-        document.getElementById('creditsModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-            }
-        });
-
-        console.log('🎓 صانع الشهادات جاهز | Certificate Maker Ready');
     </script>
 </body>
 </html>

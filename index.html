@@ -444,6 +444,84 @@
             transform: translateX(-50%) translateY(-8px);
         }
 
+        /* Modal (Credits) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px 24px 24px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            transition: transform 0.25s ease;
+        }
+        .modal-overlay.active .modal-box {
+            transform: translateY(0);
+        }
+        .modal-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a3a4a;
+            margin-bottom: 8px;
+        }
+        .modal-text {
+            font-size: 0.95rem;
+            color: #444;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .modal-email {
+            background: #f0f2f5;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        .btn-modal {
+            padding: 12px 32px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: inherit;
+            background: var(--accent);
+            color: #1a1a2e;
+            box-shadow: 0 4px 12px rgba(197, 150, 12, 0.3);
+        }
+        .btn-modal:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(197, 150, 12, 0.4);
+        }
+
         /* Responsive */
         @media (max-width: 1100px) {
             .main-container {
@@ -494,7 +572,7 @@
             <h1>صانع الشهادات</h1>
             <span class="badge">Certificate Maker</span>
         </div>
-        <button class="btn-download-header" onclick="downloadCertificate()" title="تحميل الشهادة بصيغة PNG">
+        <button class="btn-download-header" onclick="showCreditsModal()" title="تحميل الشهادة بصيغة PNG">
             📥 تحميل الشهادة
         </button>
     </header>
@@ -629,7 +707,7 @@
 
             <hr class="divider">
 
-            <!-- New: Background Color & Logo Upload -->
+            <!-- Background Color & Logo Upload -->
             <div class="control-group">
                 <div class="section-title"><span class="icon">🎨</span> تخصيص متقدم</div>
                 <div class="control-row">
@@ -667,9 +745,20 @@
 
             <!-- Action Buttons -->
             <div class="btn-row">
-                <button class="btn btn-accent" onclick="downloadCertificate()">📥 تحميل PNG</button>
+                <button class="btn btn-accent" onclick="showCreditsModal()">📥 تحميل PNG</button>
                 <button class="btn btn-outline" onclick="resetAll()">🔄 إعادة تعيين</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Credits Modal -->
+    <div class="modal-overlay" id="creditsModal">
+        <div class="modal-box">
+            <div class="modal-icon">👨‍💻</div>
+            <div class="modal-title">تم برمجة هذه الصفحة بواسطة</div>
+            <div class="modal-text">تركي الصقر</div>
+            <div class="modal-email">للاستفسارات: tur100@gmail.com</div>
+            <button class="btn-modal" onclick="confirmDownload()">موافق</button>
         </div>
     </div>
 
@@ -715,8 +804,8 @@
             optionalName: 'أ. فيصل الشمري',
             borderStyle: 0,
             backgroundColor: '#fefefb',
-            logoImage: null,        // HTMLImageElement or null
-            logoPosition: 'none',   // 'none' | 'top-right' | 'top-left'
+            logoImage: null,
+            logoPosition: 'none',
         };
 
         // ============ UPDATE STATE FROM DOM ============
@@ -776,7 +865,6 @@
                 const img = new Image();
                 img.onload = function() {
                     state.logoImage = img;
-                    // Show position selector and set default to top-right
                     document.getElementById('logoPositionRow').style.display = 'flex';
                     document.getElementById('logoPosition').value = 'top-right';
                     state.logoPosition = 'top-right';
@@ -791,437 +879,21 @@
             reader.readAsDataURL(file);
         }
 
-        // ============ DRAWING FUNCTIONS ============
-
-        function drawBackground() {
-            const baseColor = state.backgroundColor;
-            // Create a subtle gradient from the chosen color to a slightly lighter/darker variant
-            const grad = ctx.createLinearGradient(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-            grad.addColorStop(0, baseColor);
-            // lighten/darken logic: we'll just use a semi-transparent white overlay for subtle variation
-            grad.addColorStop(0.5, baseColor);
-            grad.addColorStop(1, baseColor);
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-            // Subtle texture
-            ctx.fillStyle = 'rgba(0,0,0,0.008)';
-            for (let i = 0; i < 200; i++) {
-                const x = Math.random() * CANVAS_WIDTH;
-                const y = Math.random() * CANVAS_HEIGHT;
-                ctx.fillRect(x, y, 1, 1);
-            }
-
-            // Subtle central decorative circle (watermark-like)
-            ctx.save();
-            ctx.globalAlpha = 0.04;
-            ctx.fillStyle = state.certificateType === 'excellence' ? '#c5960c' : '#4a7c59';
-            ctx.beginPath();
-            ctx.arc(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 200, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 140, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
+        // ============ CREDITS MODAL ============
+        function showCreditsModal() {
+            document.getElementById('creditsModal').classList.add('active');
         }
 
-        function drawBorder(style) {
-            const m = 30;
-            const w = CANVAS_WIDTH - 2 * m;
-            const h = CANVAS_HEIGHT - 2 * m;
-            const x = m;
-            const y = m;
-
-            ctx.save();
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-
-            switch (style) {
-                case 0:
-                    ctx.strokeStyle = '#2c3e50';
-                    ctx.lineWidth = 5;
-                    ctx.strokeRect(x, y, w, h);
-                    ctx.strokeStyle = '#8b7355';
-                    ctx.lineWidth = 1.5;
-                    ctx.strokeRect(x + 10, y + 10, w - 20, h - 20);
-                    ctx.fillStyle = '#c5960c';
-                    const cs = 18;
-                    [
-                        [x - 3, y - 3],
-                        [x + w - cs + 3, y - 3],
-                        [x - 3, y + h - cs + 3],
-                        [x + w - cs + 3, y + h - cs + 3]
-                    ].forEach(([cx, cy]) => {
-                        ctx.fillRect(cx, cy, cs, cs);
-                        ctx.strokeStyle = '#2c3e50';
-                        ctx.lineWidth = 1;
-                        ctx.strokeRect(cx, cy, cs, cs);
-                    });
-                    break;
-                case 1:
-                    const goldGrad = ctx.createLinearGradient(x, y, x + w, y + h);
-                    goldGrad.addColorStop(0, '#b8860b');
-                    goldGrad.addColorStop(0.3, '#daa520');
-                    goldGrad.addColorStop(0.6, '#ffd700');
-                    goldGrad.addColorStop(1, '#b8860b');
-                    ctx.strokeStyle = goldGrad;
-                    ctx.lineWidth = 8;
-                    ctx.strokeRect(x, y, w, h);
-                    ctx.strokeStyle = '#5c3d0e';
-                    ctx.lineWidth = 2;
-                    ctx.strokeRect(x + 13, y + 13, w - 26, h - 26);
-                    [
-                        [x + 18, y + 18],
-                        [x + w - 18, y + 18],
-                        [x + 18, y + h - 18],
-                        [x + w - 18, y + h - 18]
-                    ].forEach(([cx, cy]) => {
-                        ctx.fillStyle = '#ffd700';
-                        ctx.beginPath();
-                        ctx.arc(cx, cy, 10, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.strokeStyle = '#5c3d0e';
-                        ctx.lineWidth = 1.5;
-                        ctx.stroke();
-                    });
-                    break;
-                case 2:
-                    ctx.strokeStyle = '#34495e';
-                    ctx.lineWidth = 2;
-                    ctx.strokeRect(x, y, w, h);
-                    const bl = 35;
-                    ctx.strokeStyle = '#c5960c';
-                    ctx.lineWidth = 3;
-                    [
-                        [x, y, bl, 0, 0, bl],
-                        [x + w, y, -bl, 0, 0, bl],
-                        [x, y + h, bl, 0, 0, -bl],
-                        [x + w, y + h, -bl, 0, 0, -bl]
-                    ].forEach(([cx, cy, dx1, dy1, dx2, dy2]) => {
-                        ctx.beginPath();
-                        ctx.moveTo(cx, cy);
-                        ctx.lineTo(cx + dx1, cy + dy1);
-                        ctx.moveTo(cx, cy);
-                        ctx.lineTo(cx + dx2, cy + dy2);
-                        ctx.stroke();
-                    });
-                    break;
-                case 3:
-                    ctx.strokeStyle = '#4a3728';
-                    ctx.lineWidth = 4;
-                    ctx.strokeRect(x, y, w, h);
-                    ctx.strokeStyle = '#8b6914';
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(x + 7, y + 7, w - 14, h - 14);
-                    ctx.strokeRect(x + 14, y + 14, w - 28, h - 28);
-                    [
-                        [x + 20, y + 20],
-                        [x + w - 20, y + 20],
-                        [x + 20, y + h - 20],
-                        [x + w - 20, y + h - 20]
-                    ].forEach(([cx, cy]) => {
-                        ctx.fillStyle = '#c5960c';
-                        ctx.beginPath();
-                        ctx.moveTo(cx, cy - 7);
-                        ctx.lineTo(cx + 7, cy);
-                        ctx.lineTo(cx, cy + 7);
-                        ctx.lineTo(cx - 7, cy);
-                        ctx.closePath();
-                        ctx.fill();
-                    });
-                    break;
-                case 4:
-                    ctx.strokeStyle = '#2c3e50';
-                    ctx.lineWidth = 3;
-                    ctx.strokeRect(x, y, w, h);
-                    ctx.strokeStyle = '#c5960c';
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(x + 6, y + 6, w - 12, h - 12);
-                    ctx.strokeStyle = '#7f8c8d';
-                    ctx.lineWidth = 0.8;
-                    ctx.strokeRect(x + 13, y + 13, w - 26, h - 26);
-                    [
-                        [x + 16, y + 16],
-                        [x + w - 16, y + 16],
-                        [x + 16, y + h - 16],
-                        [x + w - 16, y + h - 16]
-                    ].forEach(([cx, cy]) => {
-                        ctx.fillStyle = '#c5960c';
-                        ctx.beginPath();
-                        ctx.arc(cx, cy, 4, 0, Math.PI * 2);
-                        ctx.fill();
-                    });
-                    break;
-                case 5:
-                    ctx.strokeStyle = '#5c3d0e';
-                    ctx.lineWidth = 6;
-                    ctx.strokeRect(x, y, w, h);
-                    ctx.strokeStyle = '#c5960c';
-                    ctx.lineWidth = 2;
-                    const step = 28;
-                    for (let sx = x + step; sx < x + w - step / 2; sx += step) {
-                        ctx.beginPath();
-                        ctx.arc(sx, y + 10, step / 3, Math.PI, 0);
-                        ctx.stroke();
-                        ctx.beginPath();
-                        ctx.arc(sx, y + h - 10, step / 3, 0, Math.PI);
-                        ctx.stroke();
-                    }
-                    ctx.strokeStyle = '#8b7355';
-                    ctx.lineWidth = 1.2;
-                    ctx.strokeRect(x + 16, y + 16, w - 32, h - 32);
-                    [
-                        [x + 22, y + 22],
-                        [x + w - 22, y + 22],
-                        [x + 22, y + h - 22],
-                        [x + w - 22, y + h - 22]
-                    ].forEach(([cx, cy]) => {
-                        ctx.fillStyle = '#daa520';
-                        ctx.beginPath();
-                        ctx.arc(cx, cy, 9, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.fillStyle = '#fffef5';
-                        ctx.beginPath();
-                        ctx.arc(cx, cy, 4, 0, Math.PI * 2);
-                        ctx.fill();
-                    });
-                    break;
-            }
-            ctx.restore();
+        function confirmDownload() {
+            document.getElementById('creditsModal').classList.remove('active');
+            // انتظر قليلاً حتى تنتهي أنيميشن الإغلاق ثم نبدأ التحميل
+            setTimeout(() => {
+                executeDownload();
+            }, 150);
         }
 
-        function drawHeaderText() {
-            const y = 95;
-            ctx.save();
-            ctx.textAlign = 'center';
-            ctx.fillStyle = state.certificateType === 'excellence' ? '#8b6914' : '#3d5a40';
-            ctx.font = `bold 38px "${state.globalFont}", "Amiri", serif`;
-            const title = state.certificateType === 'excellence' ? 'شهادة تفوق' : 'شهادة شكر وتقدير';
-            ctx.fillText(title, CANVAS_WIDTH / 2, y);
-
-            const lineY = y + 18;
-            const lineLen = 280;
-            ctx.strokeStyle = state.certificateType === 'excellence' ? '#c5960c' : '#4a7c59';
-            ctx.lineWidth = 2.5;
-            ctx.beginPath();
-            ctx.moveTo(CANVAS_WIDTH / 2 - lineLen / 2, lineY);
-            ctx.lineTo(CANVAS_WIDTH / 2 + lineLen / 2, lineY);
-            ctx.stroke();
-
-            const dx = CANVAS_WIDTH / 2;
-            const dy = lineY;
-            ctx.fillStyle = ctx.strokeStyle;
-            ctx.beginPath();
-            ctx.moveTo(dx, dy - 6);
-            ctx.lineTo(dx + 6, dy);
-            ctx.lineTo(dx, dy + 6);
-            ctx.lineTo(dx - 6, dy);
-            ctx.closePath();
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.arc(dx - lineLen / 2 - 16, dy, 3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(dx + lineLen / 2 + 16, dy, 3, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.restore();
-        }
-
-        function drawMainName() {
-            const y = 210;
-            ctx.save();
-            ctx.textAlign = 'center';
-            ctx.fillStyle = state.mainNameColor;
-            ctx.font = `bold ${state.mainNameSize}px "${state.globalFont}", "Amiri", serif`;
-            ctx.fillText(state.mainName, CANVAS_WIDTH / 2, y);
-            ctx.restore();
-        }
-
-        function drawAppreciationText() {
-            const y = 310;
-            ctx.save();
-            ctx.textAlign = 'center';
-            ctx.fillStyle = state.appreciationColor;
-            ctx.font = `${state.appreciationSize}px "${state.globalFont}", "Amiri", serif`;
-
-            const maxWidth = 650;
-            const lineHeight = state.appreciationSize * 1.6;
-            const words = state.appreciationText.split(' ');
-            let lines = [];
-            let currentLine = '';
-
-            for (const word of words) {
-                const testLine = currentLine ? currentLine + ' ' + word : word;
-                const metrics = ctx.measureText(testLine);
-                if (metrics.width > maxWidth && currentLine) {
-                    lines.push(currentLine);
-                    currentLine = word;
-                } else {
-                    currentLine = testLine;
-                }
-            }
-            if (currentLine) lines.push(currentLine);
-
-            const totalHeight = lines.length * lineHeight;
-            const startY = y - totalHeight / 2 + lineHeight / 2;
-
-            lines.forEach((line, i) => {
-                ctx.fillText(line, CANVAS_WIDTH / 2, startY + i * lineHeight);
-            });
-
-            ctx.restore();
-            return y + (lines.length * lineHeight) / 2;
-        }
-
-        function drawSignatureSection(textYEnd) {
-            const sigY = Math.max(textYEnd + 60, CANVAS_HEIGHT - 180);
-            const leftX = CANVAS_WIDTH * 0.22;
-            const rightX = CANVAS_WIDTH * 0.78;
-
-            ctx.save();
-            ctx.textAlign = 'center';
-            ctx.fillStyle = state.rightColor;
-            const rFontSize = state.rightSize;
-            ctx.font = `bold ${rFontSize}px "${state.globalFont}", "Amiri", serif`;
-            ctx.fillText(state.rightTitle, rightX, sigY);
-            ctx.font = `${rFontSize}px "${state.globalFont}", "Amiri", serif`;
-            ctx.fillText(state.rightName, rightX, sigY + rFontSize * 1.7);
-
-            const sigLineWidth = 170;
-            ctx.strokeStyle = '#555';
-            ctx.lineWidth = 0.7;
-            ctx.setLineDash([2, 3]);
-            ctx.beginPath();
-            ctx.moveTo(rightX - sigLineWidth / 2, sigY + rFontSize * 0.6);
-            ctx.lineTo(rightX + sigLineWidth / 2, sigY + rFontSize * 0.6);
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            ctx.fillStyle = state.leftColor;
-            const lFontSize = state.leftSize;
-            ctx.font = `bold ${lFontSize}px "${state.globalFont}", "Amiri", serif`;
-            ctx.fillText(state.leftTitle, leftX, sigY);
-            ctx.font = `${lFontSize}px "${state.globalFont}", "Amiri", serif`;
-            ctx.fillText(state.leftName, leftX, sigY + lFontSize * 1.7);
-
-            if (state.showOptionalName && state.optionalName.trim()) {
-                ctx.fillText(state.optionalName.trim(), leftX, sigY + lFontSize * 3.4);
-            }
-
-            ctx.strokeStyle = '#555';
-            ctx.lineWidth = 0.7;
-            ctx.setLineDash([2, 3]);
-            ctx.beginPath();
-            ctx.moveTo(leftX - sigLineWidth / 2, sigY + lFontSize * 0.6);
-            ctx.lineTo(leftX + sigLineWidth / 2, sigY + lFontSize * 0.6);
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            ctx.restore();
-        }
-
-        function drawLogo() {
-            if (!state.logoImage || state.logoPosition === 'none') return;
-
-            const logoWidth = 100;  // Fixed display width
-            const logoHeight = 100; // Fixed display height (we'll maintain aspect ratio)
-            let drawWidth = logoWidth;
-            let drawHeight = logoHeight;
-
-            // Maintain aspect ratio
-            const imgRatio = state.logoImage.width / state.logoImage.height;
-            if (imgRatio > 1) {
-                drawHeight = logoWidth / imgRatio;
-            } else {
-                drawWidth = logoHeight * imgRatio;
-            }
-
-            const padding = 40;
-            let x, y;
-            if (state.logoPosition === 'top-right') {
-                x = CANVAS_WIDTH - padding - drawWidth;
-                y = padding;
-            } else if (state.logoPosition === 'top-left') {
-                x = padding;
-                y = padding;
-            } else {
-                return;
-            }
-
-            ctx.save();
-            ctx.drawImage(state.logoImage, x, y, drawWidth, drawHeight);
-            ctx.restore();
-        }
-
-        function drawDecorativeElements() {
-            ctx.save();
-            const sparkleColor = state.certificateType === 'excellence' ? '#c5960c' : '#6a9a7b';
-            ctx.fillStyle = sparkleColor;
-            ctx.globalAlpha = 0.5;
-
-            const sparklePositions = [
-                [CANVAS_WIDTH * 0.15, 140],
-                [CANVAS_WIDTH * 0.85, 140],
-                [CANVAS_WIDTH * 0.1, CANVAS_HEIGHT * 0.55],
-                [CANVAS_WIDTH * 0.9, CANVAS_HEIGHT * 0.55],
-            ];
-
-            sparklePositions.forEach(([sx, sy]) => {
-                const size = 5;
-                ctx.beginPath();
-                ctx.moveTo(sx, sy - size);
-                ctx.lineTo(sx + size * 0.3, sy - size * 0.3);
-                ctx.lineTo(sx + size, sy);
-                ctx.lineTo(sx + size * 0.3, sy + size * 0.3);
-                ctx.lineTo(sx, sy + size);
-                ctx.lineTo(sx - size * 0.3, sy + size * 0.3);
-                ctx.lineTo(sx - size, sy);
-                ctx.lineTo(sx - size * 0.3, sy - size * 0.3);
-                ctx.closePath();
-                ctx.fill();
-            });
-
-            ctx.restore();
-        }
-
-        // ============ MAIN RENDER ============
-        function renderCertificate() {
-            ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-            drawBackground();
-            drawBorder(state.borderStyle);
-            drawLogo(); // Draw logo before texts so it stays in background if overlapping
-            drawHeaderText();
-            drawMainName();
-            const textYEnd = drawAppreciationText();
-            drawSignatureSection(textYEnd);
-            drawDecorativeElements();
-        }
-
-        function updateCertificate() {
-            syncStateFromDOM();
-            document.getElementById('mainNameSizeVal').textContent = state.mainNameSize;
-            document.getElementById('appreciationSizeVal').textContent = state.appreciationSize;
-            document.getElementById('rightSizeVal').textContent = state.rightSize;
-            document.getElementById('leftSizeVal').textContent = state.leftSize;
-            document.getElementById('optionalNameRow').style.display = state.showOptionalName ? 'flex' : 'none';
-
-            // Show/hide logo position based on logo existence
-            const logoRow = document.getElementById('logoPositionRow');
-            if (state.logoImage) {
-                logoRow.style.display = 'flex';
-            } else {
-                logoRow.style.display = 'none';
-                state.logoPosition = 'none';
-            }
-
-            renderCertificate();
-        }
-
-        // ============ DOWNLOAD ============
-        function downloadCertificate() {
+        // ============ ACTUAL DOWNLOAD ============
+        function executeDownload() {
             syncStateFromDOM();
             const scale = 2;
             const downloadCanvas = document.createElement('canvas');
@@ -1240,6 +912,10 @@
             showToast('✅ تم تحميل الشهادة بدقة عالية!');
         }
 
+        // لجعل الزر القديم في الهيدر والأزرار الأخرى تعمل، نستبدل downloadCertificate بـ showCreditsModal
+        // تم تعديل الزر في الهيدر وزر التحميل في الأسفل لاستدعاء showCreditsModal مباشرة
+
+        // ============ RENDER TO CONTEXT (for download) ============
         function renderAllToContext(c) {
             c.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
@@ -1590,6 +1266,267 @@
             c.restore();
         }
 
+        // ============ DRAWING FUNCTIONS (for live preview) ============
+        function drawBackground() {
+            const baseColor = state.backgroundColor;
+            const grad = ctx.createLinearGradient(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+            grad.addColorStop(0, baseColor);
+            grad.addColorStop(0.5, baseColor);
+            grad.addColorStop(1, baseColor);
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+            ctx.fillStyle = 'rgba(0,0,0,0.008)';
+            for (let i = 0; i < 200; i++) {
+                const x = Math.random() * CANVAS_WIDTH;
+                const y = Math.random() * CANVAS_HEIGHT;
+                ctx.fillRect(x, y, 1, 1);
+            }
+
+            ctx.save();
+            ctx.globalAlpha = 0.04;
+            ctx.fillStyle = state.certificateType === 'excellence' ? '#c5960c' : '#4a7c59';
+            ctx.beginPath();
+            ctx.arc(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 200, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 140, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function drawBorder(style) {
+            // same as drawBorderToCtx but using global ctx
+            drawBorderToCtx(ctx, style);
+        }
+
+        function drawHeaderText() {
+            const y = 95;
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.fillStyle = state.certificateType === 'excellence' ? '#8b6914' : '#3d5a40';
+            ctx.font = `bold 38px "${state.globalFont}", "Amiri", serif`;
+            const title = state.certificateType === 'excellence' ? 'شهادة تفوق' : 'شهادة شكر وتقدير';
+            ctx.fillText(title, CANVAS_WIDTH / 2, y);
+
+            const lineY = y + 18;
+            const lineLen = 280;
+            ctx.strokeStyle = state.certificateType === 'excellence' ? '#c5960c' : '#4a7c59';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(CANVAS_WIDTH / 2 - lineLen / 2, lineY);
+            ctx.lineTo(CANVAS_WIDTH / 2 + lineLen / 2, lineY);
+            ctx.stroke();
+
+            const dx = CANVAS_WIDTH / 2;
+            const dy = lineY;
+            ctx.fillStyle = ctx.strokeStyle;
+            ctx.beginPath();
+            ctx.moveTo(dx, dy - 6);
+            ctx.lineTo(dx + 6, dy);
+            ctx.lineTo(dx, dy + 6);
+            ctx.lineTo(dx - 6, dy);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(dx - lineLen / 2 - 16, dy, 3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(dx + lineLen / 2 + 16, dy, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function drawMainName() {
+            const y = 210;
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.fillStyle = state.mainNameColor;
+            ctx.font = `bold ${state.mainNameSize}px "${state.globalFont}", "Amiri", serif`;
+            ctx.fillText(state.mainName, CANVAS_WIDTH / 2, y);
+            ctx.restore();
+        }
+
+        function drawAppreciationText() {
+            const y = 310;
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.fillStyle = state.appreciationColor;
+            ctx.font = `${state.appreciationSize}px "${state.globalFont}", "Amiri", serif`;
+
+            const maxWidth = 650;
+            const lineHeight = state.appreciationSize * 1.6;
+            const words = state.appreciationText.split(' ');
+            let lines = [];
+            let currentLine = '';
+
+            for (const word of words) {
+                const testLine = currentLine ? currentLine + ' ' + word : word;
+                const metrics = ctx.measureText(testLine);
+                if (metrics.width > maxWidth && currentLine) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    currentLine = testLine;
+                }
+            }
+            if (currentLine) lines.push(currentLine);
+
+            const totalHeight = lines.length * lineHeight;
+            const startY = y - totalHeight / 2 + lineHeight / 2;
+
+            lines.forEach((line, i) => {
+                ctx.fillText(line, CANVAS_WIDTH / 2, startY + i * lineHeight);
+            });
+
+            ctx.restore();
+            return y + (lines.length * lineHeight) / 2;
+        }
+
+        function drawSignatureSection(textYEnd) {
+            const sigY = Math.max(textYEnd + 60, CANVAS_HEIGHT - 180);
+            const leftX = CANVAS_WIDTH * 0.22;
+            const rightX = CANVAS_WIDTH * 0.78;
+
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.fillStyle = state.rightColor;
+            const rFontSize = state.rightSize;
+            ctx.font = `bold ${rFontSize}px "${state.globalFont}", "Amiri", serif`;
+            ctx.fillText(state.rightTitle, rightX, sigY);
+            ctx.font = `${rFontSize}px "${state.globalFont}", "Amiri", serif`;
+            ctx.fillText(state.rightName, rightX, sigY + rFontSize * 1.7);
+
+            const sigLineWidth = 170;
+            ctx.strokeStyle = '#555';
+            ctx.lineWidth = 0.7;
+            ctx.setLineDash([2, 3]);
+            ctx.beginPath();
+            ctx.moveTo(rightX - sigLineWidth / 2, sigY + rFontSize * 0.6);
+            ctx.lineTo(rightX + sigLineWidth / 2, sigY + rFontSize * 0.6);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = state.leftColor;
+            const lFontSize = state.leftSize;
+            ctx.font = `bold ${lFontSize}px "${state.globalFont}", "Amiri", serif`;
+            ctx.fillText(state.leftTitle, leftX, sigY);
+            ctx.font = `${lFontSize}px "${state.globalFont}", "Amiri", serif`;
+            ctx.fillText(state.leftName, leftX, sigY + lFontSize * 1.7);
+
+            if (state.showOptionalName && state.optionalName.trim()) {
+                ctx.fillText(state.optionalName.trim(), leftX, sigY + lFontSize * 3.4);
+            }
+
+            ctx.strokeStyle = '#555';
+            ctx.lineWidth = 0.7;
+            ctx.setLineDash([2, 3]);
+            ctx.beginPath();
+            ctx.moveTo(leftX - sigLineWidth / 2, sigY + lFontSize * 0.6);
+            ctx.lineTo(leftX + sigLineWidth / 2, sigY + lFontSize * 0.6);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.restore();
+        }
+
+        function drawLogo() {
+            if (!state.logoImage || state.logoPosition === 'none') return;
+
+            const logoWidth = 100;
+            const logoHeight = 100;
+            let drawWidth = logoWidth;
+            let drawHeight = logoHeight;
+
+            const imgRatio = state.logoImage.width / state.logoImage.height;
+            if (imgRatio > 1) {
+                drawHeight = logoWidth / imgRatio;
+            } else {
+                drawWidth = logoHeight * imgRatio;
+            }
+
+            const padding = 40;
+            let x, y;
+            if (state.logoPosition === 'top-right') {
+                x = CANVAS_WIDTH - padding - drawWidth;
+                y = padding;
+            } else if (state.logoPosition === 'top-left') {
+                x = padding;
+                y = padding;
+            } else {
+                return;
+            }
+
+            ctx.save();
+            ctx.drawImage(state.logoImage, x, y, drawWidth, drawHeight);
+            ctx.restore();
+        }
+
+        function drawDecorativeElements() {
+            ctx.save();
+            const sparkleColor = state.certificateType === 'excellence' ? '#c5960c' : '#6a9a7b';
+            ctx.fillStyle = sparkleColor;
+            ctx.globalAlpha = 0.5;
+
+            const sparklePositions = [
+                [CANVAS_WIDTH * 0.15, 140],
+                [CANVAS_WIDTH * 0.85, 140],
+                [CANVAS_WIDTH * 0.1, CANVAS_HEIGHT * 0.55],
+                [CANVAS_WIDTH * 0.9, CANVAS_HEIGHT * 0.55],
+            ];
+
+            sparklePositions.forEach(([sx, sy]) => {
+                const size = 5;
+                ctx.beginPath();
+                ctx.moveTo(sx, sy - size);
+                ctx.lineTo(sx + size * 0.3, sy - size * 0.3);
+                ctx.lineTo(sx + size, sy);
+                ctx.lineTo(sx + size * 0.3, sy + size * 0.3);
+                ctx.lineTo(sx, sy + size);
+                ctx.lineTo(sx - size * 0.3, sy + size * 0.3);
+                ctx.lineTo(sx - size, sy);
+                ctx.lineTo(sx - size * 0.3, sy - size * 0.3);
+                ctx.closePath();
+                ctx.fill();
+            });
+
+            ctx.restore();
+        }
+
+        function renderCertificate() {
+            ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+            drawBackground();
+            drawBorder(state.borderStyle);
+            drawLogo();
+            drawHeaderText();
+            drawMainName();
+            const textYEnd = drawAppreciationText();
+            drawSignatureSection(textYEnd);
+            drawDecorativeElements();
+        }
+
+        function updateCertificate() {
+            syncStateFromDOM();
+            document.getElementById('mainNameSizeVal').textContent = state.mainNameSize;
+            document.getElementById('appreciationSizeVal').textContent = state.appreciationSize;
+            document.getElementById('rightSizeVal').textContent = state.rightSize;
+            document.getElementById('leftSizeVal').textContent = state.leftSize;
+            document.getElementById('optionalNameRow').style.display = state.showOptionalName ? 'flex' : 'none';
+
+            const logoRow = document.getElementById('logoPositionRow');
+            if (state.logoImage) {
+                logoRow.style.display = 'flex';
+            } else {
+                logoRow.style.display = 'none';
+                state.logoPosition = 'none';
+            }
+
+            renderCertificate();
+        }
+
         // ============ TOAST ============
         function showToast(message) {
             const toast = document.getElementById('toast');
@@ -1674,6 +1611,13 @@
             resizeTimeout = setTimeout(() => {
                 renderCertificate();
             }, 250);
+        });
+
+        // جعل النافذة المنبثقة تغلق أيضاً عند النقر خارج الصندوق
+        document.getElementById('creditsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
         });
 
         console.log('🎓 صانع الشهادات جاهز | Certificate Maker Ready');

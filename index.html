@@ -15,104 +15,168 @@
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: 'Tajawal','Cairo',sans-serif;
+      font-family: 'Tajawal', 'Cairo', sans-serif;
       background: #f4f6f9;
       direction: rtl;
       color: #1f1f1f;
     }
     .hidden { display:none !important; }
 
-    /* Landing */
+    /* ========== Modern Landing Page ========== */
     .landing {
-      min-height:100vh;
-      background: linear-gradient(135deg, #0f2027 0%, #203a43 40%, #2c5364 100%);
-      display:flex; align-items:center; justify-content:center;
-      text-align:center; color:#fff; padding:20px;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; color: #fff; padding: 20px;
+      position: relative; overflow: hidden;
     }
-    .landing .content {
-      max-width:500px;
-      background:rgba(255,255,255,0.1);
-      backdrop-filter:blur(10px);
-      border-radius:20px; padding:40px;
-      box-shadow:0 20px 40px rgba(0,0,0,0.3);
+    .landing::before {
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.05) 10%, transparent 20%);
+      background-size: 20px 20px; animation: bgMove 20s linear infinite; z-index: 0;
     }
-    .landing h1 { font-size:2.5rem; margin-bottom:10px; }
-    .landing p { font-size:1.1rem; margin-bottom:30px; color:#ddd; }
-    .landing input {
-      width:100%; padding:12px; margin:10px 0;
-      border:none; border-radius:8px; font-family:inherit; font-size:1rem;
+    @keyframes bgMove { 0% { transform: translate(0, 0); } 100% { transform: translate(20px, 20px); } }
+    
+    .landing-content {
+      position: relative; z-index: 1; width: 100%; max-width: 900px;
+      display: flex; flex-wrap: wrap; gap: 40px; align-items: center; justify-content: center;
     }
-    .landing .btn-group { display:flex; gap:10px; }
-    .btn {
-      padding:12px 24px; border:none; border-radius:30px;
-      font-weight:700; font-size:1rem; cursor:pointer;
-      transition:0.2s; font-family:inherit;
-    }
-    .btn-primary { background:#1a73e8; color:#fff; }
-    .btn-primary:hover { background:#1557b0; }
-    .btn-accent { background:#c5960c; color:#fff; }
-    .btn-accent:hover { background:#e0a800; }
-    .btn-outline { background:transparent; border:2px solid #fff; color:#fff; }
-    .btn-outline:hover { background:rgba(255,255,255,0.2); }
+    .landing-text { flex: 1; min-width: 300px; text-align: right; }
+    .landing-text h1 { font-size: 3.5rem; margin-bottom: 15px; font-family: 'Cairo', sans-serif; font-weight: 900; line-height: 1.2; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .landing-text h1 span { color: #f1c40f; }
+    .landing-text p { font-size: 1.2rem; margin-bottom: 25px; color: #e0e0e0; line-height: 1.6; }
+    .features-list { list-style: none; margin-bottom: 30px; }
+    .features-list li { margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+    .features-list li::before { content: '✨'; }
 
-    /* Main app */
-    .app-header {
-      background:#1a2d3a; color:#fff;
-      padding:12px 24px; display:flex;
-      justify-content:space-between; align-items:center;
-      position:sticky; top:0; z-index:100;
+    .auth-box {
+      flex: 1; min-width: 320px; max-width: 400px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px; padding: 40px 30px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+      text-align: center;
     }
-    .app-header .logo { font-size:1.5rem; font-weight:700; }
-    .user-bar { display:flex; gap:16px; align-items:center; }
-    canvas { width:100%; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+    .auth-box h2 { margin-bottom: 25px; font-size: 1.8rem; }
+    .auth-box input {
+      width: 100%; padding: 14px; margin-bottom: 15px;
+      border: 1px solid rgba(255,255,255,0.3); border-radius: 10px;
+      font-family: inherit; font-size: 1rem;
+      background: rgba(255,255,255,0.05); color: #fff; outline: none; transition: 0.3s;
+    }
+    .auth-box input:focus { border-color: #f1c40f; background: rgba(255,255,255,0.15); }
+    .auth-box input::placeholder { color: #ccc; }
+    .btn-group { display: flex; flex-direction: column; gap: 12px; }
+
+    /* ========== Buttons ========== */
+    .btn {
+      padding: 14px 24px; border: none; border-radius: 10px;
+      font-weight: 700; font-size: 1.1rem; cursor: pointer;
+      transition: all 0.3s ease; font-family: inherit; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px;
+    }
+    .btn-primary { background: #1a73e8; color: #fff; box-shadow: 0 4px 15px rgba(26,115,232,0.4); }
+    .btn-primary:hover { background: #1557b0; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,115,232,0.6); }
+    .btn-accent { background: #f1c40f; color: #1f1f1f; box-shadow: 0 4px 15px rgba(241,196,15,0.4); }
+    .btn-accent:hover { background: #d4ac0d; transform: translateY(-2px); }
+    .btn-outline { background: transparent; border: 2px solid rgba(255,255,255,0.5); color: #fff; }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
+    .btn-danger { background: #e74c3c; color: #fff; }
+    .btn-danger:hover { background: #c0392b; }
+
+    /* ========== Main App ========== */
+    .app-header {
+      background: #1a2d3a; color: #fff;
+      padding: 15px 30px; display: flex;
+      justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .app-header .logo { font-size: 1.5rem; font-weight: 900; font-family: 'Cairo', sans-serif; color: #f1c40f; }
+    .user-bar { display: flex; gap: 20px; align-items: center; font-weight: 600; }
+    
+    .main-container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
+    
+    canvas { 
+      width: 100%; max-width: 1100px; border-radius: 12px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15); background: #fff; 
+    }
+    
     .controls-grid {
-      display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr));
-      gap:12px; margin-top:12px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
     }
     .control-card {
-      background:#fff; border-radius:8px; padding:12px;
-      box-shadow:0 2px 8px rgba(0,0,0,0.05);
+      background: #fff; border-radius: 12px; padding: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #eee;
     }
-    .control-card label { font-weight:600; display:block; margin-bottom:4px; }
-    .border-buttons { display:flex; flex-wrap:wrap; gap:6px; }
+    .control-card label { font-weight: 700; display: block; margin-bottom: 8px; color: #333; font-size: 0.95rem; }
+    .control-card input[type="text"], .control-card select, .control-card textarea {
+      width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; outline: none; transition: 0.2s;
+    }
+    .control-card input:focus, .control-card select:focus, .control-card textarea:focus { border-color: #1a73e8; }
+    .control-card input[type="color"] { width: 100%; height: 40px; border: none; border-radius: 6px; cursor: pointer; }
+    .control-card textarea { resize: vertical; min-height: 80px; }
+    
+    .border-buttons, .type-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
     .border-btn {
-      padding:6px 12px; border:1px solid #ddd; border-radius:20px;
-      cursor:pointer; background:#fff; font-size:0.8rem;
+      padding: 8px 14px; border: 1px solid #ddd; border-radius: 20px;
+      cursor: pointer; background: #f9f9f9; font-size: 0.85rem; font-family: inherit; font-weight: 600; transition: 0.2s;
     }
-    .border-btn.active { background:#c5960c; color:#fff; border-color:#c5960c; }
+    .border-btn:hover { background: #eee; }
+    .border-btn.active { background: #1a73e8; color: #fff; border-color: #1a73e8; }
 
-    /* Admin Tabs */
-    .admin-tabs { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+    /* ========== Admin Panel ========== */
+    .admin-tabs { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; border-bottom: 2px solid #ddd; padding-bottom: 15px; }
     .admin-tab {
-      padding:8px 16px; border-radius:20px; cursor:pointer;
-      background:#eee; border:none; font-family:inherit; font-weight:600;
+      padding: 10px 20px; border-radius: 8px; cursor: pointer;
+      background: #fff; border: 1px solid #ddd; font-family: inherit; font-weight: 700; color: #555; transition: 0.2s;
     }
-    .admin-tab.active { background:#1a73e8; color:#fff; }
-    .table { width:100%; border-collapse:collapse; background:#fff; border-radius:8px; overflow:hidden; }
-    .table th,.table td { padding:10px; border-bottom:1px solid #eee; text-align:center; }
-    .table th { background:#f0f2f5; }
+    .admin-tab:hover { background: #f0f0f0; }
+    .admin-tab.active { background: #1a73e8; color: #fff; border-color: #1a73e8; }
+    
+    .table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .table th, .table td { padding: 15px; border-bottom: 1px solid #eee; text-align: center; }
+    .table th { background: #f8f9fa; font-weight: 700; color: #333; }
+    .table tr:hover { background: #fcfcfc; }
+    
+    .admin-form-group { display: flex; gap: 10px; margin-top: 15px; align-items: center; }
+    .admin-form-group input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; }
   </style>
 </head>
 <body>
+
+  <!-- Landing Page -->
   <div id="landingPage" class="landing">
-    <div class="content">
-      <h1>🎓 صانع الشهادات</h1>
-      <p>صمم شهادات احترافية بسهولة، وحمّلها بعد شراء الرصيد</p>
-      <input type="email" id="landingEmail" placeholder="البريد الإلكتروني">
-      <input type="password" id="landingPass" placeholder="كلمة المرور">
-      <div class="btn-group" style="justify-content:center;">
-        <button class="btn btn-primary" onclick="landingLogin()">تسجيل الدخول</button>
-        <button class="btn btn-outline" onclick="landingRegister()">إنشاء حساب</button>
+    <div class="landing-content">
+      <div class="landing-text">
+        <h1>صانع الشهادات <span>الاحترافي</span></h1>
+        <p>المنصة الأولى عربياً لتصميم وإصدار شهادات الشكر والتقدير والتفوق بجودة طباعة عالية. صمم شهادتك بخطوط عربية أصيلة وألوان متناسقة في ثوانٍ معدودة.</p>
+        <ul class="features-list">
+          <li>تصاميم متعددة جاهزة للاستخدام ومخصصة.</li>
+          <li>مكتبة شاملة لأجمل الخطوط العربية (ديواني، ثلث، رقعة، كوفي، ...).</li>
+          <li>تصدير بدقة عالية جاهزة للطباعة الفورية.</li>
+          <li>نظام أرصدة وباقات مرنة تناسب المؤسسات والأفراد.</li>
+        </ul>
+      </div>
+      <div class="auth-box">
+        <h2>تسجيل الدخول</h2>
+        <input type="email" id="landingEmail" placeholder="البريد الإلكتروني">
+        <input type="password" id="landingPass" placeholder="كلمة المرور">
+        <div class="btn-group">
+          <button class="btn btn-accent" onclick="landingLogin()">تسجيل الدخول</button>
+          <button class="btn btn-outline" onclick="landingRegister()">إنشاء حساب جديد</button>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- Main App -->
   <div id="appMain" class="hidden">
     <header class="app-header">
       <div class="logo">🎓 صانع الشهادات</div>
       <div class="user-bar" id="userBar"></div>
     </header>
-    <div style="max-width:1400px; margin:20px auto; padding:0 20px;" id="appContent"></div>
+    <div class="main-container" id="appContent"></div>
   </div>
 
 <script>
@@ -133,24 +197,28 @@
   let packages = [ {count:10, price:50}, {count:50, price:200}, {count:100, price:350} ];
   let designs = []; // from Firestore
 
+  // متغير للـ Caching لصورة الخلفية المرفوعة حتى لا نعيد تحميلها مع كل حرف يكتب
+  let cachedBgImage = new Image();
+  let currentBgImageSrc = '';
+
   // Cert state
   let cert = {
     type: 'excellence',
     mainName: 'أحمد محمد عبدالله',
     mainColor: '#1a3a4a',
-    mainSize: 46,
-    appreciationText: 'نشكرك على جهودك المتميزة وتفانيك في العمل',
+    mainSize: 52,
+    appreciationText: 'نتقدم بخالص الشكر والتقدير نظير جهودكم المتميزة وتفانيكم في أداء العمل الموكل إليكم، متمنين لكم دوام التوفيق والنجاح.',
     appColor: '#3d5a40',
-    appSize: 22,
+    appSize: 26,
     font: 'Amiri',
     rightTitle: 'مدير المؤسسة',
     rightName: 'د. خالد العمري',
     rightColor: '#1a3a4a',
-    rightSize: 16,
+    rightSize: 20,
     leftTitle: 'رئيس القسم',
     leftName: 'أ. سارة القحطاني',
     leftColor: '#1a3a4a',
-    leftSize: 16,
+    leftSize: 20,
     optionalName: '',
     showOptional: false,
     border: 0,
@@ -198,18 +266,19 @@
     const setDoc = await db.collection('settings').doc('general').get();
     if (setDoc.exists) {
       const d = setDoc.data();
-      packages = d.packages || packages;
+      if(d.packages) packages = d.packages;
     }
     // Load designs
     const designSnap = await db.collection('designs').get();
     if (designSnap.empty) {
-      // Create defaults
+      // Create default
       await db.collection('designs').add({name:'كلاسيكي ذهبي', config:{border:0, bgColor:'#fefefb', font:'Amiri', type:'excellence'}});
       await db.collection('designs').add({name:'عصري أخضر', config:{border:2, bgColor:'#f4f9f4', font:'Cairo', type:'appreciation'}});
     }
     const snap = await db.collection('designs').get();
     designs = [];
     snap.forEach(d => designs.push({id:d.id, ...d.data()}));
+    
     if (!cert.designId && designs.length) {
       cert.designId = designs[0].id;
       applyDesign(designs[0].config);
@@ -226,58 +295,80 @@
 
   function updateUserBar() {
     document.getElementById('userBar').innerHTML = `
-      <span>${currentUser?.email} (${userRole==='admin'?'أدمن':'مستخدم'}) | الرصيد: ${userBalance}</span>
-      <button class="btn btn-outline" style="color:#fff; border-color:#fff;" onclick="auth.signOut()">خروج</button>
+      <span style="background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px;">الرصيد: <strong>${userBalance}</strong> شهادة</span>
+      <span>${currentUser?.email} ${userRole==='admin'?'(أدمن)':''}</span>
+      <button class="btn btn-outline" style="padding: 6px 15px; font-size: 0.9rem;" onclick="auth.signOut()">تسجيل خروج</button>
     `;
   }
 
   function landingLogin() {
     const email = document.getElementById('landingEmail').value.trim();
     const pass = document.getElementById('landingPass').value;
-    auth.signInWithEmailAndPassword(email, pass).catch(e => alert(e.message));
+    if(!email || !pass) return alert('الرجاء إدخال البريد وكلمة المرور');
+    auth.signInWithEmailAndPassword(email, pass).catch(e => alert('خطأ في تسجيل الدخول: ' + e.message));
   }
   function landingRegister() {
     const email = document.getElementById('landingEmail').value.trim();
     const pass = document.getElementById('landingPass').value;
-    auth.createUserWithEmailAndPassword(email, pass).catch(e => alert(e.message));
+    if(!email || !pass) return alert('الرجاء إدخال البريد وكلمة المرور');
+    auth.createUserWithEmailAndPassword(email, pass).catch(e => alert('خطأ في التسجيل: ' + e.message));
   }
 
   // ========== Maker UI ==========
   function renderMaker() {
     document.getElementById('appContent').innerHTML = `
-      <div style="display:flex; gap:20px; flex-wrap:wrap;">
-        <div style="flex:2; min-width:500px;">
+      <div style="display:flex; gap:30px; flex-wrap:wrap; align-items: flex-start;">
+        
+        <!-- قسم الـ Canvas -->
+        <div style="flex:2; min-width:600px; position: sticky; top: 80px;">
           <canvas id="certCanvas" width="1100" height="750"></canvas>
-          <div style="margin-top:12px; display:flex; gap:12px;">
-            <button class="btn btn-accent" onclick="downloadCert()">📥 تحميل</button>
-            <button class="btn btn-primary" onclick="showRequestForm()">طلب شهادات</button>
+          <div style="margin-top:20px; display:flex; gap:15px; justify-content: center;">
+            <button class="btn btn-accent" style="width: auto; padding: 12px 40px;" onclick="downloadCert()">📥 تحميل الشهادة</button>
+            <button class="btn btn-primary" style="width: auto; padding: 12px 40px;" onclick="showRequestForm()">🛒 شراء باقة أرصدة</button>
           </div>
         </div>
-        <div style="flex:1; min-width:280px;">
-          <div class="control-card"><label>التصميم</label>
-            <select id="designSelect" onchange="selectDesign()">
+
+        <!-- قسم لوحة التحكم بالشهادة -->
+        <div class="controls-grid" style="flex:1; min-width:300px;">
+          
+          <div class="control-card" style="grid-column: 1 / -1;">
+            <label>اختر التصميم</label>
+            <select id="designSelect" onchange="selectDesign()" style="font-weight:bold; font-size:1.1rem; padding:12px;">
               ${designs.map(d => `<option value="${d.id}" ${d.id===cert.designId?'selected':''}>${d.name}</option>`).join('')}
             </select>
           </div>
-          <div class="control-card">
+
+          <div class="control-card" style="grid-column: 1 / -1;">
             <label>نوع الشهادة</label>
-            <div style="display:flex; gap:8px;">
-              <button class="border-btn ${cert.type==='excellence'?'active':''}" onclick="cert.type='excellence';drawCert()">🏆 تفوق</button>
-              <button class="border-btn ${cert.type==='appreciation'?'active':''}" onclick="cert.type='appreciation';drawCert()">🌸 شكر وتقدير</button>
+            <div class="type-buttons">
+              <button class="border-btn ${cert.type==='excellence'?'active':''}" onclick="cert.type='excellence';drawCert()">🏆 شهادة تفوق</button>
+              <button class="border-btn ${cert.type==='appreciation'?'active':''}" onclick="cert.type='appreciation';drawCert()">🌸 شهادة شكر وتقدير</button>
             </div>
           </div>
-          <div class="control-card"><label>الاسم</label><input id="mName" value="${cert.mainName}" oninput="cert.mainName=this.value;drawCert()"></div>
+
+          <div class="control-card"><label>الاسم الكامل</label><input type="text" id="mName" value="${cert.mainName}" oninput="cert.mainName=this.value;drawCert()"></div>
           <div class="control-card"><label>لون الاسم</label><input type="color" id="mColor" value="${cert.mainColor}" oninput="cert.mainColor=this.value;drawCert()"></div>
-          <div class="control-card"><label>نص الشكر</label><textarea id="appText" oninput="cert.appreciationText=this.value;drawCert()">${cert.appreciationText}</textarea></div>
-          <div class="control-card"><label>الخط</label>
+          
+          <div class="control-card" style="grid-column: 1 / -1;"><label>نص الشكر والتقدير</label>
+            <textarea id="appText" oninput="cert.appreciationText=this.value;drawCert()">${cert.appreciationText}</textarea>
+          </div>
+
+          <div class="control-card"><label>نوع الخط</label>
             <select id="fontSelect" onchange="cert.font=this.value;drawCert()">
-              <option value="Cairo">القاهرة</option><option value="Amiri" selected>أميري</option>
-              <option value="El Messiri">المسيري</option><option value="Reem Kufi">ريم كوفي</option>
-              <option value="Aref Ruqaa">عارف رقعة</option><option value="Lateef">لطيف</option>
-              <option value="Scheherazade New">شهرزاد</option><option value="Tajawal">تاجوال</option>
+              <option value="Cairo" ${cert.font==='Cairo'?'selected':''}>القاهرة (Cairo)</option>
+              <option value="Amiri" ${cert.font==='Amiri'?'selected':''}>أميري (Amiri)</option>
+              <option value="El Messiri" ${cert.font==='El Messiri'?'selected':''}>المسيري (El Messiri)</option>
+              <option value="Reem Kufi" ${cert.font==='Reem Kufi'?'selected':''}>ريم كوفي (Reem Kufi)</option>
+              <option value="Aref Ruqaa" ${cert.font==='Aref Ruqaa'?'selected':''}>عارف رقعة (Aref Ruqaa)</option>
+              <option value="Lateef" ${cert.font==='Lateef'?'selected':''}>لطيف (Lateef)</option>
+              <option value="Scheherazade New" ${cert.font==='Scheherazade New'?'selected':''}>شهرزاد (Scheherazade)</option>
+              <option value="Tajawal" ${cert.font==='Tajawal'?'selected':''}>تاجوال (Tajawal)</option>
             </select>
           </div>
-          <div class="control-card"><label>البرواز</label>
+          
+          <div class="control-card"><label>لون الخلفية (للتصاميم العادية)</label><input type="color" id="bgCol" value="${cert.bgColor}" oninput="cert.bgColor=this.value;drawCert()"></div>
+
+          <div class="control-card" style="grid-column: 1 / -1;"><label>شكل البرواز (للتصاميم العادية)</label>
             <div class="border-buttons">
               <button class="border-btn ${cert.border===0?'active':''}" onclick="cert.border=0;drawCert()">كلاسيكي</button>
               <button class="border-btn ${cert.border===1?'active':''}" onclick="cert.border=1;drawCert()">ذهبي</button>
@@ -287,78 +378,147 @@
               <button class="border-btn ${cert.border===5?'active':''}" onclick="cert.border=5;drawCert()">زخرفي</button>
             </div>
           </div>
-          <div class="control-card"><label>الخلفية</label><input type="color" id="bgCol" value="${cert.bgColor}" oninput="cert.bgColor=this.value;drawCert()"></div>
-          <div class="control-card"><label>اليمنى (لقب/اسم)</label><input value="${cert.rightTitle}" oninput="cert.rightTitle=this.value;drawCert()"><input value="${cert.rightName}" oninput="cert.rightName=this.value;drawCert()"></div>
-          <div class="control-card"><label>اليسرى</label><input value="${cert.leftTitle}" oninput="cert.leftTitle=this.value;drawCert()"><input value="${cert.leftName}" oninput="cert.leftName=this.value;drawCert()"></div>
-          <div class="control-card"><label>اسم إضافي</label><input value="${cert.optionalName}" oninput="cert.optionalName=this.value; cert.showOptional=true; drawCert()"></div>
-          <div class="control-card"><label>شعار</label><input type="file" accept="image/*" onchange="uploadLogo(event)"></div>
+
+          <div class="control-card">
+            <label>التوقيع الأيمن</label>
+            <input type="text" placeholder="المسمى الوظيفي" value="${cert.rightTitle}" oninput="cert.rightTitle=this.value;drawCert()" style="margin-bottom:5px;">
+            <input type="text" placeholder="الاسم" value="${cert.rightName}" oninput="cert.rightName=this.value;drawCert()">
+          </div>
+          
+          <div class="control-card">
+            <label>التوقيع الأيسر</label>
+            <input type="text" placeholder="المسمى الوظيفي" value="${cert.leftTitle}" oninput="cert.leftTitle=this.value;drawCert()" style="margin-bottom:5px;">
+            <input type="text" placeholder="الاسم" value="${cert.leftName}" oninput="cert.leftName=this.value;drawCert()">
+          </div>
+
+          <div class="control-card" style="grid-column: 1 / -1;">
+            <label>رفع شعار (Logo)</label>
+            <input type="file" accept="image/*" onchange="uploadLogo(event)" style="padding: 5px;">
+            <select onchange="cert.logoPos=this.value;drawCert()" style="margin-top:10px;">
+              <option value="none">بدون شعار</option>
+              <option value="top-right" ${cert.logoPos==='top-right'?'selected':''}>أعلى اليمين</option>
+              <option value="top-left" ${cert.logoPos==='top-left'?'selected':''}>أعلى اليسار</option>
+              <option value="top-center" ${cert.logoPos==='top-center'?'selected':''}>في المنتصف الأعلى</option>
+            </select>
+          </div>
+
         </div>
       </div>
     `;
     drawCert();
   }
 
-  function drawCert() {
+  // الدالة المعدلة لرسم الشهادة وتغليف النصوص واستخدام خلفيات الآدمن
+  async function drawCert() {
     const canvas = document.getElementById('certCanvas');
     if (!canvas) return;
+    
+    // الانتظار حتى يتأكد المتصفح من تحميل الخطوط
+    await document.fonts.ready;
+    
     const ctx = canvas.getContext('2d'), W=1100, H=750;
-    ctx.fillStyle = cert.bgColor; ctx.fillRect(0,0,W,H);
-    drawBorder(ctx, cert.border, W, H);
-    if (cert.logoImg && cert.logoPos!=='none') {
-      const pw=100,ph=100; let dw=pw,dh=ph;
-      const ratio = cert.logoImg.width/cert.logoImg.height;
-      if (ratio>1) dh=pw/ratio; else dw=ph*ratio;
-      const pad=40;
-      let x=(cert.logoPos==='top-right')?W-pad-dw:pad, y=pad;
-      ctx.drawImage(cert.logoImg,x,y,dw,dh);
+    
+    // التحقق مما إذا كان التصميم يحتوي على صورة خلفية مرفوعة من الآدمن
+    const currentDesign = designs.find(d => d.id === cert.designId);
+    if (currentDesign && currentDesign.config.bgImageBase64) {
+      if (currentBgImageSrc !== currentDesign.config.bgImageBase64) {
+        currentBgImageSrc = currentDesign.config.bgImageBase64;
+        cachedBgImage.src = currentBgImageSrc;
+        // ننتظر تحميل الصورة للـ Cache
+        await new Promise(resolve => { cachedBgImage.onload = resolve; });
+      }
+      ctx.drawImage(cachedBgImage, 0, 0, W, H);
+    } else {
+      // خلفية عادية مع برواز
+      currentBgImageSrc = ''; // إعادة تعيين
+      ctx.fillStyle = cert.bgColor; 
+      ctx.fillRect(0,0,W,H);
+      drawBorder(ctx, cert.border, W, H);
     }
-    ctx.font = `bold 38px "${cert.font}",serif`;
-    ctx.fillStyle = cert.type==='excellence'?'#8b6914':'#3d5a40';
+
+    // رسم الشعار
+    if (cert.logoImg && cert.logoPos !== 'none') {
+      const pw=120, ph=120; let dw=pw, dh=ph;
+      const ratio = cert.logoImg.width / cert.logoImg.height;
+      if (ratio>1) dh=pw/ratio; else dw=ph*ratio;
+      const pad=50;
+      let x = pad;
+      if (cert.logoPos === 'top-right') x = W - pad - dw;
+      else if (cert.logoPos === 'top-center') x = (W / 2) - (dw / 2);
+      ctx.drawImage(cert.logoImg, x, pad, dw, dh);
+    }
+
+    // إعدادات النصوص
     ctx.textAlign='center';
-    ctx.fillText(cert.type==='excellence'?'شهادة تفوق':'شهادة شكر وتقدير', W/2, 95);
-    ctx.font = `bold ${cert.mainSize}px "${cert.font}",serif`;
+    ctx.textBaseline = 'middle';
+
+    // العنوان
+    ctx.font = `bold 48px "${cert.font}", serif`;
+    ctx.fillStyle = cert.type==='excellence' ? '#8b6914' : '#2c3e50';
+    ctx.fillText(cert.type==='excellence' ? 'شهادة تفوق' : 'شهادة شكر وتقدير', W/2, 120);
+    
+    // اسم الشخص
+    ctx.font = `bold ${cert.mainSize}px "${cert.font}", serif`;
     ctx.fillStyle = cert.mainColor;
-    ctx.fillText(cert.mainName, W/2, 210);
-    ctx.font = `${cert.appSize}px "${cert.font}",serif`;
+    ctx.fillText(cert.mainName, W/2, 260);
+    
+    // نص الشكر (استخدام دالة التغليف لتفادي الخروج عن الإطار)
+    ctx.font = `${cert.appSize}px "${cert.font}", serif`;
     ctx.fillStyle = cert.appColor;
-    const words = cert.appreciationText.split(' '), lines=[], line='';
-    let cur='';
-    words.forEach(w=>{
-      const test = cur?cur+' '+w:w;
-      if (ctx.measureText(test).width>650 && cur) { lines.push(cur); cur=w; }
-      else cur=test;
-    });
-    if (cur) lines.push(cur);
-    const lh = cert.appSize*1.6, startY = 310 - (lines.length*lh)/2;
-    lines.forEach((l,i)=>ctx.fillText(l,W/2,startY+i*lh));
-    const sigY = Math.max(430, H-180);
-    ctx.font = `bold ${cert.rightSize}px "${cert.font}",serif`;
-    ctx.fillStyle = cert.rightColor;
-    ctx.fillText(cert.rightTitle, W*0.78, sigY);
-    ctx.font = `${cert.rightSize}px "${cert.font}",serif`;
-    ctx.fillText(cert.rightName, W*0.78, sigY+cert.rightSize*1.7);
-    ctx.font = `bold ${cert.leftSize}px "${cert.font}",serif`;
-    ctx.fillStyle = cert.leftColor;
-    ctx.fillText(cert.leftTitle, W*0.22, sigY);
-    ctx.font = `${cert.leftSize}px "${cert.font}",serif`;
-    ctx.fillText(cert.leftName, W*0.22, sigY+cert.leftSize*1.7);
-    if (cert.showOptional && cert.optionalName) {
-      ctx.fillText(cert.optionalName, W*0.22, sigY+cert.leftSize*3.4);
+    wrapText(ctx, cert.appreciationText, W/2, 380, 800, cert.appSize * 1.8);
+    
+    // التواقيع
+    const sigY = H - 150;
+    renderSignature(ctx, cert.rightTitle, cert.rightName, cert.rightColor, cert.rightSize, W*0.78, sigY);
+    renderSignature(ctx, cert.leftTitle, cert.leftName, cert.leftColor, cert.leftSize, W*0.22, sigY);
+  }
+
+  // دالة مساعدة لعمل التفاف للنصوص الطويلة
+  function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let lines = [];
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+        let word = words[i];
+        let width = ctx.measureText(currentLine + " " + word).width;
+        if (width < maxWidth) {
+            currentLine += " " + word;
+        } else {
+            lines.push(currentLine);
+            currentLine = word;
+        }
+    }
+    lines.push(currentLine);
+    
+    // تعديل نقطة البداية لتكون في المنتصف رأسياً
+    let startY = y - ((lines.length - 1) * lineHeight) / 2;
+    for (let j = 0; j < lines.length; j++) {
+        ctx.fillText(lines[j], x, startY + (j * lineHeight));
     }
   }
 
+  function renderSignature(ctx, title, name, color, size, x, y) {
+    ctx.fillStyle = color;
+    ctx.font = `bold ${size}px "${cert.font}", serif`;
+    ctx.fillText(title, x, y);
+    ctx.font = `${size}px "${cert.font}", serif`;
+    ctx.fillText(name, x, y + size * 1.8);
+  }
+
   function drawBorder(ctx, style, W, H) {
-    const m=30,x=m,y=m,w=W-2*m,h=H-2*m;
+    const m=35, x=m, y=m, w=W-2*m, h=H-2*m;
     ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round';
     switch(style){
-      case 0: ctx.strokeStyle='#2c3e50';ctx.lineWidth=5;ctx.strokeRect(x,y,w,h);
-              ctx.strokeStyle='#8b7355';ctx.lineWidth=1.5;ctx.strokeRect(x+10,y+10,w-20,h-20); break;
-      case 1: let g=ctx.createLinearGradient(x,y,x+w,y+h);g.addColorStop(0,'#b8860b');g.addColorStop(1,'#ffd700');
-              ctx.strokeStyle=g;ctx.lineWidth=8;ctx.strokeRect(x,y,w,h); break;
-      case 2: ctx.strokeStyle='#34495e';ctx.lineWidth=2;ctx.strokeRect(x,y,w,h); break;
-      case 3: ctx.strokeStyle='#4a3728';ctx.lineWidth=4;ctx.strokeRect(x,y,w,h); break;
-      case 4: ctx.strokeStyle='#2c3e50';ctx.lineWidth=3;ctx.strokeRect(x,y,w,h); break;
-      case 5: ctx.strokeStyle='#5c3d0e';ctx.lineWidth=6;ctx.strokeRect(x,y,w,h); break;
+      case 0: ctx.strokeStyle='#2c3e50'; ctx.lineWidth=6; ctx.strokeRect(x,y,w,h);
+              ctx.strokeStyle='#8b7355'; ctx.lineWidth=2; ctx.strokeRect(x+12,y+12,w-24,h-24); break;
+      case 1: let g=ctx.createLinearGradient(x,y,x+w,y+h); g.addColorStop(0,'#b8860b'); g.addColorStop(1,'#ffd700');
+              ctx.strokeStyle=g; ctx.lineWidth=10; ctx.strokeRect(x,y,w,h); break;
+      case 2: ctx.strokeStyle='#34495e'; ctx.lineWidth=3; ctx.strokeRect(x,y,w,h); 
+              ctx.lineWidth=1; ctx.strokeRect(x+8,y+8,w-16,h-16); break;
+      case 3: ctx.strokeStyle='#4a3728'; ctx.lineWidth=5; ctx.strokeRect(x,y,w,h); break;
+      case 4: ctx.strokeStyle='#2c3e50'; ctx.lineWidth=4; ctx.strokeRect(x,y,w,h); break;
+      case 5: ctx.strokeStyle='#5c3d0e'; ctx.lineWidth=8; ctx.setLineDash([15, 10]); ctx.strokeRect(x,y,w,h); break;
     }
     ctx.restore();
   }
@@ -368,180 +528,294 @@
     const reader = new FileReader();
     reader.onload = ev => {
       const img = new Image();
-      img.onload = () => { cert.logoImg = img; cert.logoPos = 'top-right'; drawCert(); };
+      img.onload = () => { cert.logoImg = img; if(cert.logoPos==='none') cert.logoPos = 'top-right'; drawCert(); };
       img.src = ev.target.result;
     };
     reader.readAsDataURL(file);
   }
+
   function selectDesign() {
     const id = document.getElementById('designSelect').value;
     const design = designs.find(d=>d.id===id);
-    if (design) { cert.designId = id; applyDesign(design.config); }
+    if (design) { 
+      cert.designId = id; 
+      applyDesign(design.config); 
+      renderMaker(); // إعادة تصيير الواجهة لتحديث الأزرار النشطة
+    }
   }
 
   async function downloadCert() {
-    if (userBalance<=0) return alert('الرصيد غير كافٍ');
+    if (userBalance <= 0) return alert('عذراً، رصيدك غير كافٍ. الرجاء شحن الرصيد أولاً.');
+    
+    // الخصم
     await db.collection('users').doc(currentUser.uid).update({
       balance: firebase.firestore.FieldValue.increment(-1)
     });
     userBalance--;
     updateUserBar();
+    
+    // التحميل
     const canvas = document.getElementById('certCanvas');
     const link = document.createElement('a');
-    link.download = 'شهادة.png';
-    link.href = canvas.toDataURL();
+    link.download = `شهادة_${cert.mainName.replace(/\s+/g, '_')}.png`;
+    link.href = canvas.toDataURL('image/png', 1.0);
     link.click();
   }
 
   function showRequestForm() {
-    const bank = ''; // سيتم تحديثه من الإعدادات، يمكننا جلبها لكن للسرعة نضعه لاحقاً
     document.getElementById('appContent').innerHTML = `
-      <div class="card" style="max-width:500px;margin:auto;">
-        <h3>طلب شهادات</h3>
-        <p>رقم الحساب: <strong>${bank||'سيتم التواصل معك'}</strong></p>
-        <select id="pkgSelect">${packages.map((p,i)=>`<option value="${i}">${p.count} شهادة - ${p.price} ريال</option>`).join('')}</select>
-        <p>المبلغ: <span id="totalPrice">${packages[0]?.price||0}</span> ريال</p>
-        <input type="file" id="receiptFile" accept="image/*">
-        <button class="btn btn-accent" onclick="submitRequest()">تقديم</button>
-        <button class="btn btn-secondary" onclick="renderMaker()">رجوع</button>
+      <div class="control-card" style="max-width:500px; margin: 40px auto; padding: 30px; text-align: center;">
+        <h2 style="margin-bottom: 20px;">طلب باقة شهادات</h2>
+        <p style="margin-bottom: 15px;">اختر الباقة المناسبة لك وحوّل المبلغ للحساب البنكي، ثم ارفع إيصال التحويل.</p>
+        
+        <div style="text-align: right; background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+          <p><strong>رقم الحساب (آيبان):</strong> SA00000000000000000000</p>
+          <p><strong>البنك:</strong> مصرف الراجحي</p>
+        </div>
+
+        <select id="pkgSelect" style="width: 100%; padding: 12px; margin-bottom: 20px; font-size: 1.1rem; border-radius: 8px;">
+          ${packages.map((p,i)=>`<option value="${i}">باقة ${p.count} شهادة - بسعر ${p.price} ريال</option>`).join('')}
+        </select>
+        
+        <div style="text-align: right; margin-bottom: 20px;">
+          <label style="font-weight: bold; display: block; margin-bottom: 8px;">إرفاق صورة الإيصال:</label>
+          <input type="file" id="receiptFile" accept="image/*" style="width: 100%; border: 1px solid #ddd; padding: 10px; border-radius: 8px;">
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-primary" onclick="submitRequest()">إرسال الطلب</button>
+          <button class="btn btn-outline" style="color:#333; border-color:#ccc;" onclick="renderMaker()">إلغاء ورجوع</button>
+        </div>
       </div>
     `;
-    document.getElementById('pkgSelect').onchange = () => {
-      document.getElementById('totalPrice').textContent = packages[document.getElementById('pkgSelect').value].price;
-    };
   }
 
   async function submitRequest() {
     const file = document.getElementById('receiptFile').files[0];
-    if (!file) return alert('ارفع صورة');
+    if (!file) return alert('الرجاء إرفاق صورة إيصال التحويل');
+    
+    const btn = event.target;
+    btn.innerText = 'جاري الإرسال...';
+    btn.disabled = true;
+
     const reader = new FileReader();
     reader.onload = async e => {
-      await db.collection('requests').add({
-        userId: currentUser.uid, email: currentUser.email,
-        packageCount: packages[document.getElementById('pkgSelect').value].count,
-        price: packages[document.getElementById('pkgSelect').value].price,
-        imageBase64: e.target.result,
-        status: 'pending',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      alert('تم تقديم الطلب');
-      renderMaker();
+      try {
+        await db.collection('requests').add({
+          userId: currentUser.uid, 
+          email: currentUser.email,
+          packageCount: packages[document.getElementById('pkgSelect').value].count,
+          price: packages[document.getElementById('pkgSelect').value].price,
+          imageBase64: e.target.result,
+          status: 'pending',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        alert('تم تقديم الطلب بنجاح. سيتم مراجعته وإضافة الرصيد قريباً.');
+        renderMaker();
+      } catch (error) {
+        alert('حدث خطأ أثناء الإرسال.');
+        btn.innerText = 'إرسال الطلب';
+        btn.disabled = false;
+      }
     };
     reader.readAsDataURL(file);
   }
 
-  // ========== Admin ==========
+  // ========== Admin Panel ==========
   function renderAdmin() {
     document.getElementById('appContent').innerHTML = `
       <div class="admin-tabs">
-        <button class="admin-tab active" onclick="adminTab('users')">المستخدمين</button>
-        <button class="admin-tab" onclick="adminTab('requests')">الطلبات</button>
-        <button class="admin-tab" onclick="adminTab('settings')">الإعدادات</button>
-        <button class="admin-tab" onclick="adminTab('packages')">الباقات</button>
-        <button class="admin-tab" onclick="adminTab('designs')">التصاميم</button>
+        <button class="admin-tab active" data-tab="users" onclick="adminTab('users')">إدارة المستخدمين</button>
+        <button class="admin-tab" data-tab="requests" onclick="adminTab('requests')">طلبات الشحن</button>
+        <button class="admin-tab" data-tab="designs" onclick="adminTab('designs')">إدارة التصاميم</button>
+        <button class="admin-tab" data-tab="packages" onclick="adminTab('packages')">الباقات والأسعار</button>
       </div>
       <div id="adminPanel"></div>
     `;
     adminTab('users');
   }
 
-  async function adminTab(tab) {
-    document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
-    event.target.classList.add('active');
+  async function adminTab(tabName) {
+    // إصلاح مشكلة الأزرار هنا بالاعتماد على الـ data-tab بدلاً من event.target
+    document.querySelectorAll('.admin-tab').forEach(b => {
+      if (b.dataset.tab === tabName) b.classList.add('active');
+      else b.classList.remove('active');
+    });
+
     const panel = document.getElementById('adminPanel');
-    if (tab==='users') {
+    panel.innerHTML = '<p style="text-align:center; padding: 40px;">جاري التحميل...</p>';
+
+    if (tabName === 'users') {
       const snap = await db.collection('users').get();
-      let h = '<table class="table"><tr><th>البريد</th><th>الرصيد</th><th>دور</th><th>إضافة</th></tr>';
-      snap.forEach(d=>{
-        const u=d.data();
-        h+=`<tr><td>${u.email}</td><td>${u.balance}</td><td>${u.role||'user'}</td>
-        <td><input id="bal_${d.id}" style="width:70px"><button onclick="addBal('${d.id}')">+</button></td></tr>`;
+      let h = '<table class="table"><tr><th>البريد الإلكتروني</th><th>الرصيد الحالي</th><th>الصلاحية</th><th>إضافة رصيد يدوي</th></tr>';
+      snap.forEach(d => {
+        const u = d.data();
+        h += `<tr>
+                <td>${u.email}</td>
+                <td><span style="background:#e8f0fe; color:#1a73e8; padding:4px 12px; border-radius:20px; font-weight:bold;">${u.balance}</span></td>
+                <td>${u.role === 'admin' ? 'مدير' : 'مستخدم'}</td>
+                <td>
+                  <div style="display:flex; gap:5px; justify-content:center;">
+                    <input id="bal_${d.id}" type="number" style="width:70px; padding:5px; border:1px solid #ccc; border-radius:4px;" placeholder="القيمة">
+                    <button class="btn btn-primary" style="padding:5px 15px; width:auto;" onclick="addBal('${d.id}')">إضافة</button>
+                  </div>
+                </td>
+              </tr>`;
       });
-      h+='</table>'; panel.innerHTML=h;
+      h += '</table>'; panel.innerHTML = h;
     }
-    else if (tab==='requests') {
+    else if (tabName === 'requests') {
       const snap = await db.collection('requests').where('status','==','pending').get();
-      let h = '';
-      snap.forEach(d=>{
-        const r=d.data();
-        h+=`<div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;background:#fff;padding:12px;border-radius:8px;">
-          <img src="${r.imageBase64}" width="100">
-          <div>${r.email} - ${r.packageCount} شهادة - ${r.price} ريال
-          <button onclick="approveReq('${d.id}','${r.userId}',${r.packageCount})">موافقة</button>
-          <button onclick="rejectReq('${d.id}')">رفض</button></div>
-        </div>`;
-      });
-      panel.innerHTML = h || '<p>لا طلبات</p>';
-    }
-    else if (tab==='settings') {
-      const doc = await db.collection('settings').doc('general').get();
-      const s = doc.exists ? doc.data() : {};
-      panel.innerHTML = `
-        <label>الشهادات المجانية:</label><input id="freeCount" value="${s.freeCertificates||2}">
-        <label>رقم الحساب:</label><input id="bankAcc" value="${s.bankAccount||''}">
-        <button onclick="saveSettings()">حفظ</button>`;
-    }
-    else if (tab==='packages') {
-      let h = '<h4>الباقات الحالية</h4><table class="table"><tr><th>العدد</th><th>السعر</th><th>حذف</th></tr>';
-      packages.forEach((p,i)=>{
-        h+=`<tr><td>${p.count}</td><td>${p.price}</td><td><button onclick="deletePackage(${i})">حذف</button></td></tr>`;
-      });
-      h+=`</table><br><input id="newCount" placeholder="عدد الشهادات"><input id="newPrice" placeholder="السعر"><button onclick="addPackage()">إضافة باقة</button>`;
+      let h = '<div style="display:grid; gap:15px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">';
+      if (snap.empty) {
+        h = '<p style="text-align:center; padding:40px; font-size:1.2rem; color:#666;">لا توجد طلبات معلقة حالياً.</p>';
+      } else {
+        snap.forEach(d => {
+          const r = d.data();
+          h += `
+            <div class="control-card" style="text-align:center;">
+              <img src="${r.imageBase64}" style="width:100%; height:200px; object-fit:contain; background:#f9f9f9; border-radius:8px; margin-bottom:10px; border:1px solid #eee;">
+              <p style="font-weight:bold; margin-bottom:5px;">${r.email}</p>
+              <p style="color:#1a73e8; margin-bottom:15px;">طلب ${r.packageCount} شهادة (بـ ${r.price} ريال)</p>
+              <div style="display:flex; gap:10px;">
+                <button class="btn btn-primary" onclick="approveReq('${d.id}','${r.userId}',${r.packageCount})">موافقة وإضافة الرصيد</button>
+                <button class="btn btn-danger" onclick="rejectReq('${d.id}')">رفض</button>
+              </div>
+            </div>`;
+        });
+        h += '</div>';
+      }
       panel.innerHTML = h;
     }
-    else if (tab==='designs') {
-      let h = '<h4>التصاميم</h4>';
-      designs.forEach(d=>{
-        h+=`<div style="background:#fff;padding:8px;margin:4px;">${d.name} <button onclick="deleteDesign('${d.id}')">حذف</button></div>`;
+    else if (tabName === 'packages') {
+      let h = '<h3>الباقات الحالية</h3><table class="table" style="margin-top:15px;"><tr><th>عدد الشهادات</th><th>السعر (ريال)</th><th>إجراء</th></tr>';
+      packages.forEach((p, i) => {
+        h += `<tr><td>${p.count} شهادة</td><td>${p.price} ريال</td><td><button class="btn btn-danger" style="padding:6px 15px; width:auto; margin:auto;" onclick="deletePackage(${i})">حذف الباقة</button></td></tr>`;
       });
-      h+=`<br><input id="newDesignName" placeholder="اسم التصميم"><button onclick="addDesign()">إضافة تصميم افتراضي</button>`;
+      h += `</table>
+            <div class="control-card" style="margin-top: 20px; max-width: 500px;">
+              <h3>إضافة باقة جديدة</h3>
+              <div class="admin-form-group">
+                <input id="newCount" type="number" placeholder="عدد الشهادات" style="flex:1;">
+                <input id="newPrice" type="number" placeholder="السعر" style="flex:1;">
+                <button class="btn btn-primary" style="width:auto;" onclick="addPackage()">حفظ الباقة</button>
+              </div>
+            </div>`;
+      panel.innerHTML = h;
+    }
+    else if (tabName === 'designs') {
+      let h = '<h3>التصاميم المتاحة للمستخدمين</h3><div style="display:grid; gap:15px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); margin-top:15px;">';
+      designs.forEach(d => {
+        h += `<div class="control-card" style="display:flex; justify-content:space-between; align-items:center;">
+                <strong>${d.name}</strong> 
+                <button class="btn btn-danger" style="padding:6px 12px; width:auto;" onclick="deleteDesign('${d.id}')">حذف</button>
+              </div>`;
+      });
+      h += `</div>
+            <div class="control-card" style="margin-top: 20px;">
+              <h3>إضافة تصميم جديد (صورة خلفية جاهزة)</h3>
+              <p style="font-size:0.9rem; color:#666; margin-bottom:10px;">ارفع صورة للشهادة مفرغة من النصوص (يُفضل مقاس 1100x750 بيكسل). سيتم كتابة نصوص النظام فوقها.</p>
+              <div class="admin-form-group" style="flex-wrap:wrap;">
+                <input id="newDesignName" type="text" placeholder="اسم التصميم المميز" style="flex:1; min-width:200px;">
+                <input id="newDesignBg" type="file" accept="image/*" style="flex:1; min-width:200px;">
+                <button class="btn btn-accent" style="width:auto;" onclick="addDesign()">رفع وحفظ التصميم</button>
+              </div>
+            </div>`;
       panel.innerHTML = h;
     }
   }
 
+  // دوال الآدمن
   async function addBal(uid) {
-    const amt = parseInt(document.getElementById('bal_'+uid).value);
+    const input = document.getElementById('bal_'+uid);
+    const amt = parseInt(input.value);
     if (!amt) return;
     await db.collection('users').doc(uid).update({balance: firebase.firestore.FieldValue.increment(amt)});
-    alert('تم'); adminTab('users');
+    alert('تمت إضافة الرصيد بنجاح'); 
+    adminTab('users');
   }
+
   async function approveReq(reqId, uid, count) {
     await db.collection('requests').doc(reqId).update({status:'approved'});
     await db.collection('users').doc(uid).update({balance: firebase.firestore.FieldValue.increment(count)});
+    alert('تمت الموافقة وإضافة الرصيد للمستخدم.');
     adminTab('requests');
   }
+
   async function rejectReq(reqId) {
-    await db.collection('requests').doc(reqId).update({status:'rejected'});
-    adminTab('requests');
+    if(confirm('هل أنت متأكد من رفض هذا الطلب؟')) {
+      await db.collection('requests').doc(reqId).update({status:'rejected'});
+      adminTab('requests');
+    }
   }
-  async function saveSettings() {
-    const free = parseInt(document.getElementById('freeCount').value);
-    const bank = document.getElementById('bankAcc').value;
-    await db.collection('settings').doc('general').set({freeCertificates:free, bankAccount:bank, packages}, {merge:true});
-    alert('تم'); adminTab('settings');
-  }
+
   function addPackage() {
     const count = parseInt(document.getElementById('newCount').value);
     const price = parseInt(document.getElementById('newPrice').value);
-    if (!count||!price) return;
+    if (!count || !price) return alert('أدخل القيم بشكل صحيح');
     packages.push({count, price});
-    db.collection('settings').doc('general').set({packages}, {merge:true}).then(()=>adminTab('packages'));
+    db.collection('settings').doc('general').set({packages}, {merge:true}).then(() => adminTab('packages'));
   }
+
   function deletePackage(index) {
-    packages.splice(index,1);
-    db.collection('settings').doc('general').set({packages}, {merge:true}).then(()=>adminTab('packages'));
+    if(confirm('حذف الباقة؟')){
+      packages.splice(index, 1);
+      db.collection('settings').doc('general').set({packages}, {merge:true}).then(() => adminTab('packages'));
+    }
   }
+
   async function addDesign() {
-    const name = document.getElementById('newDesignName').value||'تصميم جديد';
-    await db.collection('designs').add({name, config:{border:0, bgColor:'#ffffff', font:'Amiri', type:'excellence'}});
-    designs = []; const snap = await db.collection('designs').get();
-    snap.forEach(d=>designs.push({id:d.id, ...d.data()}));
-    adminTab('designs');
+    const nameInput = document.getElementById('newDesignName').value.trim();
+    const fileInput = document.getElementById('newDesignBg').files[0];
+    
+    if (!nameInput) return alert('الرجاء إدخال اسم التصميم');
+    
+    let bgImageBase64 = null;
+    
+    if (fileInput) {
+      // تحويل الصورة إلى Base64
+      bgImageBase64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = e => reject(e);
+        reader.readAsDataURL(fileInput);
+      });
+    }
+
+    try {
+      const btn = event.target;
+      btn.innerText = 'جاري الحفظ...';
+      btn.disabled = true;
+
+      await db.collection('designs').add({
+        name: nameInput, 
+        config: {
+          border: 0, 
+          bgColor: '#ffffff', 
+          font: 'Amiri', 
+          type: 'excellence',
+          bgImageBase64: bgImageBase64 // سيتم حفظ الصورة هنا
+        }
+      });
+      
+      // تحديث قائمة التصاميم
+      designs = []; 
+      const snap = await db.collection('designs').get();
+      snap.forEach(d => designs.push({id:d.id, ...d.data()}));
+      alert('تم إضافة التصميم بنجاح');
+      adminTab('designs');
+    } catch (e) {
+      alert('حدث خطأ: قد يكون حجم الصورة كبيراً جداً.');
+      adminTab('designs');
+    }
   }
+
   async function deleteDesign(id) {
-    await db.collection('designs').doc(id).delete();
-    designs = designs.filter(d=>d.id!==id);
-    adminTab('designs');
+    if(confirm('هل أنت متأكد من حذف هذا التصميم؟')) {
+      await db.collection('designs').doc(id).delete();
+      designs = designs.filter(d => d.id !== id);
+      adminTab('designs');
+    }
   }
 </script>
 </body>

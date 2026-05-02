@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>صانع الشهادات - Certificate Maker</title>
 
-    <!-- Google Fonts: Arabic fonts -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;600;700;900&family=El+Messiri:wght@400;500;600;700&family=Lateef:wght@300;400;500;600;700&family=Reem+Kufi:wght@400;500;600;700&family=Scheherazade+New:wght@400;500;600;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 
-    <!-- Firebase SDKs (compat) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -26,381 +26,285 @@
             --text: #1f1f1f;
             --text-light: #5f6368;
             --border: #e0e0e0;
-            --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --shadow: 0 2px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
             --radius: 12px;
             --radius-sm: 8px;
             --transition: 0.2s ease;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            font-family: 'Tajawal', 'Cairo', sans-serif;
+            font-family: 'Tajawal','Cairo',sans-serif;
             background: #e8ecf1;
             color: var(--text);
-            min-height: 100vh;
-            direction: rtl;
-            -webkit-font-smoothing: antialiased;
+            min-height:100vh;
+            direction:rtl;
         }
-
-        /* Header */
         .header {
             background: linear-gradient(135deg, #1a3a4a 0%, #1a2d3a 40%, #1a1a2e 100%);
-            color: #fff;
-            padding: 14px 28px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            color:#fff; padding:14px 28px;
+            display:flex; align-items:center; justify-content:space-between;
+            flex-wrap:wrap; gap:12px;
+            box-shadow:0 2px 16px rgba(0,0,0,0.2);
+            position:sticky; top:0; z-index:100;
         }
-        .header .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .header .logo-icon {
-            font-size: 36px;
-        }
-        .header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            white-space: nowrap;
-        }
+        .header .logo-area { display:flex; align-items:center; gap:12px; }
+        .header .logo-icon { font-size:36px; }
+        .header h1 { font-size:1.5rem; font-weight:700; }
         .header .badge {
-            background: var(--accent);
-            color: #1a1a2e;
-            padding: 5px 14px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+            background: var(--accent); color:#1a1a2e;
+            padding:5px 14px; border-radius:20px;
+            font-size:0.8rem; font-weight:700;
         }
         .btn-logout {
-            background: rgba(255,255,255,0.2);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 8px 18px;
-            border-radius: 25px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition);
-            white-space: nowrap;
-            font-family: inherit;
+            background:rgba(255,255,255,0.2); color:#fff;
+            border:1px solid rgba(255,255,255,0.3);
+            padding:8px 18px; border-radius:25px;
+            font-size:0.85rem; font-weight:600; cursor:pointer;
+            transition:all var(--transition); font-family:inherit;
         }
-        .btn-logout:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        .user-info-bar {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            font-size: 0.9rem;
-        }
+        .btn-logout:hover { background:rgba(255,255,255,0.3); }
+        .user-info-bar { display:flex; align-items:center; gap:16px; font-size:0.9rem; }
 
-        /* Main Layout */
         .main-container {
-            display: flex;
-            gap: 20px;
-            padding: 20px 24px;
-            max-width: 1500px;
-            margin: 0 auto;
-            align-items: flex-start;
+            display:flex; gap:20px; padding:20px 24px;
+            max-width:1500px; margin:0 auto; align-items:flex-start;
         }
-
         .card {
-            background: #fff;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-lg);
-            padding: 20px;
-            margin-bottom: 20px;
+            background:#fff; border-radius:var(--radius);
+            box-shadow:var(--shadow-lg); padding:20px; margin-bottom:20px;
         }
-
         .btn {
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            border: none;
-            transition: all var(--transition);
-            font-family: inherit;
-            white-space: nowrap;
+            padding:10px 20px; border-radius:25px; font-weight:700;
+            font-size:0.85rem; cursor:pointer; border:none;
+            transition:all var(--transition); font-family:inherit;
         }
-        .btn-primary {
-            background: var(--primary);
-            color: #fff;
+        .btn-primary { background:var(--primary); color:#fff; }
+        .btn-primary:hover { background:var(--primary-dark); }
+        .btn-accent { background:var(--accent); color:#1a1a2e; }
+        .btn-accent:hover { background:#e0a800; }
+        .btn-secondary { background:#eee; color:#333; }
+        .hidden { display:none !important; }
+        canvas { width:100%; border:1px solid #ddd; border-radius:8px; margin:12px 0; }
+        input,textarea,select {
+            padding:10px; border:1px solid #d5d9e0;
+            border-radius:6px; font-family:inherit; font-size:0.9rem;
+            margin:5px 0; width:100%;
         }
-        .btn-primary:hover {
-            background: var(--primary-dark);
-        }
-        .btn-accent {
-            background: var(--accent);
-            color: #1a1a2e;
-        }
-        .btn-accent:hover {
-            background: #e0a800;
-        }
-        .btn-secondary {
-            background: #eee;
-            color: #333;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        canvas {
-            width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin: 12px 0;
-        }
-
-        input, textarea, select {
-            padding: 10px;
-            border: 1px solid #d5d9e0;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 0.9rem;
-            margin: 5px 0;
-            width: 100%;
-        }
-
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 12px 0;
-        }
-        .admin-table th, .admin-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        .admin-table th {
-            background: #f0f2f5;
-        }
-
+        .admin-table { width:100%; border-collapse:collapse; margin:12px 0; }
+        .admin-table th,.admin-table td { border:1px solid #ddd; padding:8px; text-align:center; }
+        .admin-table th { background:#f0f2f5; }
         .request-card {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            flex-wrap: wrap;
-            padding: 12px;
-            border-bottom: 1px solid #eee;
+            display:flex; gap:20px; align-items:center;
+            flex-wrap:wrap; padding:12px; border-bottom:1px solid #eee;
         }
-        .request-card img {
-            max-width: 150px;
-            border-radius: 4px;
+        .request-card img { max-width:150px; border-radius:4px; }
+
+        /* لوحة التحكم */
+        .controls-panel {
+            background:#fff; border-radius:var(--radius);
+            box-shadow:var(--shadow-lg); padding:12px;
+            display:flex; flex-direction:column; gap:12px;
         }
+        .section-title { font-weight:700; color:#1a3a4a; }
+        .control-group { background:#f8f9fb; border:1px solid var(--border); border-radius:8px; padding:10px; }
+        .border-options { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+        .border-option {
+            padding:8px; border:2px solid #d5d9e0; border-radius:8px;
+            cursor:pointer; font-size:0.75rem; font-weight:600;
+            text-align:center; background:#fff;
+        }
+        .border-option.active { border-color:var(--accent); background:#fffdf0; }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <header class="header">
-        <div class="logo-area">
-            <span class="logo-icon">🎓</span>
-            <h1>صانع الشهادات</h1>
-            <span class="badge">Certificate Maker</span>
-        </div>
-        <div class="user-info-bar" id="userInfoBar"></div>
-    </header>
-
-    <!-- Main Container -->
-    <div class="main-container" id="appContainer">
-        <!-- المحتوى سيتم ملؤه ديناميكيًا حسب حالة الدخول والدور -->
+<header class="header">
+    <div class="logo-area">
+        <span class="logo-icon">🎓</span>
+        <h1>صانع الشهادات</h1>
+        <span class="badge">Certificate Maker</span>
     </div>
+    <div class="user-info-bar" id="userInfoBar"></div>
+</header>
 
-    <script>
-        // ==================== إعدادات Firebase ====================
-        const firebaseConfig = {
-            apiKey: "AIzaSyBSGKRBNWZ1OeUFTxMlBBsfE0whNSJTzRA",
-            authDomain: "shahadat-4f10e.firebaseapp.com",
-            projectId: "shahadat-4f10e",
-            storageBucket: "shahadat-4f10e.firebasestorage.app",
-            messagingSenderId: "644757743305",
-            appId: "1:644757743305:web:ecde7ff86595a934714f18",
-            measurementId: "G-XTMF6NH7JW"
-        };
+<div class="main-container" id="appContainer"></div>
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+<script>
+    // ==================== إعدادات Firebase ====================
+    const firebaseConfig = {
+        apiKey: "AIzaSyBSGKRBNWZ1OeUFTxMlBBsfE0whNSJTzRA",
+        authDomain: "shahadat-4f10e.firebaseapp.com",
+        projectId: "shahadat-4f10e",
+        storageBucket: "shahadat-4f10e.firebasestorage.app",
+        messagingSenderId: "644757743305",
+        appId: "1:644757743305:web:ecde7ff86595a934714f18",
+        measurementId: "G-XTMF6NH7JW"
+    };
 
-        // ==================== المتغيرات العامة ====================
-        let currentUser = null;
-        let userRole = 'user'; // 'user' or 'admin'
-        let userBalance = 0;
-        let freeCertificatesDefault = 2; // يتم تحميله من الإعدادات
-        let bankAccountNumber = ''; // من الإعدادات
-        let packages = []; // أسعار الباقات
-        let certificateState = {
-            mainName: 'أحمد محمد عبدالله',
-            mainNameColor: '#1a3a4a',
-            mainNameSize: 46,
-            appreciationText: 'نشكرك على جهودك المتميزة وتفانيك في العمل، متمنين لك مزيداً من التوفيق والنجاح.',
-            appreciationColor: '#3d5a40',
-            appreciationSize: 22,
-            globalFont: 'Amiri',
-            borderStyle: 0,
-            backgroundColor: '#fefefb'
-        };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-        // ==================== دوال المساعدة ====================
-        function showElement(id) { document.getElementById(id)?.classList.remove('hidden'); }
-        function hideElement(id) { document.getElementById(id)?.classList.add('hidden'); }
+    // ==================== الحالة العامة ====================
+    let currentUser = null;
+    let userRole = 'user';
+    let userBalance = 0;
+    let freeCertificatesDefault = 2;
+    let bankAccountNumber = '';
+    let packages = [];
 
-        // ==================== مراقب حالة الدخول ====================
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                currentUser = user;
-                // جلب بيانات المستخدم من Firestore
-                const userDoc = await db.collection('users').doc(user.uid).get();
-                if (userDoc.exists) {
-                    const data = userDoc.data();
-                    userRole = data.role || 'user';
-                    userBalance = data.balance || 0;
-                } else {
-                    // مستخدم جديد: إنشاء وثيقة مع الرصيد المجاني الافتراضي
-                    const settingsSnap = await db.collection('settings').doc('general').get();
-                    if (settingsSnap.exists) {
-                        freeCertificatesDefault = settingsSnap.data().freeCertificates || 2;
-                    }
-                    await db.collection('users').doc(user.uid).set({
-                        email: user.email,
-                        role: 'user',
-                        balance: freeCertificatesDefault
-                    });
-                    userRole = 'user';
-                    userBalance = freeCertificatesDefault;
-                }
+    // حالة الصانع
+    let certState = {
+        certificateType: 'excellence',
+        mainName: 'أحمد محمد عبدالله',
+        mainNameColor: '#1a3a4a',
+        mainNameSize: 46,
+        appreciationText: 'نشكرك على جهودك المتميزة وتفانيك في العمل، متمنين لك مزيداً من التوفيق والنجاح.',
+        appreciationColor: '#3d5a40',
+        appreciationSize: 22,
+        globalFont: 'Amiri',
+        rightTitle: 'مدير المؤسسة',
+        rightName: 'د. خالد العمري',
+        rightColor: '#1a3a4a',
+        rightSize: 16,
+        leftTitle: 'رئيس القسم',
+        leftName: 'أ. سارة القحطاني',
+        leftColor: '#1a3a4a',
+        leftSize: 16,
+        showOptionalName: false,
+        optionalName: 'أ. فيصل الشمري',
+        borderStyle: 0,
+        backgroundColor: '#fefefb',
+        logoImage: null,
+        logoPosition: 'none'
+    };
 
-                // تحميل الإعدادات العامة
-                await loadSettings();
-
-                // تحديث شريط المعلومات العلوي
-                updateUserInfoBar();
-
-                // عرض الواجهة المناسبة
-                if (userRole === 'admin') {
-                    renderAdminPanel();
-                } else {
-                    renderUserPanel();
-                }
+    // ==================== مراقب الدخول ====================
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            currentUser = user;
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            if (userDoc.exists) {
+                const data = userDoc.data();
+                userRole = data.role || 'user';
+                userBalance = data.balance || 0;
             } else {
-                // لا يوجد مستخدم مسجل
-                currentUser = null;
+                const snap = await db.collection('settings').doc('general').get();
+                if (snap.exists) freeCertificatesDefault = snap.data().freeCertificates || 2;
+                await db.collection('users').doc(user.uid).set({
+                    email: user.email,
+                    role: 'user',
+                    balance: freeCertificatesDefault
+                });
                 userRole = 'user';
-                userBalance = 0;
-                updateUserInfoBar();
-                renderAuthForm();
+                userBalance = freeCertificatesDefault;
             }
-        });
-
-        // تحميل الإعدادات من Firestore
-        async function loadSettings() {
-            const doc = await db.collection('settings').doc('general').get();
-            if (doc.exists) {
-                const data = doc.data();
-                freeCertificatesDefault = data.freeCertificates || 2;
-                bankAccountNumber = data.bankAccount || '';
-                packages = data.packages || [
-                    { count: 10, price: 50 },
-                    { count: 50, price: 200 },
-                    { count: 100, price: 350 }
-                ];
-            } else {
-                // إعدادات افتراضية
-                freeCertificatesDefault = 2;
-                bankAccountNumber = '';
-                packages = [
-                    { count: 10, price: 50 },
-                    { count: 50, price: 200 },
-                    { count: 100, price: 350 }
-                ];
-            }
+            await loadSettings();
+            updateUserInfoBar();
+            if (userRole === 'admin') renderAdminUI();
+            else renderMakerUI();
+        } else {
+            currentUser = null;
+            userRole = 'user';
+            userBalance = 0;
+            updateUserInfoBar();
+            renderAuthForm();
         }
+    });
 
-        function updateUserInfoBar() {
-            const bar = document.getElementById('userInfoBar');
-            if (currentUser) {
-                bar.innerHTML = `
-                    <span>${currentUser.email} (${userRole === 'admin' ? 'أدمن' : 'مستخدم'})</span>
-                    <span>الرصيد: ${userBalance} شهادة</span>
-                    <button class="btn-logout" onclick="logout()">تسجيل خروج</button>
-                `;
-            } else {
-                bar.innerHTML = '';
-            }
+    async function loadSettings() {
+        const doc = await db.collection('settings').doc('general').get();
+        if (doc.exists) {
+            const d = doc.data();
+            freeCertificatesDefault = d.freeCertificates || 2;
+            bankAccountNumber = d.bankAccount || '';
+            packages = d.packages || [
+                { count: 10, price: 50 },
+                { count: 50, price: 200 },
+                { count: 100, price: 350 }
+            ];
+        } else {
+            bankAccountNumber = '';
+            packages = [
+                { count: 10, price: 50 },
+                { count: 50, price: 200 },
+                { count: 100, price: 350 }
+            ];
         }
+    }
 
-        function logout() {
-            auth.signOut();
+    function updateUserInfoBar() {
+        const bar = document.getElementById('userInfoBar');
+        if (currentUser) {
+            bar.innerHTML = `
+                <span>${currentUser.email} (${userRole==='admin'?'أدمن':'مستخدم'})</span>
+                <span>الرصيد: ${userBalance} شهادة</span>
+                <button class="btn-logout" onclick="auth.signOut()">تسجيل خروج</button>
+            `;
+        } else {
+            bar.innerHTML = '';
         }
+    }
 
-        // ==================== واجهة تسجيل الدخول / إنشاء حساب ====================
-        function renderAuthForm() {
-            document.getElementById('appContainer').innerHTML = `
-                <div class="card" style="max-width:500px; margin:40px auto;">
-                    <h2>تسجيل الدخول أو إنشاء حساب</h2>
-                    <input type="email" id="email" placeholder="البريد الإلكتروني">
-                    <input type="password" id="password" placeholder="كلمة المرور">
-                    <div style="display:flex; gap:12px; margin-top:12px;">
-                        <button class="btn btn-primary" onclick="login()">دخول</button>
-                        <button class="btn btn-accent" onclick="register()">إنشاء حساب جديد</button>
+    // ==================== واجهة تسجيل الدخول ====================
+    function renderAuthForm() {
+        document.getElementById('appContainer').innerHTML = `
+            <div class="card" style="max-width:500px;margin:40px auto;">
+                <h2>تسجيل الدخول أو إنشاء حساب</h2>
+                <input type="email" id="email" placeholder="البريد الإلكتروني">
+                <input type="password" id="password" placeholder="كلمة المرور">
+                <div style="display:flex;gap:12px;margin-top:12px;">
+                    <button class="btn btn-primary" onclick="login()">دخول</button>
+                    <button class="btn btn-accent" onclick="register()">إنشاء حساب جديد</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function login() {
+        const email = document.getElementById('email').value.trim();
+        const pass = document.getElementById('password').value;
+        auth.signInWithEmailAndPassword(email, pass).catch(e => alert('خطأ: '+e.message));
+    }
+    function register() {
+        const email = document.getElementById('email').value.trim();
+        const pass = document.getElementById('password').value;
+        auth.createUserWithEmailAndPassword(email, pass).catch(e => alert('خطأ: '+e.message));
+    }
+
+    // ==================== واجهة الصانع (مستخدم) ====================
+    function renderMakerUI() {
+        document.getElementById('appContainer').innerHTML = `
+            <div style="flex:1;">
+                <div class="card">
+                    <h3>صانع الشهادات</h3>
+                    <p>رصيدك المتبقي: <strong id="balanceDisplay">${userBalance}</strong> شهادة</p>
+                    <canvas id="certCanvas" width="1100" height="750"></canvas>
+                    <div style="display:flex;gap:12px;margin-top:12px;">
+                        <button class="btn btn-accent" onclick="downloadCert()">📥 تحميل الشهادة</button>
+                        <button class="btn btn-primary" onclick="renderRequestForm()">طلب شهادات إضافية</button>
                     </div>
                 </div>
-            `;
-        }
-
-        function login() {
-            const email = document.getElementById('email').value.trim();
-            const pass = document.getElementById('password').value;
-            auth.signInWithEmailAndPassword(email, pass)
-                .catch(err => alert('خطأ: ' + err.message));
-        }
-
-        function register() {
-            const email = document.getElementById('email').value.trim();
-            const pass = document.getElementById('password').value;
-            auth.createUserWithEmailAndPassword(email, pass)
-                .catch(err => alert('خطأ: ' + err.message));
-        }
-
-        // ==================== لوحة المستخدم ====================
-        function renderUserPanel() {
-            document.getElementById('appContainer').innerHTML = `
-                <div style="flex:1;">
-                    <div class="card">
-                        <h3>صانع الشهادات</h3>
-                        <p>رصيدك المتبقي: <strong>${userBalance}</strong> شهادة</p>
-                        <canvas id="certCanvas" width="1100" height="750"></canvas>
-                        <div style="display:flex; gap:12px; margin-top:12px;">
-                            <button class="btn btn-accent" onclick="downloadCertificate()">📥 تحميل الشهادة</button>
-                            <button class="btn btn-primary" onclick="renderRequestForm()">طلب شهادات إضافية</button>
+            </div>
+            <div style="flex:0 0 380px;">
+                <div class="controls-panel">
+                    <!-- اختصار لبعض الإعدادات الأساسية حتى لا تكون الصفحة جامدة -->
+                    <div class="control-group">
+                        <div class="section-title">✍️ الاسم الرئيسي</div>
+                        <input type="text" id="mainNameInput" value="${certState.mainName}" oninput="certState.mainName=this.value; drawCert();">
+                        <div style="display:flex; gap:8px;">
+                            <label>اللون:</label>
+                            <input type="color" id="mainNameColor" value="${certState.mainNameColor}" oninput="certState.mainNameColor=this.value; drawCert();">
                         </div>
                     </div>
-                </div>
-                <div style="flex:0 0 300px;">
-                    <div class="card">
-                        <h4>تخصيص سريع</h4>
-                        <label>الاسم:</label>
-                        <input type="text" id="quickName" value="${certificateState.mainName}" oninput="certificateState.mainName=this.value; drawCertificate()">
-                        <label>نوع الخط:</label>
-                        <select id="quickFont" onchange="certificateState.globalFont=this.value; drawCertificate()">
+                    <div class="control-group">
+                        <div class="section-title">💬 نص الشكر</div>
+                        <textarea id="appreciationText" oninput="certState.appreciationText=this.value; drawCert();">${certState.appreciationText}</textarea>
+                    </div>
+                    <div class="control-group">
+                        <div class="section-title">🔤 الخط</div>
+                        <select id="globalFont" onchange="certState.globalFont=this.value; drawCert();">
                             <option value="Cairo">القاهرة</option>
                             <option value="Amiri" selected>أميري</option>
                             <option value="El Messiri">المسيري</option>
@@ -411,237 +315,323 @@
                             <option value="Tajawal">تاجوال</option>
                         </select>
                     </div>
-                </div>
-            `;
-            drawCertificate();
-        }
-
-        // رسم الشهادة (نسخة مبسطة، يمكنك لاحقًا دمج الكود الكامل للصانع)
-        function drawCertificate() {
-            const canvas = document.getElementById('certCanvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            const w = canvas.width;
-            const h = canvas.height;
-
-            // خلفية
-            ctx.fillStyle = certificateState.backgroundColor;
-            ctx.fillRect(0, 0, w, h);
-
-            // إطار بسيط
-            ctx.strokeStyle = '#c5960c';
-            ctx.lineWidth = 8;
-            ctx.strokeRect(20, 20, w-40, h-40);
-
-            // العنوان
-            ctx.font = `bold 48px "${certificateState.globalFont}", serif`;
-            ctx.fillStyle = '#8b6914';
-            ctx.textAlign = 'center';
-            ctx.fillText('شهادة تقدير', w/2, 120);
-
-            // الاسم
-            ctx.font = `bold ${certificateState.mainNameSize}px "${certificateState.globalFont}", serif`;
-            ctx.fillStyle = certificateState.mainNameColor;
-            ctx.fillText(certificateState.mainName, w/2, 280);
-
-            // نص الشكر
-            ctx.font = `${certificateState.appreciationSize}px "${certificateState.globalFont}", serif`;
-            ctx.fillStyle = certificateState.appreciationColor;
-            ctx.fillText(certificateState.appreciationText, w/2, 400);
-
-            // توقيعات وهمية
-            ctx.font = `18px "${certificateState.globalFont}", serif`;
-            ctx.fillStyle = '#555';
-            ctx.fillText('مدير المؤسسة', w*0.75, h-120);
-            ctx.fillText('رئيس القسم', w*0.25, h-120);
-        }
-
-        async function downloadCertificate() {
-            if (!currentUser) return alert('يجب تسجيل الدخول');
-            if (userBalance <= 0) {
-                alert('نفد رصيدك. يرجى طلب شهادات إضافية.');
-                return;
-            }
-            // خصم شهادة من الرصيد
-            await db.collection('users').doc(currentUser.uid).update({
-                balance: firebase.firestore.FieldValue.increment(-1)
-            });
-            userBalance--;
-            updateUserInfoBar();
-            document.querySelector('#appContainer p strong').textContent = userBalance;
-
-            // تنزيل الشهادة
-            const canvas = document.getElementById('certCanvas');
-            const link = document.createElement('a');
-            link.download = 'شهادة.png';
-            link.href = canvas.toDataURL();
-            link.click();
-            alert('تم تحميل الشهادة بنجاح');
-        }
-
-        // ==================== طلب شهادات إضافية ====================
-        function renderRequestForm() {
-            document.getElementById('appContainer').innerHTML = `
-                <div class="card" style="max-width:600px; margin:40px auto;">
-                    <h3>طلب شهادات إضافية</h3>
-                    <p>رقم الحساب للتحويل: <strong>${bankAccountNumber || 'لم يحدد بعد'}</strong></p>
-                    <label>اختر الباقة:</label>
-                    <select id="packageSelect" onchange="updatePriceDisplay()">
-                        ${packages.map((p,i) => `<option value="${i}">${p.count} شهادة - ${p.price} ريال</option>`).join('')}
-                    </select>
-                    <p>المبلغ المطلوب: <strong id="totalPrice">${packages[0]?.price || 0}</strong> ريال</p>
-                    <label>ارفع صورة إيصال الدفع:</label>
-                    <input type="file" id="receiptFile" accept="image/*">
-                    <br><br>
-                    <button class="btn btn-accent" onclick="submitRequest()">تقديم الطلب</button>
-                    <button class="btn btn-secondary" onclick="renderUserPanel()">رجوع</button>
-                </div>
-            `;
-        }
-
-        function updatePriceDisplay() {
-            const idx = document.getElementById('packageSelect').value;
-            document.getElementById('totalPrice').textContent = packages[idx].price;
-        }
-
-        async function submitRequest() {
-            const fileInput = document.getElementById('receiptFile');
-            const file = fileInput.files[0];
-            if (!file) return alert('الرجاء رفع صورة الإيصال');
-
-            // تحويل الصورة إلى base64
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                const base64Image = e.target.result;
-                const idx = document.getElementById('packageSelect').value;
-                const pkg = packages[idx];
-
-                // إضافة الطلب إلى Firestore
-                await db.collection('requests').add({
-                    userId: currentUser.uid,
-                    email: currentUser.email,
-                    packageCount: pkg.count,
-                    price: pkg.price,
-                    imageBase64: base64Image,
-                    status: 'pending',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                alert('تم تقديم الطلب بنجاح، سنقوم بمراجعته وإضافة الرصيد.');
-                renderUserPanel();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // ==================== لوحة الأدمن ====================
-        function renderAdminPanel() {
-            document.getElementById('appContainer').innerHTML = `
-                <div style="flex:1;">
-                    <div class="card">
-                        <h3>لوحة تحكم الأدمن</h3>
-                        <button class="btn btn-primary" onclick="manageUsers()">👥 إدارة المستخدمين</button>
-                        <button class="btn btn-primary" onclick="manageRequests()">📩 الطلبات الواردة</button>
-                        <button class="btn btn-primary" onclick="manageSettings()">⚙️ الإعدادات العامة</button>
-                    </div>
-                    <div id="adminContent"></div>
-                </div>
-            `;
-        }
-
-        async function manageUsers() {
-            const snapshot = await db.collection('users').get();
-            let html = `<h4>قائمة المستخدمين</h4>
-                <table class="admin-table">
-                <tr><th>البريد</th><th>الرصيد</th><th>الدور</th><th>إضافة رصيد</th></tr>`;
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                html += `<tr>
-                    <td>${data.email}</td>
-                    <td>${data.balance}</td>
-                    <td>${data.role || 'user'}</td>
-                    <td>
-                        <input type="number" id="bal_${doc.id}" placeholder="عدد" style="width:80px;">
-                        <button class="btn btn-secondary" onclick="addBalance('${doc.id}')">إضافة</button>
-                    </td>
-                </tr>`;
-            });
-            html += '</table>';
-            document.getElementById('adminContent').innerHTML = html;
-        }
-
-        async function addBalance(userId) {
-            const amount = parseInt(document.getElementById('bal_'+userId).value);
-            if (isNaN(amount) || amount <= 0) return alert('أدخل رقماً صحيحاً');
-            await db.collection('users').doc(userId).update({
-                balance: firebase.firestore.FieldValue.increment(amount)
-            });
-            alert('تمت الإضافة');
-            manageUsers(); // تحديث
-        }
-
-        async function manageRequests() {
-            const snapshot = await db.collection('requests').where('status','==','pending').get();
-            let html = '<h4>الطلبات المعلقة</h4>';
-            if (snapshot.empty) {
-                html += '<p>لا توجد طلبات معلقة حالياً.</p>';
-            } else {
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    html += `
-                    <div class="request-card">
-                        <img src="${data.imageBase64}" alt="إيصال">
-                        <div>
-                            <p><strong>البريد:</strong> ${data.email}</p>
-                            <p><strong>الباقة:</strong> ${data.packageCount} شهادة - ${data.price} ريال</p>
-                            <button class="btn btn-accent" onclick="approveRequest('${doc.id}', ${data.packageCount}, '${data.userId}')">موافقة</button>
-                            <button class="btn btn-secondary" onclick="rejectRequest('${doc.id}')">رفض</button>
+                    <div class="control-group">
+                        <div class="section-title">🖼️ البرواز</div>
+                        <div class="border-options">
+                            <button class="border-option active" onclick="certState.borderStyle=0; drawCert();">كلاسيكي</button>
+                            <button class="border-option" onclick="certState.borderStyle=1; drawCert();">ذهبي</button>
+                            <button class="border-option" onclick="certState.borderStyle=2; drawCert();">حديث</button>
+                            <button class="border-option" onclick="certState.borderStyle=3; drawCert();">تقليدي</button>
+                            <button class="border-option" onclick="certState.borderStyle=4; drawCert();">أنيق</button>
+                            <button class="border-option" onclick="certState.borderStyle=5; drawCert();">زخرفي</button>
                         </div>
-                    </div>`;
-                });
+                    </div>
+                    <div class="control-group">
+                        <div class="section-title">🎨 خلفية</div>
+                        <input type="color" id="bgColor" value="${certState.backgroundColor}" oninput="certState.backgroundColor=this.value; drawCert();">
+                    </div>
+                    <div class="control-group">
+                        <div class="section-title">📌 الجهة اليمنى</div>
+                        <input type="text" id="rightTitle" value="${certState.rightTitle}" placeholder="اللقب" oninput="certState.rightTitle=this.value; drawCert();">
+                        <input type="text" id="rightName" value="${certState.rightName}" placeholder="الاسم" oninput="certState.rightName=this.value; drawCert();">
+                    </div>
+                    <div class="control-group">
+                        <div class="section-title">📍 الجهة اليسرى</div>
+                        <input type="text" id="leftTitle" value="${certState.leftTitle}" placeholder="اللقب" oninput="certState.leftTitle=this.value; drawCert();">
+                        <input type="text" id="leftName" value="${certState.leftName}" placeholder="الاسم" oninput="certState.leftName=this.value; drawCert();">
+                        <label><input type="checkbox" id="showOpt" ${certState.showOptionalName?'checked':''} onchange="certState.showOptionalName=this.checked; drawCert();"> اسم إضافي</label>
+                        <input type="text" id="optName" value="${certState.optionalName}" placeholder="الاسم الإضافي" oninput="certState.optionalName=this.value; drawCert();">
+                    </div>
+                    <div class="control-group">
+                        <div class="section-title">🖼️ شعار</div>
+                        <input type="file" id="logoUpload" accept="image/*" onchange="handleLogo(event)">
+                        <select id="logoPos" onchange="certState.logoPosition=this.value; drawCert();">
+                            <option value="none">بدون</option>
+                            <option value="top-right">يمين أعلى</option>
+                            <option value="top-left">يسار أعلى</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        `;
+        drawCert();
+    }
+
+    // ==================== رسم الشهادة كاملة (كل الميزات) ====================
+    function drawCert() {
+        const canvas = document.getElementById('certCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width, H = canvas.height;
+
+        // خلفية
+        ctx.fillStyle = certState.backgroundColor;
+        ctx.fillRect(0,0,W,H);
+
+        // برواز
+        drawBorder(ctx, certState.borderStyle, W, H);
+
+        // شعار
+        if (certState.logoImage && certState.logoPosition !== 'none') {
+            const logoW = 100, logoH = 100;
+            let dw = logoW, dh = logoH;
+            const ratio = certState.logoImage.width / certState.logoImage.height;
+            if (ratio > 1) dh = logoW / ratio;
+            else dw = logoH * ratio;
+            const pad = 40;
+            let lx, ly;
+            if (certState.logoPosition === 'top-right') {
+                lx = W - pad - dw; ly = pad;
+            } else {
+                lx = pad; ly = pad;
             }
-            document.getElementById('adminContent').innerHTML = html;
+            ctx.drawImage(certState.logoImage, lx, ly, dw, dh);
         }
 
-        async function approveRequest(reqId, count, userId) {
-            await db.collection('requests').doc(reqId).update({ status: 'approved' });
-            await db.collection('users').doc(userId).update({
-                balance: firebase.firestore.FieldValue.increment(count)
+        // عنوان
+        ctx.font = `bold 38px "${certState.globalFont}", serif`;
+        ctx.fillStyle = certState.certificateType === 'excellence' ? '#8b6914' : '#3d5a40';
+        ctx.textAlign = 'center';
+        const title = certState.certificateType === 'excellence' ? 'شهادة تفوق' : 'شهادة شكر وتقدير';
+        ctx.fillText(title, W/2, 95);
+
+        // الاسم الرئيسي
+        ctx.font = `bold ${certState.mainNameSize}px "${certState.globalFont}", serif`;
+        ctx.fillStyle = certState.mainNameColor;
+        ctx.fillText(certState.mainName, W/2, 210);
+
+        // نص الشكر
+        ctx.font = `${certState.appreciationSize}px "${certState.globalFont}", serif`;
+        ctx.fillStyle = certState.appreciationColor;
+        const words = certState.appreciationText.split(' ');
+        let lines = [], line = '';
+        for (let w of words) {
+            const test = line ? line + ' ' + w : w;
+            if (ctx.measureText(test).width > 650 && line) {
+                lines.push(line);
+                line = w;
+            } else line = test;
+        }
+        if (line) lines.push(line);
+        const lineH = certState.appreciationSize * 1.6;
+        const startY = 310 - (lines.length * lineH)/2;
+        lines.forEach((l, i) => ctx.fillText(l, W/2, startY + i*lineH));
+
+        // الجهتان
+        const sigY = Math.max(400, H-180);
+        ctx.font = `bold ${certState.rightSize}px "${certState.globalFont}", serif`;
+        ctx.fillStyle = certState.rightColor;
+        ctx.fillText(certState.rightTitle, W*0.78, sigY);
+        ctx.font = `${certState.rightSize}px "${certState.globalFont}", serif`;
+        ctx.fillText(certState.rightName, W*0.78, sigY + certState.rightSize*1.7);
+
+        ctx.font = `bold ${certState.leftSize}px "${certState.globalFont}", serif`;
+        ctx.fillStyle = certState.leftColor;
+        ctx.fillText(certState.leftTitle, W*0.22, sigY);
+        ctx.font = `${certState.leftSize}px "${certState.globalFont}", serif`;
+        ctx.fillText(certState.leftName, W*0.22, sigY + certState.leftSize*1.7);
+        if (certState.showOptionalName) {
+            ctx.fillText(certState.optionalName, W*0.22, sigY + certState.leftSize*3.4);
+        }
+    }
+
+    function drawBorder(ctx, style, W, H) {
+        const m=30, x=m, y=m, w=W-2*m, h=H-2*m;
+        ctx.save();
+        ctx.lineCap='round'; ctx.lineJoin='round';
+        switch(style) {
+            case 0:
+                ctx.strokeStyle='#2c3e50'; ctx.lineWidth=5; ctx.strokeRect(x,y,w,h);
+                ctx.strokeStyle='#8b7355'; ctx.lineWidth=1.5; ctx.strokeRect(x+10,y+10,w-20,h-20);
+                break;
+            case 1:
+                const gold=ctx.createLinearGradient(x,y,x+w,y+h);
+                gold.addColorStop(0,'#b8860b'); gold.addColorStop(1,'#ffd700');
+                ctx.strokeStyle=gold; ctx.lineWidth=8; ctx.strokeRect(x,y,w,h);
+                ctx.strokeStyle='#5c3d0e'; ctx.lineWidth=2; ctx.strokeRect(x+13,y+13,w-26,h-26);
+                break;
+            case 2:
+                ctx.strokeStyle='#34495e'; ctx.lineWidth=2; ctx.strokeRect(x,y,w,h);
+                ctx.strokeStyle='#c5960c'; ctx.lineWidth=3;
+                [[x,y,35,0],[x+w,y,-35,0],[x,y+h,35,0],[x+w,y+h,-35,0]].forEach(([cx,cy,dx])=> {
+                    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+dx,cy); ctx.stroke();
+                });
+                break;
+            case 3:
+                ctx.strokeStyle='#4a3728'; ctx.lineWidth=4; ctx.strokeRect(x,y,w,h);
+                ctx.strokeStyle='#8b6914'; ctx.lineWidth=1; ctx.strokeRect(x+7,y+7,w-14,h-14);
+                break;
+            case 4:
+                ctx.strokeStyle='#2c3e50'; ctx.lineWidth=3; ctx.strokeRect(x,y,w,h);
+                ctx.strokeStyle='#c5960c'; ctx.lineWidth=1; ctx.strokeRect(x+6,y+6,w-12,h-12);
+                break;
+            case 5:
+                ctx.strokeStyle='#5c3d0e'; ctx.lineWidth=6; ctx.strokeRect(x,y,w,h);
+                ctx.strokeStyle='#c5960c'; ctx.lineWidth=2;
+                for(let sx=x+28; sx<x+w-14; sx+=28) {
+                    ctx.beginPath(); ctx.arc(sx,y+10,9,Math.PI,0); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(sx,y+h-10,9,0,Math.PI); ctx.stroke();
+                }
+                break;
+        }
+        ctx.restore();
+    }
+
+    function handleLogo(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            const img = new Image();
+            img.onload = () => {
+                certState.logoImage = img;
+                document.getElementById('logoPos').value = 'top-right';
+                certState.logoPosition = 'top-right';
+                drawCert();
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    async function downloadCert() {
+        if (!currentUser) return alert('سجل الدخول');
+        if (userBalance <= 0) return alert('نفد الرصيد، اطلب شهادات إضافية');
+        await db.collection('users').doc(currentUser.uid).update({
+            balance: firebase.firestore.FieldValue.increment(-1)
+        });
+        userBalance--;
+        document.getElementById('balanceDisplay').textContent = userBalance;
+        updateUserInfoBar();
+        const canvas = document.getElementById('certCanvas');
+        const link = document.createElement('a');
+        link.download = 'شهادة.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    }
+
+    function renderRequestForm() {
+        document.getElementById('appContainer').innerHTML = `
+            <div class="card" style="max-width:600px;margin:40px auto;">
+                <h3>طلب شهادات إضافية</h3>
+                <p>رقم الحساب: <strong>${bankAccountNumber||'لم يحدد بعد'}</strong></p>
+                <select id="pkgSelect" onchange="document.getElementById('total').textContent=packages[this.value].price">
+                    ${packages.map((p,i)=>`<option value="${i}">${p.count} شهادة - ${p.price} ريال</option>`).join('')}
+                </select>
+                <p>المبلغ: <strong id="total">${packages[0]?packages[0].price:0}</strong> ريال</p>
+                <input type="file" id="receiptFile" accept="image/*">
+                <button class="btn btn-accent" onclick="submitReq()">تقديم</button>
+                <button class="btn btn-secondary" onclick="renderMakerUI()">رجوع</button>
+            </div>
+        `;
+        window.packages = packages;
+    }
+
+    function submitReq() {
+        const file = document.getElementById('receiptFile').files[0];
+        if (!file) return alert('ارفع صورة الإيصال');
+        const reader = new FileReader();
+        reader.onload = async e => {
+            const idx = document.getElementById('pkgSelect').value;
+            const pkg = packages[idx];
+            await db.collection('requests').add({
+                userId: currentUser.uid,
+                email: currentUser.email,
+                packageCount: pkg.count,
+                price: pkg.price,
+                imageBase64: e.target.result,
+                status: 'pending',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
-            alert('تمت الموافقة وإضافة الرصيد للمستخدم');
-            manageRequests();
-        }
+            alert('تم تقديم الطلب');
+            renderMakerUI();
+        };
+        reader.readAsDataURL(file);
+    }
 
-        async function rejectRequest(reqId) {
-            await db.collection('requests').doc(reqId).update({ status: 'rejected' });
-            alert('تم رفض الطلب');
-            manageRequests();
-        }
+    // ==================== واجهة الأدمن ====================
+    function renderAdminUI() {
+        document.getElementById('appContainer').innerHTML = `
+            <div style="flex:1;">
+                <div class="card">
+                    <h3>لوحة الأدمن</h3>
+                    <button class="btn btn-primary" onclick="manageUsers()">👥 المستخدمين</button>
+                    <button class="btn btn-primary" onclick="manageRequests()">📩 الطلبات</button>
+                    <button class="btn btn-primary" onclick="manageSettings()">⚙️ الإعدادات</button>
+                </div>
+                <div id="adminContent"></div>
+            </div>
+        `;
+    }
 
-        async function manageSettings() {
-            const doc = await db.collection('settings').doc('general').get();
-            const data = doc.exists ? doc.data() : {};
-            const free = data.freeCertificates || 2;
-            const bank = data.bankAccount || '';
-            document.getElementById('adminContent').innerHTML = `
-                <h4>الإعدادات العامة</h4>
-                <label>عدد الشهادات المجانية للمستخدم الجديد:</label>
-                <input type="number" id="freeCount" value="${free}">
-                <label>رقم الحساب البنكي:</label>
-                <input type="text" id="bankAccount" value="${bank}">
-                <button class="btn btn-primary" onclick="saveSettings()">حفظ الإعدادات</button>
-            `;
-        }
+    async function manageUsers() {
+        const snap = await db.collection('users').get();
+        let html = '<h4>المستخدمين</h4><table class="admin-table"><tr><th>البريد</th><th>الرصيد</th><th>الدور</th><th>إضافة</th></tr>';
+        snap.forEach(doc => {
+            const d = doc.data();
+            html += `<tr><td>${d.email}</td><td>${d.balance}</td><td>${d.role||'user'}</td>
+                <td><input id="bal_${doc.id}" style="width:70px"><button onclick="addBal('${doc.id}')">+</button></td></tr>`;
+        });
+        html += '</table>';
+        document.getElementById('adminContent').innerHTML = html;
+    }
 
-        async function saveSettings() {
-            const free = parseInt(document.getElementById('freeCount').value);
-            const bank = document.getElementById('bankAccount').value;
-            await db.collection('settings').doc('general').set({
-                freeCertificates: free,
-                bankAccount: bank,
-                packages: packages
-            }, { merge: true });
-            alert('تم حفظ الإعدادات');
-            loadSettings(); // إعادة تحميل
-        }
-    </script>
+    async function addBal(uid) {
+        const amt = parseInt(document.getElementById('bal_'+uid).value);
+        if (!amt) return;
+        await db.collection('users').doc(uid).update({balance: firebase.firestore.FieldValue.increment(amt)});
+        alert('تم');
+        manageUsers();
+    }
+
+    async function manageRequests() {
+        const snap = await db.collection('requests').where('status','==','pending').get();
+        let html = '<h4>الطلبات المعلقة</h4>';
+        snap.forEach(doc => {
+            const d = doc.data();
+            html += `<div class="request-card"><img src="${d.imageBase64}"><div>
+                <p>${d.email} - ${d.packageCount} شهادة - ${d.price} ريال</p>
+                <button onclick="approve('${doc.id}',${d.packageCount},'${d.userId}')">موافقة</button>
+                <button onclick="reject('${doc.id}')">رفض</button>
+            </div></div>`;
+        });
+        if (snap.empty) html += '<p>لا طلبات</p>';
+        document.getElementById('adminContent').innerHTML = html;
+    }
+
+    async function approve(id, count, uid) {
+        await db.collection('requests').doc(id).update({status:'approved'});
+        await db.collection('users').doc(uid).update({balance: firebase.firestore.FieldValue.increment(count)});
+        alert('تمت الموافقة');
+        manageRequests();
+    }
+    async function reject(id) {
+        await db.collection('requests').doc(id).update({status:'rejected'});
+        alert('تم الرفض');
+        manageRequests();
+    }
+
+    async function manageSettings() {
+        const snap = await db.collection('settings').doc('general').get();
+        const d = snap.exists ? snap.data() : {};
+        document.getElementById('adminContent').innerHTML = `
+            <h4>الإعدادات</h4>
+            <label>الشهادات المجانية:</label><input id="freeCount" value="${d.freeCertificates||2}">
+            <label>رقم الحساب:</label><input id="bankAcc" value="${d.bankAccount||''}">
+            <button onclick="saveSettings()">حفظ</button>
+        `;
+    }
+
+    async function saveSettings() {
+        const free = parseInt(document.getElementById('freeCount').value);
+        const bank = document.getElementById('bankAcc').value;
+        await db.collection('settings').doc('general').set({
+            freeCertificates: free,
+            bankAccount: bank,
+            packages: packages
+        }, {merge:true});
+        alert('تم الحفظ');
+    }
+</script>
 </body>
 </html>

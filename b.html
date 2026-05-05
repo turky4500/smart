@@ -1,343 +1,444 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>بلدي | المدقق الذكي - سير العمل الكامل</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
-    body { background: #f0f4f8; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-    .container { max-width: 950px; width: 100%; background: #fff; border-radius: 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.1); padding: 30px 25px; }
-    h1 { text-align: center; color: #0b3b5c; margin-bottom: 5px; }
-    .subtitle { text-align: center; color: #2c7da0; margin-bottom: 25px; font-weight: 500; }
-    .steps { display: flex; justify-content: space-between; margin-bottom: 30px; }
-    .step { text-align: center; flex: 1; position: relative; color: #aaa; font-weight: bold; font-size: 14px; }
-    .step.active { color: #0b3b5c; }
-    .step::before { content: attr(data-num); display: block; width: 32px; height: 32px; background: #ccc; border-radius: 50%; margin: 0 auto 6px; line-height: 32px; color: #fff; font-weight: bold; }
-    .step.active::before { background: #0b3b5c; }
-    .step.done::before { background: #2a9d8f; content: "✓"; }
-    .panel { background: #f8fafc; border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
-    label { display: block; margin-bottom: 6px; font-weight: 600; color: #1e293b; }
-    select, input[type="text"], .fake-upload, button { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 15px; background: #fff; margin-bottom: 15px; }
-    .fake-upload { display: flex; justify-content: space-between; align-items: center; cursor: pointer; color: #0b3b5c; font-weight: 500; background: #f1f5f9; }
-    .row { display: flex; gap: 15px; flex-wrap: wrap; }
-    .row input { flex: 1 1 45%; }
-    #map { height: 280px; border-radius: 12px; border: 1px solid #cbd5e1; margin: 10px 0; z-index: 0; }
-    .btn { background: #0b3b5c; color: #fff; border: none; padding: 12px 28px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; width: auto; display: inline-block; }
-    .btn:hover { background: #145374; }
-    .btn:disabled { background: #94a3b8; cursor: not-allowed; }
-    .result-box { margin-top: 25px; padding: 20px; border-radius: 16px; font-weight: bold; text-align: center; font-size: 18px; }
-    .success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
-    .reject { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-    .warning-text { color: #b91c1c; font-size: 14px; }
-    .hint { font-size: 14px; color: #475569; margin-top: 5px; }
-    .btn-sm { padding: 8px 18px; font-size: 14px; }
-    .inline { display: flex; gap: 10px; align-items: center; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بلدي | المدقق الذكي - النسخة الكاملة</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background: #eef2f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .container { max-width: 1050px; width: 100%; background: #fff; border-radius: 28px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); padding: 30px 28px; }
+        h1 { text-align: center; color: #0a3144; margin-bottom: 6px; font-size: 30px; }
+        .subtitle { text-align: center; color: #2c7da0; margin-bottom: 30px; font-weight: 500; }
+        .steps { display: flex; justify-content: space-between; margin-bottom: 30px; }
+        .step { text-align: center; flex: 1; position: relative; color: #aaa; font-weight: bold; font-size: 13px; }
+        .step.active { color: #0a3144; }
+        .step::before { content: attr(data-num); display: block; width: 32px; height: 32px; background: #ccc; border-radius: 50%; margin: 0 auto 6px; line-height: 32px; color: #fff; font-weight: bold; }
+        .step.active::before { background: #0a3144; }
+        .step.done::before { background: #2a9d8f; content: "✓"; }
+        .panel { background: #f8fafc; border-radius: 18px; padding: 22px; margin-bottom: 22px; border: 1px solid #e2e8f0; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; color: #1e293b; }
+        select, input[type="text"], input[type="file"], button { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid #cbd5e1; font-size: 15px; background: #fff; margin-bottom: 12px; }
+        .row { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 10px; }
+        .row > div { flex: 1 1 45%; }
+        #map { height: 300px; border-radius: 14px; border: 1px solid #cbd5e1; margin: 10px 0; z-index: 0; }
+        .btn { background: #0a3144; color: #fff; border: none; padding: 12px 32px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; width: auto; display: inline-block; }
+        .btn:hover { background: #16455c; }
+        .btn:disabled { background: #94a3b8; cursor: not-allowed; }
+        .btn-outline { background: transparent; color: #0a3144; border: 2px solid #0a3144; }
+        .btn-outline:hover { background: #e2e8f0; }
+        .result-box { margin-top: 25px; padding: 20px; border-radius: 18px; font-weight: bold; text-align: center; font-size: 18px; }
+        .success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        .reject { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .warning-text { color: #b91c1c; font-size: 14px; }
+        .hint { font-size: 14px; color: #475569; margin-top: 6px; }
+        .btn-sm { padding: 10px 20px; font-size: 15px; }
+        .loading { color: #2c7da0; font-weight: bold; }
+        .nav-buttons { display: flex; gap: 10px; justify-content: space-between; margin-top: 20px; }
+        .submit-section { margin-top: 25px; text-align: center; }
+        .request-number { font-size: 24px; font-weight: bold; color: #0a3144; margin: 12px 0; }
+        .verify-row { display: flex; gap: 10px; align-items: center; margin-bottom: 15px; }
+        .verify-row input { flex: 1; margin-bottom: 0; }
+        .verify-row button { width: auto; margin-top: 0; }
+        .add-attachment { background: #2a9d8f; color: white; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 24px; cursor: pointer; }
+    </style>
 </head>
 <body>
 <div class="container">
-  <h1>🏛️ بلدي</h1>
-  <div class="subtitle">المدقق الذكي الاستباقي · سير العمل المتكامل</div>
+    <h1>🏛️ بلدي</h1>
+    <div class="subtitle">المدقق الذكي الاستباقي · تجربة متكاملة</div>
 
-  <div class="steps">
-    <div class="step active" data-num="1">نوع المنشأة</div>
-    <div class="step" data-num="2">السجل التجاري</div>
-    <div class="step" data-num="3">عقد الإيجار</div>
-    <div class="step" data-num="4">التدقيق النهائي</div>
-  </div>
-
-  <!-- الخطوة 1: اختيار نوع المنشأة -->
-  <div class="panel" id="step1Panel">
-    <label>🏭 نوع المنشأة</label>
-    <select id="establishmentType">
-      <option value="">-- اختر النوع --</option>
-      <option value="محل">محل</option>
-      <option value="مستودع">مستودع</option>
-      <option value="ورشة">ورشة</option>
-      <option value="مصنع">مصنع</option>
-      <option value="مبسط">مبسط</option>
-      <option value="مكتب">مكتب</option>
-      <option value="كشك">كشك</option>
-    </select>
-    <button class="btn" onclick="goToStep2()">التالي: السجل التجاري ←</button>
-  </div>
-
-  <!-- الخطوة 2: السجل التجاري -->
-  <div class="panel" id="step2Panel" style="display:none;">
-    <label>📋 رقم السجل التجاري</label>
-    <div class="inline">
-      <input type="text" id="commercialRegNumber" placeholder="أدخل رقم السجل (مثلاً 1010)" style="flex:1;">
-      <button class="btn btn-sm" onclick="verifyCommercialReg()">فحص السجل</button>
+    <div class="steps">
+        <div class="step active" data-num="1">نوع المنشأة</div>
+        <div class="step" data-num="2">السجل التجاري</div>
+        <div class="step" data-num="3">عقد الإيجار</div>
+        <div class="step" data-num="4">المرفقات</div>
+        <div class="step" data-num="5">التدقيق النهائي</div>
     </div>
-    <div id="crResult" style="margin-top:10px;"></div>
-    <div id="crActivityWarning" class="warning-text"></div>
-    <button class="btn" id="toStep3Btn" style="display:none;" onclick="goToStep3()">التالي: رفع عقد الإيجار ←</button>
-  </div>
 
-  <!-- الخطوة 3: عقد الإيجار -->
-  <div class="panel" id="step3Panel" style="display:none;">
-    <label>📄 رفع عقد الإيجار (PDF)</label>
-    <div class="fake-upload" id="uploadLeaseTrigger">
-      <span>📎 اضغط هنا لرفع عقد الإيجار</span>
-      <span>⬆️</span>
+    <!-- خطوة 1 -->
+    <div class="panel" id="step1Panel">
+        <label>🏭 نوع المنشأة</label>
+        <select id="establishmentType">
+            <option value="">-- اختر --</option>
+            <option value="محل">محل</option><option value="مستودع">مستودع</option><option value="ورشة">ورشة</option>
+            <option value="مصنع">مصنع</option><option value="مبسط">مبسط</option><option value="مكتب">مكتب</option><option value="كشك">كشك</option>
+        </select>
+        <div class="nav-buttons">
+            <button class="btn btn-outline" disabled>🔙 رجوع</button>
+            <button class="btn" onclick="goToStep2()">التالي: السجل التجاري ←</button>
+        </div>
     </div>
-    <input type="file" id="realLeaseFile" accept=".pdf,.jpg,.png" style="display:none;">
-    <div style="margin-top:15px;">
-      <strong>البيانات المستخرجة تلقائياً:</strong>
-      <div class="row" style="margin-top:10px;">
-        <input type="text" id="tenantName" placeholder="اسم المستأجر" readonly>
-        <input type="text" id="ownerName" placeholder="اسم المالك" readonly>
-      </div>
-      <div class="row">
-        <input type="text" id="area" placeholder="المساحة (م²)" readonly>
-        <input type="text" id="openingsCount" placeholder="عدد الفتحات" readonly>
-      </div>
-      <div class="row">
-        <input type="text" id="contractEndDate" placeholder="تاريخ انتهاء العقد (مثال: 2027-05-01)" readonly>
-        <input type="text" id="pieceNumber" placeholder="رقم القطعة" readonly>
-      </div>
-      <div class="row">
-        <input type="text" id="planNumber" placeholder="رقم المخطط" readonly>
-        <input type="text" id="nationalAddress" placeholder="العنوان الوطني" readonly>
-      </div>
-    </div>
-    <div id="leaseDateWarning" class="warning-text"></div>
-    <button class="btn" id="toStep4Btn" style="display:none;" onclick="goToStep4()">التالي: عرض الموقع والتدقيق ←</button>
-  </div>
 
-  <!-- الخطوة 4: الخريطة والتدقيق -->
-  <div class="panel" id="step4Panel" style="display:none;">
-    <label>📍 موقع العقار على الخريطة (تم تحديده من بيانات العقد)</label>
-    <div id="map"></div>
-    <div class="hint" id="mapHint"></div>
-    <button class="btn" id="finalAuditBtn" onclick="runFinalAudit()">🔍 تدقيق نهائي وإصدار الحكم</button>
-    <div id="finalResult" style="margin-top:20px;"></div>
-  </div>
+    <!-- خطوة 2 -->
+    <div class="panel" id="step2Panel" style="display:none;">
+        <label>📋 رفع السجل التجاري (صورة أو PDF)</label>
+        <input type="file" id="crFileInput" accept="image/*,.pdf">
+        <button class="btn btn-sm" onclick="processCRFile()">فحص السجل واستخراج النشاط</button>
+        <div id="crStatus" class="loading"></div>
+        <label>النشاط المستخرج (قابل للتعديل):</label>
+        <input type="text" id="extractedActivity">
+        <div id="crMatchResult" class="warning-text"></div>
+        <div class="nav-buttons">
+            <button class="btn btn-outline" onclick="goBack()">🔙 رجوع</button>
+            <button class="btn" id="toStep3Btn" style="display:none;" onclick="goToStep3()">التالي: عقد الإيجار ←</button>
+        </div>
+    </div>
+
+    <!-- خطوة 3 -->
+    <div class="panel" id="step3Panel" style="display:none;">
+        <label>📄 رفع عقد الإيجار (صورة أو PDF)</label>
+        <input type="file" id="leaseFileInput" accept="image/*,.pdf">
+        <button class="btn btn-sm" onclick="processLeaseFile()">تحليل العقد واستخراج البيانات</button>
+        <div id="leaseStatus" class="loading"></div>
+        <div style="margin-top:15px;">
+            <strong>البيانات المستخرجة (قابلة للتعديل):</strong>
+            <div class="row"><div><label>اسم المستأجر</label><input type="text" id="tenantName"></div><div><label>اسم المالك</label><input type="text" id="ownerName"></div></div>
+            <div class="row"><div><label>المساحة (م²)</label><input type="text" id="area"></div><div><label>عدد الفتحات</label><input type="text" id="openingsCount"></div></div>
+            <div class="row"><div><label>تاريخ انتهاء العقد</label><input type="text" id="contractEndDate"></div><div><label>رقم القطعة</label><input type="text" id="pieceNumber"></div></div>
+            <div class="row"><div><label>رقم المخطط</label><input type="text" id="planNumber"></div><div><label>العنوان الوطني</label><input type="text" id="nationalAddress"></div></div>
+        </div>
+        <div id="leaseDateWarning" class="warning-text"></div>
+        <div class="nav-buttons">
+            <button class="btn btn-outline" onclick="goBack()">🔙 رجوع</button>
+            <button class="btn" id="toStep4Btn" style="display:none;" onclick="goToStep4()">التالي: المرفقات ←</button>
+        </div>
+    </div>
+
+    <!-- خطوة 4: المرفقات -->
+    <div class="panel" id="step4Panel" style="display:none;">
+        <h3 style="margin-bottom:15px;">📎 المرفقات الإلزامية</h3>
+        <div class="verify-row"><input type="text" id="safetyReportNumber" placeholder="رقم تقرير سلامة (مثال: SR-123)"><button class="btn btn-sm" onclick="verifySafety()">تحقق</button></div>
+        <div id="safetyStatus" class="hint"></div>
+        <div class="verify-row"><input type="text" id="myPlateNumber" placeholder="رقم منصة لوحتي (مثال: LP-456)"><button class="btn btn-sm" onclick="verifyPlate()">تحقق</button></div>
+        <div id="plateStatus" class="hint"></div>
+        <div class="verify-row"><input type="text" id="containerNumber" placeholder="رقم عقد الحاوية (مثال: CNT-789)"><button class="btn btn-sm" onclick="verifyContainer()">تحقق</button></div>
+        <div id="containerStatus" class="hint"></div>
+        <div><label>🏗️ رخصة البناء</label><input type="file" id="buildingPermitFile" accept=".pdf,.jpg,.png"></div>
+        <div id="buildingPermitStatus" class="hint"></div>
+        <div style="margin-top:15px;"><label>📂 مرفقات أخرى <button class="add-attachment" onclick="addExtraAttachment()">+</button></label><div id="extraAttachments"></div></div>
+        <div id="attachmentsWarning" class="warning-text"></div>
+        <div class="nav-buttons">
+            <button class="btn btn-outline" onclick="goBack()">🔙 رجوع</button>
+            <button class="btn" id="toStep5Btn" style="display:none;" onclick="goToStep5()">التالي: الموقع والتدقيق ←</button>
+        </div>
+    </div>
+
+    <!-- خطوة 5: الخريطة والتدقيق -->
+    <div class="panel" id="step5Panel" style="display:none;">
+        <label>📍 موقع العقار على الخريطة</label>
+        <div id="map"></div>
+        <div class="hint" id="mapHint"></div>
+        <div id="zoneDetectionStatus" class="loading" style="margin-top:10px;"></div>
+        <div class="nav-buttons">
+            <button class="btn btn-outline" onclick="goBack()">🔙 رجوع</button>
+            <button class="btn" id="finalAuditBtn" onclick="runFinalAudit()">🔍 تدقيق نهائي</button>
+        </div>
+        <div id="finalResult" style="margin-top:20px;"></div>
+        <div id="submitSection" class="submit-section" style="display:none;">
+            <button class="btn" onclick="submitRequest()">📨 تقديم الطلب إلى منصة بلدي</button>
+            <div id="submissionResult" style="margin-top:15px;"></div>
+        </div>
+    </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
-  // ---------- قواعد البيانات الوهمية ----------
-  // 1. قاعدة السجلات التجارية (رقم -> أنشطة مسموحة)
-  const crDatabase = {
-    "1010": ["محل", "مكتب", "كشك", "مقهى"],  // سجل تجاري يسمح بأنشطة تجارية
-    "2020": ["مستودع", "مخازن عامة"],
-    "3030": ["ورشة", "مصنع"],
-    "4040": ["محل", "مستودع", "ورشة"] // متعدد
-  };
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-  // 2. قاعدة بيانات القطع العقارية (رقم القطعة + المخطط -> إحداثيات و تصنيف المنطقة)
-  const landDatabase = {
-    "123-456": { lat: 24.7200, lng: 46.6800, zone: "تجاري", address: "شارع التحلية، حي الروضة" },
-    "88-999":  { lat: 24.7050, lng: 46.6600, zone: "صناعي", address: "المنطقة الصناعية، طريق الخرج" },
-    "55-111":  { lat: 24.6900, lng: 46.7200, zone: "مستودعات", address: "حي المستودعات، الدائري الجنوبي" },
-    "10-202":  { lat: 24.7350, lng: 46.6900, zone: "تجاري", address: "طريق الملك فهد، العليا" }
-  };
+    let currentStep = 1;
+    let selectedType = "";
+    let crValidated = false;
+    let map, selectedMarker, mapInitialized = false;
+    window.currentZone = "";
+    let safetyOk = false, plateOk = false, containerOk = false;
 
-  // 3. محاكاة استخراج بيانات عقد إيجار (حسب القطعة)
-  const leaseMockData = {
-    "123-456": { tenant: "مؤسسة النخبة التجارية", owner: "عبدالله العتيبي", area: 120, openings: 3, endDate: "2027-05-01", piece: "123", plan: "456", address: "شارع التحلية، حي الروضة" },
-    "88-999":  { tenant: "شركة التصنيع المتقدمة", owner: "محمد القحطاني", area: 450, openings: 5, endDate: "2025-12-30", piece: "88", plan: "999", address: "المنطقة الصناعية، طريق الخرج" },
-    "55-111": { tenant: "مستودعات الجزيرة", owner: "سعد السبيعي", area: 800, openings: 2, endDate: "2026-08-15", piece: "55", plan: "111", address: "حي المستودعات، الدائري الجنوبي" },
-    "10-202": { tenant: "كافيه لينا", owner: "لينا أحمد", area: 60, openings: 1, endDate: "2025-01-10", piece: "10", plan: "202", address: "طريق الملك فهد، العليا" }
-  };
+    function updateStepsUI(step) {
+        document.querySelectorAll('.step').forEach((el, idx) => {
+            el.classList.remove('active', 'done');
+            if (idx + 1 === step) el.classList.add('active');
+            else if (idx + 1 < step) el.classList.add('done');
+        });
+    }
 
-  // متغيرات عامة
-  let currentStep = 1;
-  let selectedType = "";
-  let crValidated = false;
-  let leaseData = null;
-  let mapInitialized = false;
-  let map, selectedMarker;
+    function goBack() {
+        if (currentStep <= 1) return;
+        document.getElementById(`step${currentStep}Panel`).style.display = 'none';
+        currentStep--;
+        document.getElementById(`step${currentStep}Panel`).style.display = 'block';
+        updateStepsUI(currentStep);
+    }
 
-  // تحديث مؤشر الخطوات
-  function updateStepsUI(step) {
-    document.querySelectorAll('.step').forEach((el, idx) => {
-      el.classList.remove('active', 'done');
-      if (idx + 1 === step) el.classList.add('active');
-      else if (idx + 1 < step) el.classList.add('done');
+    function goToStep2() {
+        selectedType = document.getElementById('establishmentType').value;
+        if (!selectedType) { alert("اختر نوع المنشأة"); return; }
+        document.getElementById('step1Panel').style.display = 'none';
+        document.getElementById('step2Panel').style.display = 'block';
+        currentStep = 2; updateStepsUI(2);
+        crValidated = false;
+        document.getElementById('extractedActivity').value = '';
+        document.getElementById('crMatchResult').innerHTML = '';
+        document.getElementById('toStep3Btn').style.display = 'none';
+    }
+
+    // ----- السجل التجاري -----
+    async function processCRFile() {
+        const file = document.getElementById('crFileInput').files[0];
+        if (!file) { alert("اختر ملف السجل"); return; }
+        document.getElementById('crStatus').innerHTML = '⏳ جاري استخراج النص...';
+        let text = "";
+        try {
+            if (file.type === 'application/pdf') {
+                const arrayBuf = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument(arrayBuf).promise;
+                let fullText = "";
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const content = await page.getTextContent();
+                    fullText += content.items.map(it => it.str).join(' ') + " ";
+                }
+                text = fullText;
+            } else {
+                const url = URL.createObjectURL(file);
+                const { data: { text: ocrText } } = await Tesseract.recognize(url, 'ara+eng');
+                text = ocrText;
+                URL.revokeObjectURL(url);
+            }
+            document.getElementById('crStatus').innerHTML = '✅ تم استخراج النص.';
+            const words = ["محل","مستودع","ورشة","مصنع","مبسط","مكتب","كشك"];
+            let found = "";
+            for (let w of words) if (text.includes(w)) { found = w; break; }
+            document.getElementById('extractedActivity').value = found || "";
+            validateCR();
+        } catch (e) {
+            document.getElementById('crStatus').innerHTML = '❌ فشل: ' + e.message;
+        }
+    }
+
+    function validateCR() {
+        const val = document.getElementById('extractedActivity').value.trim();
+        if (val === selectedType) {
+            document.getElementById('crMatchResult').innerHTML = '✅ النشاط مطابق';
+            document.getElementById('toStep3Btn').style.display = 'inline-block';
+            crValidated = true;
+        } else {
+            document.getElementById('crMatchResult').innerHTML = '🚫 النشاط غير مطابق، أضفه للسجل أولاً';
+            document.getElementById('toStep3Btn').style.display = 'none';
+            crValidated = false;
+        }
+    }
+    document.getElementById('extractedActivity').addEventListener('input', validateCR);
+
+    function goToStep3() {
+        if (!crValidated) { alert("النشاط غير مطابق"); return; }
+        document.getElementById('step2Panel').style.display = 'none';
+        document.getElementById('step3Panel').style.display = 'block';
+        currentStep = 3; updateStepsUI(3);
+    }
+
+    // ----- عقد الإيجار -----
+    async function processLeaseFile() {
+        const file = document.getElementById('leaseFileInput').files[0];
+        if (!file) return;
+        document.getElementById('leaseStatus').innerHTML = '⏳ جاري تحليل العقد...';
+        let text = "";
+        try {
+            if (file.type === 'application/pdf') {
+                const arrayBuf = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument(arrayBuf).promise;
+                let full = "";
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const content = await page.getTextContent();
+                    full += content.items.map(it => it.str).join(' ') + " ";
+                }
+                text = full;
+            } else {
+                const url = URL.createObjectURL(file);
+                const { data: { text: ocrText } } = await Tesseract.recognize(url, 'ara+eng');
+                text = ocrText;
+                URL.revokeObjectURL(url);
+            }
+            document.getElementById('leaseStatus').innerHTML = '✅ تم التحليل.';
+            const dateMatch = text.match(/(20\d{2}[\/\-]\d{1,2}[\/\-]\d{1,2})/);
+            if (dateMatch) document.getElementById('contractEndDate').value = dateMatch[0].replace(/\//g, '-');
+            const pieceM = text.match(/قطعة\s*رقم\s*(\d+)/i) || text.match(/قطعة\s*(\d+)/i);
+            const planM = text.match(/مخطط\s*رقم\s*(\d+)/i) || text.match(/مخطط\s*(\d+)/i);
+            if (pieceM) document.getElementById('pieceNumber').value = pieceM[1];
+            if (planM) document.getElementById('planNumber').value = planM[1];
+            const areaM = text.match(/(\d+)\s*م(?:²|2|تر\s*مربع)/);
+            if (areaM) document.getElementById('area').value = areaM[1];
+            const openM = text.match(/(\d+)\s*فتحة/);
+            if (openM) document.getElementById('openingsCount').value = openM[1];
+            const tenantM = text.match(/المستأجر\s*[:\.]?\s*([^\n]+)/);
+            if (tenantM) document.getElementById('tenantName').value = tenantM[1].trim();
+            const ownerM = text.match(/المالك\s*[:\.]?\s*([^\n]+)/);
+            if (ownerM) document.getElementById('ownerName').value = ownerM[1].trim();
+            const addrM = text.match(/العنوان\s*[:\.]?\s*([^\n]+)/);
+            if (addrM) document.getElementById('nationalAddress').value = addrM[1].trim();
+            checkLeaseDate();
+        } catch (e) {
+            document.getElementById('leaseStatus').innerHTML = '❌ فشل: ' + e.message;
+        }
+    }
+
+    function checkLeaseDate() {
+        const d = new Date(document.getElementById('contractEndDate').value);
+        const ok = !isNaN(d) && d >= new Date();
+        document.getElementById('leaseDateWarning').innerHTML = ok ? '' : '⛔ العقد منتهي';
+        document.getElementById('toStep4Btn').style.display = ok ? 'inline-block' : 'none';
+    }
+    document.getElementById('contractEndDate').addEventListener('input', checkLeaseDate);
+
+    function goToStep4() {
+        if (!document.getElementById('toStep4Btn').style.display.includes('inline-block')) return;
+        document.getElementById('step3Panel').style.display = 'none';
+        document.getElementById('step4Panel').style.display = 'block';
+        currentStep = 4; updateStepsUI(4);
+        checkAttachments();
+    }
+
+    // ----- المرفقات -----
+    function verifySafety() {
+        const v = document.getElementById('safetyReportNumber').value.trim();
+        document.getElementById('safetyStatus').innerHTML = v.startsWith('SR-') ? '✅ تم التحقق' : '❌ رقم غير صالح';
+        safetyOk = v.startsWith('SR-');
+        checkAttachments();
+    }
+    function verifyPlate() {
+        const v = document.getElementById('myPlateNumber').value.trim();
+        document.getElementById('plateStatus').innerHTML = v.startsWith('LP-') ? '✅ تم التحقق' : '❌ رقم غير صالح';
+        plateOk = v.startsWith('LP-');
+        checkAttachments();
+    }
+    function verifyContainer() {
+        const v = document.getElementById('containerNumber').value.trim();
+        document.getElementById('containerStatus').innerHTML = v.startsWith('CNT-') ? '✅ تم التحقق' : '❌ رقم غير صالح';
+        containerOk = v.startsWith('CNT-');
+        checkAttachments();
+    }
+    function addExtraAttachment() {
+        const div = document.createElement('div');
+        div.innerHTML = '<input type="file" style="margin-top:5px;">';
+        document.getElementById('extraAttachments').appendChild(div);
+    }
+    document.getElementById('buildingPermitFile').addEventListener('change', function(e) {
+        document.getElementById('buildingPermitStatus').innerHTML = e.target.files[0] ? '✅ تم إرفاق الرخصة' : '';
+        checkAttachments();
     });
-  }
 
-  // الانتقال للخطوة 2
-  function goToStep2() {
-    selectedType = document.getElementById('establishmentType').value;
-    if (!selectedType) { alert("الرجاء اختيار نوع المنشأة"); return; }
-    document.getElementById('step1Panel').style.display = 'none';
-    document.getElementById('step2Panel').style.display = 'block';
-    currentStep = 2;
-    updateStepsUI(2);
-  }
-
-  // التحقق من السجل التجاري
-  function verifyCommercialReg() {
-    const regNumber = document.getElementById('commercialRegNumber').value.trim();
-    const resultDiv = document.getElementById('crResult');
-    const warningDiv = document.getElementById('crActivityWarning');
-    const nextBtn = document.getElementById('toStep3Btn');
-
-    if (!regNumber || !crDatabase[regNumber]) {
-      resultDiv.innerHTML = '<span class="warning-text">❌ رقم السجل غير موجود في قاعدة البيانات (محاكاة)</span>';
-      nextBtn.style.display = 'none';
-      crValidated = false;
-      return;
+    function checkAttachments() {
+        const permit = document.getElementById('buildingPermitFile').files[0];
+        const missing = [];
+        if (!safetyOk) missing.push('تقرير سلامة');
+        if (!plateOk) missing.push('منصة لوحتي');
+        if (!containerOk) missing.push('عقد الحاوية');
+        if (!permit) missing.push('رخصة البناء');
+        document.getElementById('attachmentsWarning').innerHTML = missing.length ? '⚠️ ينقص: ' + missing.join('، ') : '';
+        document.getElementById('toStep5Btn').style.display = missing.length ? 'none' : 'inline-block';
     }
 
-    const allowedActivities = crDatabase[regNumber];
-    // هل النشاط المختار موجود في السجل؟
-    if (allowedActivities.includes(selectedType)) {
-      resultDiv.innerHTML = '<span style="color:#065f46; font-weight:bold;">✅ السجل التجاري ساري والنشاط مطابق.</span>';
-      warningDiv.innerHTML = '';
-      nextBtn.style.display = 'inline-block';
-      crValidated = true;
-    } else {
-      resultDiv.innerHTML = '<span style="color:#b91c1c;">⚠️ السجل التجاري موجود لكن النشاط المختار غير مضاف.</span>';
-      warningDiv.innerHTML = '🚫 يجب إضافة نشاط "' + selectedType + '" إلى السجل التجاري قبل المتابعة.';
-      nextBtn.style.display = 'none';
-      crValidated = false;
-    }
-  }
-
-  // الانتقال للخطوة 3
-  function goToStep3() {
-    if (!crValidated) { alert("يجب التحقق من السجل التجاري أولاً"); return; }
-    document.getElementById('step2Panel').style.display = 'none';
-    document.getElementById('step3Panel').style.display = 'block';
-    currentStep = 3;
-    updateStepsUI(3);
-  }
-
-  // محاكاة رفع العقد واستخراج البيانات
-  function mockUploadLease() {
-    // نعطي المستخدم خيارًا: نأخذ رقم القطعة والمخطط من قاعدة بياناتنا بشكل عشوائي للعرض.
-    // لكن في الواقع سنضغط على الزر ونقوم بملء الحقول ببيانات وهمية افتراضية (مثلاً قطعة 123-456)
-    // لنجعل التجربة تفاعلية: نعرض رسالة ثم نعبئ بيانات أحد العقود.
-    const piecePlanOptions = Object.keys(leaseMockData);
-    const randomKey = piecePlanOptions[Math.floor(Math.random() * piecePlanOptions.length)];
-    const data = leaseMockData[randomKey];
-
-    document.getElementById('tenantName').value = data.tenant;
-    document.getElementById('ownerName').value = data.owner;
-    document.getElementById('area').value = data.area;
-    document.getElementById('openingsCount').value = data.openings;
-    document.getElementById('contractEndDate').value = data.endDate;
-    document.getElementById('pieceNumber').value = data.piece;
-    document.getElementById('planNumber').value = data.plan;
-    document.getElementById('nationalAddress').value = data.address;
-
-    // تخزين البيانات
-    leaseData = data;
-
-    // التحقق من تاريخ العقد
-    const endDate = new Date(data.endDate);
-    const today = new Date();
-    const warningDiv = document.getElementById('leaseDateWarning');
-    const nextBtn = document.getElementById('toStep4Btn');
-
-    if (endDate < today) {
-      warningDiv.innerHTML = '⛔ عقد الإيجار منتهي الصلاحية! لا يمكن إكمال الطلب.';
-      nextBtn.style.display = 'none';
-    } else {
-      warningDiv.innerHTML = '';
-      nextBtn.style.display = 'inline-block';
-    }
-  }
-
-  // ربط الزر المزيف برفع الملف والمحاكاة
-  document.getElementById('uploadLeaseTrigger').addEventListener('click', function() {
-    // في الإصدار الحقيقي هنا نفتح نافذة رفع الملف، لكننا نكتفي بالمحاكاة
-    mockUploadLease();
-    alert("✅ تم تحليل عقد الإيجار بنجاح (محاكاة).");
-  });
-  document.getElementById('realLeaseFile').addEventListener('change', function(e) {
-    mockUploadLease();
-    alert("📄 تم فحص الملف (محاكاة OCR).");
-  });
-
-  // الانتقال للخطوة 4: الخريطة
-  function goToStep4() {
-    if (!leaseData) { alert("يجب رفع العقد أولاً"); return; }
-    document.getElementById('step3Panel').style.display = 'none';
-    document.getElementById('step4Panel').style.display = 'block';
-    currentStep = 4;
-    updateStepsUI(4);
-
-    // تهيئة الخريطة (مرة واحدة)
-    if (!mapInitialized) {
-      initMap();
-      mapInitialized = true;
+    function goToStep5() {
+        if (!safetyOk || !plateOk || !containerOk || !document.getElementById('buildingPermitFile').files[0]) return;
+        document.getElementById('step4Panel').style.display = 'none';
+        document.getElementById('step5Panel').style.display = 'block';
+        currentStep = 5; updateStepsUI(5);
+        initMap();
     }
 
-    // تحديد الموقع بناءً على رقم القطعة والمخطط
-    const piece = leaseData.piece;
-    const plan = leaseData.plan;
-    const key = piece + "-" + plan;
-    const landInfo = landDatabase[key];
-
-    if (landInfo && map) {
-      if (selectedMarker) map.removeLayer(selectedMarker);
-      const latlng = [landInfo.lat, landInfo.lng];
-      map.setView(latlng, 15);
-      selectedMarker = L.marker(latlng).addTo(map)
-        .bindPopup(`<b>${landInfo.address}</b><br>قطعة ${piece} - مخطط ${plan}<br>منطقة: ${landInfo.zone}`).openPopup();
-      document.getElementById('mapHint').innerHTML = `📍 الموقع: ${landInfo.address} (${landInfo.zone})`;
-      // تخزين المنطقة لاستخدامها في التدقيق
-      window.currentZone = landInfo.zone;
-    } else {
-      document.getElementById('mapHint').innerHTML = '⚠️ لم يتم العثور على إحداثيات للقطعة والمخطط في قاعدة البيانات. استخدم الخريطة يدوياً.';
-      window.currentZone = "غير معروف";
+    // ----- الخريطة والتصنيف الآلي -----
+    function initMap() {
+        if (!mapInitialized) {
+            map = L.map('map').setView([24.7136, 46.6753], 12);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+            mapInitialized = true;
+        }
+        const piece = document.getElementById('pieceNumber').value;
+        const plan = document.getElementById('planNumber').value;
+        const key = piece + "-" + plan;
+        const db = {
+            "123-456": { lat: 24.7200, lng: 46.6800, zone: "تجاري", addr: "شارع التحلية" },
+            "88-999": { lat: 24.7050, lng: 46.6600, zone: "صناعي", addr: "المنطقة الصناعية" },
+            "55-111": { lat: 24.6900, lng: 46.7200, zone: "مستودعات", addr: "حي المستودعات" },
+            "10-202": { lat: 24.7350, lng: 46.6900, zone: "تجاري", addr: "طريق الملك فهد" }
+        };
+        if (db[key]) {
+            const loc = db[key];
+            map.setView([loc.lat, loc.lng], 15);
+            if (selectedMarker) map.removeLayer(selectedMarker);
+            selectedMarker = L.marker([loc.lat, loc.lng]).addTo(map).bindPopup(loc.addr + " - " + loc.zone).openPopup();
+            document.getElementById('mapHint').innerText = "📍 " + loc.addr + " (" + loc.zone + ")";
+            window.currentZone = loc.zone;
+            document.getElementById('zoneDetectionStatus').innerHTML = '✅ منطقة معروفة مسبقاً';
+            map.off('click');
+        } else {
+            document.getElementById('mapHint').innerText = "📍 انقر على الخريطة لتحديد الموقع";
+            map.off('click');
+            map.on('click', async function(e) {
+                const { lat, lng } = e.latlng;
+                if (selectedMarker) map.removeLayer(selectedMarker);
+                selectedMarker = L.marker([lat, lng]).addTo(map).bindPopup("موقع محدد").openPopup();
+                document.getElementById('zoneDetectionStatus').innerHTML = '⏳ جاري التصنيف الجغرافي...';
+                const zone = await fetchZoneFromOSM(lat, lng);
+                window.currentZone = zone || "";
+                document.getElementById('zoneDetectionStatus').innerHTML = zone ? `✅ المنطقة: ${zone}` : '❌ تعذر التصنيف';
+            });
+        }
     }
-  }
 
-  function initMap() {
-    map = L.map('map').setView([24.7136, 46.6753], 12);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    // إضافة مناطق مرجعية (دوائر ملونة)
-    L.circle([24.7200, 46.6800], { color: '#2a9d8f', fillColor: '#2a9d8f', fillOpacity: 0.15, radius: 900 }).addTo(map).bindPopup('منطقة تجارية');
-    L.circle([24.7050, 46.6600], { color: '#e76f51', fillColor: '#e76f51', fillOpacity: 0.15, radius: 900 }).addTo(map).bindPopup('منطقة صناعية');
-    L.circle([24.6900, 46.7200], { color: '#e9c46a', fillColor: '#e9c46a', fillOpacity: 0.15, radius: 900 }).addTo(map).bindPopup('منطقة مستودعات');
-  }
-
-  // التدقيق النهائي
-  function runFinalAudit() {
-    if (!window.currentZone || window.currentZone === "غير معروف") {
-      document.getElementById('finalResult').innerHTML = `
-        <div class="result-box reject">🔴 لا يمكن التدقيق: موقع العقار غير محدد بدقة.</div>`;
-      return;
+    async function fetchZoneFromOSM(lat, lng) {
+        const query = `[out:json];(way["landuse"](around:100,${lat},${lng});relation["landuse"](around:100,${lat},${lng}););out tags;`;
+        try {
+            const res = await fetch('https://overpass-api.de/api/interpreter', { method: 'POST', body: query });
+            const data = await res.json();
+            for (let el of data.elements) {
+                if (el.tags && el.tags.landuse) {
+                    const lu = el.tags.landuse;
+                    if (lu === 'residential') return 'سكني';
+                    if (lu === 'commercial' || lu === 'retail') return 'تجاري';
+                    if (lu === 'industrial' || lu === 'garages') return 'صناعي';
+                    if (lu === 'warehouse' || lu === 'depot') return 'مستودعات';
+                }
+            }
+            return null;
+        } catch (e) { return null; }
     }
 
-    // قواعد المناطق حسب النشاط (مبسطة)
-    const zoneCompatibility = {
-      "تجاري": ["محل", "مكتب", "كشك", "مقهى"],
-      "صناعي": ["ورشة", "مصنع"],
-      "مستودعات": ["مستودع"]
-    };
-
-    const zone = window.currentZone;
-    const allowed = zoneCompatibility[zone] || [];
-    const isAllowed = allowed.includes(selectedType);
-
-    const resultDiv = document.getElementById('finalResult');
-    if (isAllowed) {
-      resultDiv.innerHTML = `
-        <div class="result-box success">
-          ✅ النشاط متوافق مع الموقع<br>
-          <small>نوع المنشأة "${selectedType}" مسموح في المنطقة ${zone}. يمكن تقديم الطلب.</small>
-        </div>`;
-    } else {
-      const suggestion = allowed.length ? "الأنشطة المسموحة: " + allowed.join("، ") : "لا توجد أنشطة متوافقة.";
-      resultDiv.innerHTML = `
-        <div class="result-box reject">
-          🚫 النشاط غير مسموح في هذه المنطقة<br>
-          <small>لا يمكن إقامة "${selectedType}" في منطقة ${zone}. ${suggestion}</small>
-        </div>`;
+    // ----- التدقيق النهائي -----
+    function runFinalAudit() {
+        if (!window.currentZone) {
+            document.getElementById('finalResult').innerHTML = '<div class="result-box reject">🔴 لم يتم تحديد المنطقة بعد</div>';
+            return;
+        }
+        const allowedMap = {
+            "تجاري": ["محل","مكتب","كشك","مقهى"],
+            "صناعي": ["ورشة","مصنع"],
+            "مستودعات": ["مستودع"],
+            "سكني": []
+        };
+        const allowed = allowedMap[window.currentZone] || [];
+        if (allowed.includes(selectedType)) {
+            document.getElementById('finalResult').innerHTML = `<div class="result-box success">✅ النشاط "${selectedType}" متوافق مع المنطقة ${window.currentZone}</div>`;
+            document.getElementById('submitSection').style.display = 'block';
+        } else {
+            document.getElementById('finalResult').innerHTML = `<div class="result-box reject">🚫 النشاط "${selectedType}" غير مسموح في ${window.currentZone}</div>`;
+            document.getElementById('submitSection').style.display = 'none';
+        }
     }
-  }
+
+    function submitRequest() {
+        const id = Math.floor(10000 + Math.random() * 90000);
+        document.getElementById('submissionResult').innerHTML = `
+            <div class="result-box success">✅ تم تقديم الطلب بنجاح<br>
+            <span class="request-number">رقم الطلب: BLD-${new Date().getFullYear()}-${id}</span><br>
+            <small>سيتم الرد عليك خلال 5 أيام عمل.</small></div>`;
+        document.querySelector('#submitSection .btn').style.display = 'none';
+    }
 </script>
 </body>
 </html>

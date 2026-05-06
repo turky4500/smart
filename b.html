@@ -3,21 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المدقق الذكي الاستباقي | منصة بلدي</title>
+    <title>المدقق الذكي | منصة بلدي</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- الخطوط: القاهرة للمظهر الرسمي -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- مكتبة الخرائط -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
         :root {
-            --primary-color: #0b3d5c;
-            --secondary-color: #1a5a82;
-            --accent-color: #27ae60;
-            --error-color: #e74c3c;
-            --bg-light: #f4f7f6;
+            --balady-blue: #1b3e5f; /* لون بلدي الأساسي */
+            --balady-green: #1e944d; /* لون الهوية السعودي */
+            --balady-light-bg: #f8fafc;
+            --balady-gold: #c5a059;
             --white: #ffffff;
-            --gray-light: #e0e0e0;
+            --text-dark: #2c3e50;
+            --border-color: #e2e8f0;
         }
 
         * {
@@ -26,54 +28,82 @@
         }
 
         body {
-            background-color: var(--bg-light);
+            background-color: var(--balady-light-bg);
             margin: 0;
             padding: 0;
-            color: #333;
+            color: var(--text-dark);
+            line-height: 1.6;
         }
 
-        /* Header */
+        /* الهيدر المحدث بهوية بلدي */
         header {
-            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: var(--white);
-            padding: 15px 5%;
+            background: var(--white);
+            border-bottom: 4px solid var(--balady-gold);
+            padding: 10px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        header h1 { margin: 0; font-size: 1.5rem; }
-        header p { margin: 0; font-size: 0.9rem; opacity: 0.8; }
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-        /* Main Container */
+        .logo-placeholder {
+            width: 120px;
+            height: 50px;
+            background: var(--balady-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        .header-title h1 {
+            font-size: 1.2rem;
+            margin: 0;
+            color: var(--balady-blue);
+            font-weight: 800;
+        }
+
+        .header-title p {
+            font-size: 0.8rem;
+            margin: 0;
+            color: var(--balady-green);
+            font-weight: 600;
+        }
+
+        /* الحاوية الرئيسية بتصميم البطاقات الحديثة */
         .container {
-            max-width: 900px;
-            margin: 30px auto;
+            max-width: 1000px;
+            margin: 40px auto;
             background: var(--white);
-            border-radius: 28px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            min-height: 500px;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(27, 62, 95, 0.06);
+            border: 1px solid var(--border-color);
         }
 
-        /* Stepper */
+        /* شريط الخطوات المطور */
         .stepper {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
             position: relative;
-        }
-
-        .stepper::before {
-            content: '';
-            position: absolute;
-            top: 20px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--gray-light);
-            z-index: 1;
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 15px;
         }
 
         .step {
@@ -81,292 +111,349 @@
             z-index: 2;
             text-align: center;
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
         }
 
         .step-circle {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             background: var(--white);
-            border: 2px solid var(--gray-light);
-            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 10px;
-            font-weight: bold;
-            transition: 0.3s;
+            font-weight: 700;
+            transition: all 0.4s ease;
+            color: #94a3b8;
         }
 
         .step.active .step-circle {
-            border-color: var(--primary-color);
-            background: var(--primary-color);
+            border-color: var(--balady-blue);
+            background: var(--balady-blue);
             color: white;
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(27, 62, 95, 0.3);
         }
 
         .step.completed .step-circle {
-            background: var(--accent-color);
-            border-color: var(--accent-color);
+            background: var(--balady-green);
+            border-color: var(--balady-green);
             color: white;
         }
 
-        .step-label { font-size: 0.75rem; color: #777; font-weight: 600; }
-        .step.active .step-label { color: var(--primary-color); }
+        .step-label { 
+            font-size: 0.85rem; 
+            color: #64748b; 
+            font-weight: 700; 
+        }
 
-        /* Panels */
-        .panel { display: none; animation: fadeIn 0.5s ease; }
+        .step.active .step-label { color: var(--balady-blue); }
+
+        /* الألواح والعناوين */
+        .panel { display: none; animation: slideUp 0.4s ease-out; }
         .panel.active { display: block; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        h2 { color: var(--primary-color); border-right: 4px solid var(--accent-color); padding-right: 15px; margin-bottom: 25px; }
+        h2 { 
+            color: var(--balady-blue); 
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-        /* Form Elements */
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; }
+        h2::before {
+            content: '';
+            width: 8px;
+            height: 30px;
+            background: var(--balady-green);
+            border-radius: 4px;
+        }
+
+        /* المدخلات والأزرار */
+        .form-group { margin-bottom: 25px; }
+        
+        label { 
+            display: block; 
+            margin-bottom: 10px; 
+            font-weight: 700; 
+            color: var(--balady-blue);
+            font-size: 0.95rem;
+        }
+
         input, select {
             width: 100%;
-            padding: 12px;
-            border: 1px solid var(--gray-light);
-            border-radius: 8px;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
             font-size: 1rem;
+            transition: all 0.3s;
+            background: #fdfdfd;
         }
 
-        .verify-row { display: flex; gap: 10px; align-items: flex-end; }
-        .verify-row input { flex: 1; }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--balady-blue);
+            box-shadow: 0 0 0 4px rgba(27, 62, 95, 0.1);
+        }
 
         .btn {
-            padding: 12px 25px;
-            border-radius: 8px;
+            padding: 14px 30px;
+            border-radius: 12px;
             border: none;
             cursor: pointer;
-            font-weight: 600;
-            transition: 0.3s;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn-primary { background: var(--primary-color); color: white; }
-        .btn-primary:hover { background: var(--secondary-color); }
-        .btn-outline { background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); }
-        .btn-verify { background: var(--accent-color); color: white; white-space: nowrap; }
-        .btn-add { background: #555; color: white; margin-top: 10px; }
+        .btn-primary { 
+            background: var(--balady-blue); 
+            color: white; 
+        }
         
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary:hover { 
+            background: #132d46; 
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(27, 62, 95, 0.2);
+        }
 
-        /* Info Boxes */
+        .btn-verify { 
+            background: var(--balady-green); 
+            color: white; 
+        }
+
+        .btn-outline { 
+            background: white; 
+            border: 2px solid var(--balady-blue); 
+            color: var(--balady-blue); 
+        }
+
+        /* صناديق الحالة */
         .status-box {
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            display: none;
-        }
-        .success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; display: block; }
-        .error { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; display: block; }
-        .loading { background: #e3f2fd; color: #1565c0; display: block; }
-
-        /* Map */
-        #map { height: 300px; width: 100%; border-radius: 12px; margin: 15px 0; border: 1px solid #ddd; }
-
-        .footer-nav {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-weight: 600;
+            border-right: 5px solid transparent;
         }
 
-        footer { text-align: center; padding: 20px; color: #777; font-size: 0.8rem; }
-
-        /* Responsive */
-        @media (max-width: 600px) {
-            .stepper { flex-wrap: wrap; gap: 10px; }
-            .step { min-width: 30%; }
-            .verify-row { flex-direction: column; }
-            .btn-verify { width: 100%; }
-        }
-    </style>
+        .success { background: #f0fdf4; color: #166534; border-right-color: var(--balady-green); }
+        .error { background: #fef2f2; color: #991b1b; border-right-color: #ef4444; }
+        .loading { background: #f0f9ff; color: #075985; border-right-color: #0ea5e9; }
+        </style>
 </head>
 <body>
 
 <header>
-    <div>
-        <h1>بلدي - Balady</h1>
-        <p>المدقق الذكي الاستباقي · أمانة منطقة الرياض</p>
+    <div class="logo-section">
+        <div class="logo-placeholder">
+            وزارة الشؤون<br>القروية والإسكان
+        </div>
+        <div class="header-title">
+            <h1>منصة بلدي - Balady</h1>
+            <p>منظومة التدقيق الاستباقي للرخص التجارية</p>
+        </div>
     </div>
-    <div style="font-size: 1.2rem; font-weight: bold;">🇸🇦</div>
+    <div style="color: var(--balady-blue); font-weight: 800; font-size: 1.1rem;">
+        أمانة منطقة الرياض <span style="color: var(--balady-gold);">|</span> 2026
+    </div>
 </header>
 
 <div class="container">
+    <!-- مؤشر الخطوات (Stepper) -->
     <div class="stepper" id="stepper">
         <div class="step active" data-step="1">
             <div class="step-circle">1</div>
-            <div class="step-label">نوع المنشأة</div>
+            <div class="step-label">النشاط</div>
         </div>
         <div class="step" data-step="2">
             <div class="step-circle">2</div>
-            <div class="step-label">السجل التجاري</div>
+            <div class="step-label">السجل</div>
         </div>
         <div class="step" data-step="3">
             <div class="step-circle">3</div>
-            <div class="step-label">الموقع والعقد</div>
+            <div class="step-label">العقار</div>
         </div>
         <div class="step" data-step="4">
             <div class="step-circle">4</div>
-            <div class="step-label">المرفقات</div>
+            <div class="step-label">المتطلبات</div>
         </div>
         <div class="step" data-step="5">
             <div class="step-circle">5</div>
-            <div class="step-label">التدقيق</div>
+            <div class="step-label">الاعتماد</div>
         </div>
     </div>
 
+    <!-- الخطوة 1: نوع النشاط -->
     <div class="panel active" id="step1">
-        <h2>اختيار نوع المنشأة</h2>
+        <h2>اختيار نوع النشاط التجاري</h2>
         <div class="form-group">
-            <label>حدد نوع النشاط التجاري المراد ترخيصه:</label>
+            <label>ما هو نوع المنشأة التي ترغب في إصدار رخصة لها؟</label>
             <select id="establishmentType">
-                <option value="">-- اختر من القائمة --</option>
-                <option value="shop">محل تجاري</option>
-                <option value="warehouse">مستودع</option>
-                <option value="workshop">ورشة</option>
-                <option value="factory">مصنع</option>
-                <option value="office">مكتب</option>
-                <option value="kiosk">كشك / مبسط</option>
+                <option value="">-- اختر نوع النشاط من القائمة --</option>
+                <option value="shop">محل تجاري / تجزئة</option>
+                <option value="warehouse">مستودع تخزين</option>
+                <option value="workshop">ورشة فنية / صيانة</option>
+                <option value="factory">منشأة صناعية / مصنع</option>
+                <option value="office">مكتب إداري / مهني</option>
+                <option value="kiosk">كشك / مبسط مؤقت</option>
             </select>
         </div>
         <div class="footer-nav">
             <span></span>
-            <button class="btn btn-primary" onclick="goToStep(2)">التالي: السجل التجاري</button>
+            <button class="btn btn-primary" onclick="goToStep(2)">المتابعة للسجل التجاري ➔</button>
         </div>
     </div>
-        <div class="panel" id="step2">
-        <h2>التحقق من السجل التجاري</h2>
+
+    <!-- الخطوة 2: السجل التجاري -->
+    <div class="panel" id="step2">
+        <h2>بيانات السجل التجاري</h2>
         <div class="form-group">
-            <label>رقم السجل التجاري (10 أرقام):</label>
-            <div class="verify-row">
-                <input type="text" id="crNumber" placeholder="مثلاً: 1010000001">
-                <button class="btn btn-verify" onclick="verifyCR()">التحقق من وزارة التجارة</button>
+            <label>رقم السجل التجاري (المستخرج من وزارة التجارة):</label>
+            <div class="verify-row" style="display: flex; gap: 10px;">
+                <input type="text" id="crNumber" placeholder="أدخل 10 أرقام، مثال: 1010000001">
+                <button class="btn btn-verify" onclick="verifyCR()">التحقق الرقمي</button>
             </div>
             <div id="crStatus" class="status-box"></div>
         </div>
         <div class="footer-nav">
-            <button class="btn btn-outline" onclick="goToStep(1)">رجوع</button>
-            <button class="btn btn-primary" id="nextStep2" disabled onclick="goToStep(3)">التالي: الموقع والعقد</button>
+            <button class="btn btn-outline" onclick="goToStep(1)">السابق</button>
+            <button class="btn btn-primary" id="nextStep2" disabled onclick="goToStep(3)">المتابعة لبيانات الموقع ➔</button>
         </div>
     </div>
 
+    <!-- الخطوة 3: الموقع والعقد -->
     <div class="panel" id="step3">
-        <h2>الموقع والعقد الموحد</h2>
+        <h2>بيانات الموقع وعقد الإيجار</h2>
         
-        <div style="background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-            <h4>أ- البوابة المكانية (أمانة الرياض)</h4>
-            <div class="verify-row">
-                <div style="flex:1">
+        <div style="background: #f8fafc; padding: 25px; border-radius: 15px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
+            <h4 style="margin-top:0; color: var(--balady-green);">📍 البوابة المكانية (أمانة الرياض)</h4>
+            <div class="verify-row" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <div style="flex:1; min-width: 150px;">
                     <label>رقم المخطط</label>
-                    <input type="text" id="planNumber" placeholder="مثلاً: 2500">
+                    <input type="text" id="planNumber" placeholder="مثال: 2500">
                 </div>
-                <div style="flex:1">
+                <div style="flex:1; min-width: 150px;">
                     <label>رقم القطعة</label>
-                    <input type="text" id="parcelNumber" placeholder="مثلاً: 101">
+                    <input type="text" id="parcelNumber" placeholder="مثال: 101">
                 </div>
-                <button class="btn btn-verify" onclick="verifyLocation()">تحقق</button>
+                <button class="btn btn-verify" style="align-self: flex-end;" onclick="verifyLocation()">استعلام مكاني</button>
             </div>
             <div id="locStatus" class="status-box"></div>
         </div>
 
-        <div style="background: #f9f9f9; padding: 15px; border-radius: 12px;">
-            <h4>ب- منصة إيجار</h4>
-            <div class="verify-row">
-                <input type="text" id="ejarNumber" placeholder="EJR-123456">
-                <button class="btn btn-verify" onclick="verifyEjar()">تحقق من العقد</button>
+        <div style="background: #f8fafc; padding: 25px; border-radius: 15px; border: 1px solid #e2e8f0;">
+            <h4 style="margin-top:0; color: var(--balady-green);">📑 منصة إيجار (عقد موحد)</h4>
+            <div class="verify-row" style="display: flex; gap: 10px;">
+                <input type="text" id="ejarNumber" placeholder="أدخل رقم العقد، مثال: EJR-112233">
+                <button class="btn btn-verify" onclick="verifyEjar()">التحقق من العقد</button>
             </div>
             <div id="ejarStatus" class="status-box"></div>
         </div>
 
         <div class="footer-nav">
-            <button class="btn btn-outline" onclick="goToStep(2)">رجوع</button>
-            <button class="btn btn-primary" id="nextStep3" disabled onclick="goToStep(4)">التالي: المرفقات</button>
+            <button class="btn btn-outline" onclick="goToStep(2)">السابق</button>
+            <button class="btn btn-primary" id="nextStep3" disabled onclick="goToStep(4)">المتابعة للمرفقات ➔</button>
         </div>
     </div>
-
+    <!-- الخطوة 4: المرفقات الرقمية -->
     <div class="panel" id="step4">
-        <h2>المرفقات الإلزامية والتحقق الرقمي</h2>
-        <p style="font-size: 0.8rem; color: #666;">يرجى إدخال أرقام الشهادات والتحقق منها إلكترونياً.</p>
+        <h2>المتطلبات والمرفقات الرقمية</h2>
+        <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 25px;">النظام يقوم بالتحقق الاستباقي من صحة الشهادات عبر الربط المباشر مع الجهات المعنية.</p>
         
         <div class="form-group">
-            <label>تقرير سلامة (الدفاع المدني):</label>
-            <div class="verify-row">
-                <input type="text" id="certSalamah" placeholder="SR-XXXXX" oninput="checkAttachments()">
-            </div>
+            <label>شهادة سلامة (الدفاع المدني):</label>
+            <input type="text" id="certSalamah" placeholder="أدخل رقم الشهادة، مثال: SR-12345" oninput="checkAttachments()">
         </div>
+
         <div class="form-group">
-            <label>شهادة منصة لوحتي:</label>
-            <div class="verify-row">
-                <input type="text" id="certLawhati" placeholder="LP-XXXXX" oninput="checkAttachments()">
-            </div>
+            <label>شهادة منصة لوحتي (لوحة المنشأة):</label>
+            <input type="text" id="certLawhati" placeholder="أدخل رقم الشهادة، مثال: LP-12345" oninput="checkAttachments()">
         </div>
+
         <div class="form-group">
-            <label>عقد الحاوية:</label>
-            <div class="verify-row">
-                <input type="text" id="certContainer" placeholder="CNT-XXXXX" oninput="checkAttachments()">
-            </div>
+            <label>عقد الحاوية الإلكتروني:</label>
+            <input type="text" id="certContainer" placeholder="أدخل رقم العقد، مثال: CNT-12345" oninput="checkAttachments()">
         </div>
-        <div class="form-group">
-            <label>رخصة البناء (PDF):</label>
-            <input type="file" id="fileBuilding" onchange="checkAttachments()">
+
+        <div class="form-group" style="background: #f1f5f9; padding: 20px; border-radius: 12px; border: 1px dashed var(--balady-blue);">
+            <label>إرفاق رخصة البناء (نسخة PDF):</label>
+            <input type="file" id="fileBuilding" onchange="checkAttachments()" style="border: none; background: transparent; padding: 0;">
         </div>
+
         <div id="extraFiles"></div>
-        <button class="btn btn-add" onclick="addFileInput()">+ إضافة مرفق آخر</button>
+        <button class="btn btn-add" onclick="addFileInput()" style="background: #94a3b8; color: white; margin-bottom: 20px;">+ إضافة مستند إضافي</button>
 
         <div class="footer-nav">
-            <button class="btn btn-outline" onclick="goToStep(3)">رجوع</button>
-            <button class="btn btn-primary" id="nextStep4" disabled onclick="goToStep(5)">التالي: التدقيق النهائي</button>
+            <button class="btn btn-outline" onclick="goToStep(3)">السابق</button>
+            <button class="btn btn-primary" id="nextStep4" disabled onclick="goToStep(5)">المتابعة للتدقيق الجغرافي ➔</button>
         </div>
     </div>
 
+    <!-- الخطوة 5: الخريطة والتدقيق النهائي -->
     <div class="panel" id="step5">
-        <h2>التدقيق الجغرافي والنهائي</h2>
-        <div id="map"></div>
-        <div id="finalAuditInfo" class="status-box success">
-            بانتظار التدقيق النهائي للموقع والنشاط...
+        <h2>التدقيق الذكي والاعتماد الفوري</h2>
+        <div id="map" style="margin-bottom: 20px;"></div>
+        
+        <div id="finalAuditInfo" class="status-box success" style="background: #fff; border: 1px solid var(--border-color);">
+            نظام "المدقق الذكي" جاهز لتحليل البيانات ومطابقتها مع الاشتراطات البلدية.
         </div>
         
         <div class="footer-nav">
-            <button class="btn btn-outline" onclick="goToStep(4)">رجوع</button>
-            <button class="btn btn-verify" id="btnAudit" onclick="runFinalAudit()">🔍 إجراء التدقيق الذكي</button>
-            <button class="btn btn-primary" id="btnSubmit" style="display:none;" onclick="submitApplication()">📨 تقديم الطلب</button>
+            <button class="btn btn-outline" onclick="goToStep(4)">السابق</button>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-verify" id="btnAudit" onclick="runFinalAudit()">🔍 بدء التدقيق الذكي</button>
+                <button class="btn btn-primary" id="btnSubmit" style="display:none; background: var(--balady-green);" onclick="submitApplication()">✅ إرسال الطلب النهائي</button>
+            </div>
         </div>
-        <div id="submitResult" class="status-box" style="margin-top:20px; font-weight:bold; text-align:center;"></div>
+        <div id="submitResult" class="status-box"></div>
     </div>
 </div>
 
-<footer>
-    أمانة منطقة الرياض - منصة بلدي للخدمات البلدية الرقمية &copy; 2026
+<footer style="margin-bottom: 40px;">
+    <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 10px;">
+        <a href="#" style="color: var(--balady-blue); text-decoration: none; font-size: 0.8rem;">شروط الخدمة</a>
+        <a href="#" style="color: var(--balady-blue); text-decoration: none; font-size: 0.8rem;">سياسة الخصوصية</a>
+        <a href="#" style="color: var(--balady-blue); text-decoration: none; font-size: 0.8rem;">اتصل بنا</a>
+    </div>
+    أمانة منطقة الرياض - جميع الحقوق محفوظة لوزارة الشؤون البلدية والقروية والإسكان &copy; 2026
 </footer>
 
+<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
-    // --- قواعد البيانات الوهمية للمحاكاة (Mock Databases) ---
+    // --- قواعد البيانات المحدثة (Mock Databases) ---
     const crDatabase = {
         "1010000001": { name: "مؤسسة الرياض للتجارة", activity: "shop", status: "ساري" },
         "1010000002": { name: "شركة نجد اللوجستية", activity: "warehouse", status: "ساري" },
-        "1010000003": { name: "ورشة إصلاح السيارات الكبرى", activity: "workshop", status: "منتهي" },
+        "1010000003": { name: "ورشة إصلاح السيارات", activity: "workshop", status: "منتهي" },
         "1010000004": { name: "مصنع الابتكار للبلاستيك", activity: "factory", status: "ساري" }
     };
 
     const landDatabase = {
         "2500-101": { lat: 24.812, lng: 46.634, zone: "commercial", district: "حي الملقا", area: "450م²" },
         "3000-505": { lat: 24.750, lng: 46.700, zone: "residential", district: "حي العقيق", area: "600م²" },
-        "1200-10": { lat: 24.550, lng: 46.850, zone: "industrial", district: "المشاعل", area: "2000م²" }
+        "1200-10": { lat: 24.550, lng: 46.850, zone: "industrial", district: "حي المشاعل", area: "2000م²" }
     };
 
     const ejarDatabase = {
         "EJR-112233": { tenant: "محمد العتيبي", expiry: "2027-01-01" },
-        "EJR-445566": { tenant: "خالد الحربي", expiry: "2025-10-10" } 
+        "EJR-445566": { tenant: "خالد الحربي", expiry: "2025-10-10" }
     };
-
     // --- إدارة حالة التطبيق (State Management) ---
     let currentStep = 1;
     let selectedActivity = "";
@@ -375,17 +462,19 @@
     let currentZone = "";
     let map, marker;
 
-    // --- وظائف التنقل (Navigation) ---
+    // --- وظيفة التنقل بين الخطوات ---
     function goToStep(step) {
+        // منع الانتقال للسجل قبل اختيار النشاط
         if (step === 2 && !document.getElementById('establishmentType').value) {
-            alert("يرجى اختيار نوع المنشأة أولاً");
+            alert("يرجى اختيار نوع النشاط أولاً للمتابعة.");
             return;
         }
 
-        // تحديث الواجهة واللوحات
+        // تحديث ظهور اللوحات
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
         document.getElementById(`step${step}`).classList.add('active');
         
+        // تحديث شكل شريط الخطوات (Stepper)
         document.querySelectorAll('.step').forEach(s => {
             const sNum = parseInt(s.dataset.step);
             s.classList.remove('active', 'completed');
@@ -396,46 +485,49 @@
         currentStep = step;
         selectedActivity = document.getElementById('establishmentType').value;
 
+        // تهيئة الخريطة عند الوصول للخطوة الأخيرة
         if (step === 5) {
-            // تهيئة الخريطة عند الوصول للخطوة الأخيرة
-            setTimeout(initMap, 100); 
+            setTimeout(initMap, 200); 
         }
+        
+        // التمرير لأعلى الصفحة عند الانتقال
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // --- منطق الخطوة 2 (السجل التجاري) ---
+    // --- التحقق من السجل التجاري (Step 2) ---
     function verifyCR() {
         const cr = document.getElementById('crNumber').value;
         const statusDiv = document.getElementById('crStatus');
         const nextBtn = document.getElementById('nextStep2');
         
         statusDiv.className = "status-box loading";
-        statusDiv.innerHTML = "⏳ جاري الاستعلام من وزارة التجارة...";
+        statusDiv.innerHTML = "⏳ جاري الاتصال بأنظمة وزارة التجارة والتحقق من السجل...";
         
         setTimeout(() => {
             const data = crDatabase[cr];
             if (data) {
                 if (data.status === "منتهي") {
                     statusDiv.className = "status-box error";
-                    statusDiv.innerHTML = `🚫 السجل التجاري منتهي (اسم المنشأة: ${data.name}). يرجى تجديده أولاً.`;
+                    statusDiv.innerHTML = `🚫 السجل التجاري (${data.name}) منتهي الصلاحية. يرجى تجديده من "مركز الأعمال" أولاً.`;
                     nextBtn.disabled = true;
                 } else if (data.activity !== selectedActivity) {
                     statusDiv.className = "status-box error";
-                    statusDiv.innerHTML = `🚫 النشاط المسجل بالسجل (${data.activity}) لا يطابق النشاط المختار (${selectedActivity}).`;
+                    statusDiv.innerHTML = `🚫 نشاط السجل (${data.activity}) لا يتطابق مع النشاط المختار (${selectedActivity}).`;
                     nextBtn.disabled = true;
                 } else {
                     statusDiv.className = "status-box success";
-                    statusDiv.innerHTML = `✅ سجل ساري ومطابق: ${data.name} <br> النشاط: ${data.activity}`;
+                    statusDiv.innerHTML = `✅ تم التحقق: سجل ساري ومطابق للنشاط. <br> المنشأة: <b>${data.name}</b>`;
                     nextBtn.disabled = false;
                 }
             } else {
                 statusDiv.className = "status-box error";
-                statusDiv.innerHTML = "🚫 رقم السجل غير موجود في قاعدة بيانات الوزارة.";
+                statusDiv.innerHTML = "🚫 رقم السجل غير موجود أو غير مرتبط بهويتك الرقمية.";
                 nextBtn.disabled = true;
             }
-        }, 800);
+        }, 1200);
     }
 
-    // --- منطق الخطوة 3 (الموقع والعقد) ---
+    // --- التحقق المكاني وعقد إيجار (Step 3) ---
     function verifyLocation() {
         const p = document.getElementById('planNumber').value;
         const c = document.getElementById('parcelNumber').value;
@@ -443,7 +535,7 @@
         const statusDiv = document.getElementById('locStatus');
 
         statusDiv.className = "status-box loading";
-        statusDiv.innerHTML = "⏳ جاري الاستعلام من البوابة المكانية لأمانة الرياض...";
+        statusDiv.innerHTML = "⏳ جاري التحقق من البوابة المكانية لأمانة منطقة الرياض...";
 
         setTimeout(() => {
             const data = landDatabase[key];
@@ -452,13 +544,13 @@
                 currentZone = data.zone;
                 window.validatedCoords = [data.lat, data.lng];
                 statusDiv.className = "status-box success";
-                statusDiv.innerHTML = `✅ الموقع محدد: ${data.district} - تصنيف الأرض: ${data.zone} - المساحة: ${data.area}`;
+                statusDiv.innerHTML = `✅ تم العثور على العقار: ${data.district} - تصنيف المنطقة: ${data.zone}`;
                 checkStep3Ready();
             } else {
                 statusDiv.className = "status-box error";
-                statusDiv.innerHTML = "🚫 لم يتم العثور على بيانات لهذه القطعة والمخطط.";
+                statusDiv.innerHTML = "🚫 بيانات الموقع غير صحيحة أو غير مسجلة في المخططات المعتمدة.";
             }
-        }, 800);
+        }, 1000);
     }
 
     function verifyEjar() {
@@ -466,7 +558,7 @@
         const statusDiv = document.getElementById('ejarStatus');
 
         statusDiv.className = "status-box loading";
-        statusDiv.innerHTML = "⏳ جاري التحقق من منصة إيجار...";
+        statusDiv.innerHTML = "⏳ جاري جلب بيانات العقد من منصة إيجار...";
 
         setTimeout(() => {
             const data = ejarDatabase[ejar];
@@ -475,18 +567,18 @@
                 const exp = new Date(data.expiry);
                 if (exp < today) {
                     statusDiv.className = "status-box error";
-                    statusDiv.innerHTML = `🚫 عقد إيجار منتهي بتاريخ ${data.expiry}`;
+                    statusDiv.innerHTML = `🚫 عقد الإيجار منتهي بتاريخ ${data.expiry}.`;
                 } else {
                     ejarValidated = true;
                     statusDiv.className = "status-box success";
-                    statusDiv.innerHTML = `✅ عقد ساري للمستأجر: ${data.tenant} (ينتهي في ${data.expiry})`;
+                    statusDiv.innerHTML = `✅ عقد موحد ساري للمستأجر: ${data.tenant}`;
                     checkStep3Ready();
                 }
             } else {
                 statusDiv.className = "status-box error";
-                statusDiv.innerHTML = "🚫 رقم عقد الإيجار غير موجود.";
+                statusDiv.innerHTML = "🚫 رقم العقد غير صحيح أو لم يتم توثيقه بعد.";
             }
-        }, 800);
+        }, 1000);
     }
 
     function checkStep3Ready() {
@@ -495,11 +587,11 @@
         }
     }
 
-    // --- منطق الخطوة 4 (المرفقات) ---
+    // --- المرفقات (Step 4) ---
     function addFileInput() {
         const div = document.createElement('div');
         div.className = 'form-group';
-        div.innerHTML = `<label>مرفق إضافي:</label><input type="file">`;
+        div.innerHTML = `<label>مرفق إضافي:</label><input type="file" style="border:none;">`;
         document.getElementById('extraFiles').appendChild(div);
     }
 
@@ -512,33 +604,14 @@
         document.getElementById('nextStep4').disabled = !(s && l && c && f);
     }
 
-    // --- منطق الخطوة 5 (الخريطة والتدقيق) ---
+    // --- التدقيق النهائي والخرائط (Step 5) ---
     function initMap() {
         if (map) return;
         const coords = window.validatedCoords || [24.7136, 46.6753];
         map = L.map('map').setView(coords, 14);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
         
-        marker = L.marker(coords).addTo(map)
-            .bindPopup("الموقع المختار")
-            .openPopup();
-
-        map.on('click', function(e) {
-            marker.setLatLng(e.latlng);
-            fetchLandUse(e.latlng.lat, e.latlng.lng);
-        });
-    }
-
-    async function fetchLandUse(lat, lng) {
-        const info = document.getElementById('finalAuditInfo');
-        info.className = "status-box loading";
-        info.innerHTML = "⏳ جاري تحليل تصنيف المنطقة...";
-        
-        // محاكاة سريعة للتحليل الجغرافي
-        setTimeout(() => {
-            info.className = "status-box success";
-            info.innerHTML = "تم تحديد الموقع يدوياً. اضغط على 'تدقيق' للتأكد من مطابقة النشاط للمنطقة.";
-        }, 500);
+        marker = L.marker(coords).addTo(map).bindPopup("الموقع المستهدف للرخصة").openPopup();
     }
 
     function runFinalAudit() {
@@ -546,6 +619,7 @@
         const btnSubmit = document.getElementById('btnSubmit');
         const btnAudit = document.getElementById('btnAudit');
 
+        // قواعد التدقيق الاستباقي
         const rules = {
             "commercial": ["shop", "office", "kiosk"],
             "industrial": ["factory", "workshop", "warehouse"],
@@ -554,26 +628,31 @@
 
         const allowed = rules[currentZone] || [];
         
-        if (allowed.includes(selectedActivity)) {
-            info.className = "status-box success";
-            info.innerHTML = `✅ تدقيق ناجح: النشاط (${selectedActivity}) مسموح به في المنطقة (${currentZone}).`;
-            btnSubmit.style.display = "inline-block";
-            btnAudit.style.display = "none";
-        } else {
-            info.className = "status-box error";
-            info.innerHTML = `🚫 تدقيق فاشل: النشاط (${selectedActivity}) غير مسموح به في منطقة (${currentZone}).`;
-        }
+        info.className = "status-box loading";
+        info.innerHTML = "⏳ جاري مطابقة بيانات النشاط مع المخطط الهيكلي وشهادات السلامة...";
+
+        setTimeout(() => {
+            if (allowed.includes(selectedActivity)) {
+                info.className = "status-box success";
+                info.innerHTML = `✅ <b>تدقيق ناجح:</b> النشاط مسموح به في هذا الموقع. جميع المتطلبات مكتملة رقمياً.`;
+                btnSubmit.style.display = "inline-flex";
+                btnAudit.style.display = "none";
+            } else {
+                info.className = "status-box error";
+                info.innerHTML = `🚫 <b>فشل التدقيق:</b> النشاط المختار (${selectedActivity}) لا يتوافق مع تصنيف المنطقة (${currentZone}). يرجى اختيار موقع تجاري.`;
+            }
+        }, 1500);
     }
 
     function submitApplication() {
         const res = document.getElementById('submitResult');
-        const orderId = "BLD-2026-" + Math.floor(10000 + Math.random() * 90000);
+        const orderId = "BAL-2026-" + Math.floor(100000 + Math.random() * 900000);
         
         res.className = "status-box success";
-        res.innerHTML = `🎊 تم تقديم طلبك بنجاح! رقم الطلب المرجعي: ${orderId}`;
+        res.style.textAlign = "center";
+        res.innerHTML = `🎊 <b>تم استلام طلبك بنجاح!</b> <br> رقم الطلب: <span style="color:var(--balady-blue)">${orderId}</span> <br> سيصلك ترخيصك الرقمي عبر تطبيق بلدي فور الاعتماد الآلي.`;
         document.getElementById('btnSubmit').disabled = true;
     }
 </script>
-
 </body>
 </html>

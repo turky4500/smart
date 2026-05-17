@@ -1,14 +1,15 @@
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify, render_template_string, redirect
 from flask_cors import CORS
 import sqlite3
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app) # للسماح لصفحة GitHub Pages بإرسال البيانات دون مشاكل الأمان
+# تفعيل CORS للسماح لصفحة GitHub Pages بإرسال بيانات التتبع دون قيود الأمان للمتصفح
+CORS(app) 
 
 DB_NAME = "analytics.db"
 
-# إنشاء قاعدة البيانات والجداول عند تشغيل السيرفر لأول مرة
+# إنشاء قاعدة البيانات والجداول تلقائياً عند تشغيل السيرفر لأول مرة
 def init_db():
     with sqlite3.connect(DB_NAME) as conn:
         cursor = conn.cursor()
@@ -23,7 +24,12 @@ def init_db():
         """)
         conn.commit()
 
-# 1. الـ API المخفي الذي سيتم استدعاؤه من صفحة أمانة الرياض
+# 1. الرابط الرئيسي: يحول الزائر تلقائياً إلى لوحة التحكم بدلاً من إظهار خطأ Not Found
+@app.route("/")
+def home():
+    return redirect("/admin/dashboard")
+
+# 2. الـ API المخفي: يتم استدعاؤه في الخلفية من صفحة أمانة الرياض لتسجيل الزيارة
 @app.route("/api/track", methods=["POST"])
 def track_view():
     ip = request.headers.get('X-Forwarded-For', request.remote_addr)
@@ -41,79 +47,86 @@ def track_view():
         
     return jsonify({"status": "success"}), 200
 
-# 2. لوحة التحكم الخاصة بك للرصد (Dashboard)
+# 3. لوحة التحكم السرية: تستعرض الإحصائيات بالتفصيل والوقت الفعلي
 @app.route("/admin/dashboard")
 def dashboard():
     with sqlite3.connect(DB_NAME) as conn:
         cursor = conn.cursor()
         
-        # إجمالي عدد الزيارات
+        # حساب إجمالي عدد الزيارات
         cursor.execute("SELECT COUNT(*) FROM views")
         total_views = cursor.fetchone()[0]
         
-        # عدد الزوار الفريدين (بناءً على الـ IP)
+        # حساب عدد الزوار الفريدين بناءً على الـ IP
         cursor.execute("SELECT COUNT(DISTINCT ip) FROM views")
         unique_visitors = cursor.fetchone()[0]
         
-        # آخر 10 زيارات بالتفصيل
+        # جلب آخر 10 زيارات مسجلة
         cursor.execute("SELECT timestamp, ip, user_agent FROM views ORDER BY id DESC LIMIT 10")
         recent_views = cursor.fetchall()
         
-    # تصميم لوحة التحكم الاحترافية بألوان متناسقة ورسوم بيانية
+    # تصميم واجهة لوحة التحكم المتوافقة مع ألوان الهوية الرسمية (الأخضر والذهبي)
     dashboard_template = """
     <!DOCTYPE html>
     <html lang="ar" dir="rtl">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>لوحة تحكم الإحصائيات الخاصة بك</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
         <style>
             body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
             .card { border: none; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
             .bg-custom-green { background-color: #005A36; color: white; }
+            .text-custom-gold { color: #D4AF37; }
         </style>
     </head>
     <body>
         <div class="container mt-5">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="text-dark">📊 لوحة تحكم الإحصائيات المتقدمة المستقلة</h2>
-                <span class="badge bg-custom-green p-2">محدث فورياً</span>
+                <h2 class="text-dark fw-bold">📊 نظام الإحصائيات المتقدم المستقل</h2>
+                <span class="badge bg-custom-green p-2 fs-6">محدث فورياً</span>
             </div>
             
             <div class="row g-4 mb-5">
                 <div class="col-md-6">
                     <div class="card p-4 text-center">
-                        <h5 class="text-muted">إجمالي المشاهدات (Pageviews)</h5>
-                        <h1 class="display-4 fw-bold text-success">{{ total_views }}</h1>
+                        <h5 class="text-muted fw-semibold">إجمالي المشاهدات (Pageviews)</h5>
+                        <h1 class="display-3 fw-bold text-success">{{ total_views }}</h1>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="card p-4 text-center">
-                        <h5 class="text-muted">الزوار الفريدون (Unique Visitors)</h5>
-                        <h1 class="display-4 fw-bold text-primary">{{ unique_visitors }}</h1>
+                        <h5 class="text-muted fw-semibold">الزوار الفريدون (Unique Visitors)</h5>
+                        <h1 class="display-3 fw-bold text-primary">{{ unique_visitors }}</h1>
                     </div>
                 </div>
             </div>
 
             <div class="card p-4">
-                <h5 class="mb-4">📋 آخر 10 زيارات حية ومسجلة</h5>
+                <h5 class="mb-4 fw-bold text-dark">📋 سجل آخر 10 زيارات حية</h5>
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover align-middle">
                         <thead class="table-light">
                             <tr>
                                 <th>الوقت والتاريخ</th>
                                 <th>عنوان IP الخاص بالزائر</th>
-                                <th>المتصفح / نظام التشغيل</th>
+                                <th>المتصفح ونظام التشغيل</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for view in recent_views %}
                             <tr>
-                                <td>{{ view[0] }}</td>
-                                <td><span class="badge bg-secondary">{{ view[1] }}</span></td>
-                                <td class="text-truncate" style="max-width: 300px;">{{ view[2] }}</td>
+                                <td class="text-muted">{{ view[0] }}</td>
+                                <td><span class="badge bg-secondary px-3 py-2 fs-6">{{ view[1] }}</span></td>
+                                <td class="text-truncate text-muted" style="max-width: 400px;" title="{{ view[2] }}">{{ view[2] }}</td>
                             </tr>
                             {% endfor %}
+                            {% if not recent_views %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-4">لا توجد زيارات مسجلة حتى الآن.</td>
+                            </tr>
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>
@@ -126,4 +139,5 @@ def dashboard():
 
 if __name__ == "__main__":
     init_db()
+    # تشغيل التطبيق محلياً للتجربة (عند الرفع على Render سيتم تجاوزه وتشغيله عبر gunicorn تلقائياً)
     app.run(host="0.0.0.0", port=5000)

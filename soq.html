@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spot Market Watch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: radial-gradient(circle at 10% 10%, #172554 0%, #020617 45%, #020617 100%);
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        color: #e2e8f0;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="app" class="min-h-screen text-slate-100"></main>
+
+    <script>
+      const WATCH_KEY = "market-watch-items-live-v4";
+      const ACTIVE_OPPORTUNITY_KEY = "market-opportunities-active-v4";
+      const HISTORY_OPPORTUNITY_KEY = "market-opportunities-history-v4";
+      const STRATEGY_SETTINGS_KEY = "market-strategy-settings-v1";
+      const OUTCOME_GRACE_MS = 60_000;
+
+      const frames = [
+        { label: "5 دقائق", binance: "5m", yahooInterval: "5m", yahooRange: "5d" },
+        { label: "15 دقيقة", binance: "15m", yahooInterval: "15m", yahooRange: "1mo" },
+        { label: "1 ساعة", binance: "1h", yahooInterval: "60m", yahooRange: "3mo" },
+        { label: "4 ساعات", binance: "4h", yahooInterval: "60m", yahooRange: "6mo" },
+        { label: "يومي", binance: "1d", yahooInterval: "1d", yahooRange: "1y" },
+      ];
+
+      const strategyRules = [
+        { key: "emaTrend", label: "اتجاه EMA20/50", short: "السعر فوق EMA20 و EMA20 فوق EMA50" },
+        { key: "rsiMacd", label: "زخم RSI + MACD", short: "RSI متوازن مع MACD Histogram موجب" },
+        { key: "breakout20", label: "اختراق قمة 20 شمعة", short: "السعر يكسر أعلى قمة قريبة" },
+        { key: "bollingerBias", label: "انحياز Bollinger", short: "السعر فوق المتوسط وبعيد عن التشبع" },
+        { key: "emaReclaim", label: "استعادة EMA20", short: "إغلاق رجوعي أعلى EMA20" },
+        { key: "volatilityFilter", label: "فلتر التذبذب", short: "تذبذب مناسب لصفقة سبوت" },
+      ];
+
+      const state = {
+        query: "",
+        message: "",
+        isSearching: false,
+        watchItems: [],
+        activeOpportunities: [],
+        historyOpportunities: [],
+        strategyState: {
+          emaTrend: true,
+          rsiMacd: true,
+          breakout20: true,
+          bollingerBias: true,
+          emaReclaim: true,
+          volatilityFilter: true,
+        },
+      };
+
+      let ws = null;
+      let monitorInterval = null;
+      let expiryInterval = null;
+
+      const app = document.getElementById("app");
+
+      function uid() {
+        return crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
+      }
+
+      function timeframeDurationMs(timeframe) {
+        const minute = 60_000;
+        if (timeframe === "5 دقائق") return 5 * minute;
+        if (timeframe === "15 دقيقة") return 15 * minute;
+        if (timeframe === "1 ساعة") return 60 * minute;
+        if (timeframe === "4 ساعات") return 4 * 60 * minute;
+        if (timeframe === "يومي") return 24 * 60 * minute;
+        return 60 * minute;
+      }
+
+      function normalizeStatus(raw) {
+        if (raw === "نجحت التوصية" || raw === "تم التحقيق") return "نجحت التوصية";
+        if (raw === "خاسرة" || raw === "تم الالغاء") return "خاسرة";
+        return "تحت المتابعة";
+      }
+
+      function normalizeOpportunity(raw) {
+        const createdAt = raw.createdAt || new Date().toISOString();
+        const timeframe = raw.timeframe || "1 ساعة";
+        return {
+          id: raw.id || uid(),
+          watchId: raw.watchId || "",
+          symbol: raw.symbol || "",
+          name: raw.name || raw.symbol || "",
+          market: raw.market || "الكريبتو",
+          timeframe,
+          entry: Number(raw.entry || 0),
+          target: Number(raw.target || 0),
+          stopLoss: Number(raw.stopLoss || 0),
+          confidence: Number(raw.confidence || 70),
+          strategy: raw.strategy || "EMA20/50 + RSI + MACD",
+          status: normalizeStatus(raw.status),
+          createdAt,
+          expiresAt: raw.expiresAt || new Date(new Date(createdAt).getTime() + timeframeDurationMs(timeframe)).toISOString(),
+          movedToHistoryAt: raw.movedToHistoryAt,
+        };
+      }
+
+      function normalizeInput(raw) {
+        const cleaned = raw.trim().toUpperCase().replace(/\s+/g, "");
+        if (!cleaned) throw new Error("ادخل رمز صحيح");
+        if (/^\d{4}(\.SR)?$/.test(cleaned)) {
+          return { market: "السوق السعودي", symbol: cleaned.endsWith(".SR") ? cleaned : `${cleaned}.SR` };
+        }
+        if (/^[A-Z]+$/.test(cleaned)) {
+          return { market: "الكريبتو", symbol: cleaned.endsWith("USDT") ? cleaned : `${cleaned}USDT` };
+        }
+        throw new Error("الرمز غير مدعوم. استخدم 2222 أو SOL");
+      }
+
+      async function fetchJsonWithFallback(url) {
+        try {
+          const direct = await fetch(url);
+          if (direct.ok) return await direct.json();
+        } catch (_) {}
+        const proxied = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
+        if (!proxied.ok) throw new Error("تعذر الوصول الى مصدر البيانات حاليا");
+        return await proxied.json();
+      }
+
+      async function fetchCryptoQuote(symbol) {
+        const data = await fetchJsonWithFallback(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`);
+        if (!data || !data.symbol) throw new Error("تعذر جلب الرمز من Binance");
+        return {
+          symbol: data.symbol,
+          name: data.symbol,
+          price: Number(data.lastPrice),
+          priceText: data.lastPrice,
+          changePercent: Number(data.priceChangePercent),
+          market: "الكريبتو",
+        };
+      }
+
+      async function fetchSaudiQuote(symbol) {
+        const data = await fetchJsonWithFallback(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbol}`);
+        const row = data && data.quoteResponse && data.quoteResponse.result && data.quoteResponse.result[0];
+        if (!row || typeof row.regularMarketPrice !== "number") throw new Error("لم يتم العثور على السهم المطلوب");
+        return {
+          symbol: row.symbol,
+          name: row.longName || row.shortName || row.symbol,
+          price: row.regularMarketPrice,
+          changePercent: row.regularMarketChangePercent || 0,
+          market: "السوق السعودي",
+        };
+      }
+
+      function ema(values, period) {
+        const k = 2 / (period + 1);
+        let last = values[0] || 0;
+        const out = [];
+        for (const value of values) {
+          last = value * k + last * (1 - k);
+          out.push(last);
+        }
+        return out;
+      }
+
+      function rsi(values, period = 14) {
+        if (values.length < period + 1) return 50;
+        let gains = 0;
+        let losses = 0;
+        for (let i = values.length - period; i < values.length; i += 1) {
+          const delta = values[i] - values[i - 1];
+          if (delta >= 0) gains += delta;
+          else losses += Math.abs(delta);
+        }
+        if (losses === 0) return 100;
+        const rs = gains / losses;
+        return 100 - 100 / (1 + rs);
+      }
+
+      function macdHistogram(values) {
+        const fast = ema(values, 12);
+        const slow = ema(values, 26);
+        const macdLine = fast.map((v, i) => v - (slow[i] || v));
+        const signal = ema(macdLine, 9);
+        const hist = (macdLine[macdLine.length - 1] || 0) - (signal[signal.length - 1] || 0);
+        return Number.isFinite(hist) ? hist : 0;
+      }
+
+      function sma(values, period) {
+        if (values.length < period) return 0;
+        const sample = values.slice(-period);
+        return sample.reduce((sum, value) => sum + value, 0) / sample.length;
+      }
+
+      function stdDev(values, period) {
+        if (values.length < period) return 0;
+        const sample = values.slice(-period);
+        const mean = sample.reduce((sum, value) => sum + value, 0) / sample.length;
+        const variance = sample.reduce((sum, value) => sum + (value - mean) ** 2, 0) / sample.length;
+        return Math.sqrt(variance);
+      }
+
+      async function fetchCloses(item, frame) {
+        if (item.market === "الكريبتو") {
+          const candles = await fetchJsonWithFallback(
+            `https://api.binance.com/api/v3/klines?symbol=${item.symbol}&interval=${frame.binance}&limit=250`,
+          );
+          return candles.map((c) => Number(c[4])).filter((n) => Number.isFinite(n));
+        }
+        const chart = await fetchJsonWithFallback(
+          `https://query1.finance.yahoo.com/v8/finance/chart/${item.symbol}?interval=${frame.yahooInterval}&range=${frame.yahooRange}`,
+        );
+        const raw = (((chart || {}).chart || {}).result || [])[0];
+        const close = ((((raw || {}).indicators || {}).quote || [])[0] || {}).close || [];
+        const closes = close.filter((v) => typeof v === "number" && Number.isFinite(v));
+        if (frame.label !== "4 ساعات") return closes;
+        const grouped = [];
+        for (let i = 3; i < closes.length; i += 4) grouped.push(closes[i]);
+        return grouped;
+      }
+
+      function buildOpportunity(item, closes, timeframe) {
+        if (closes.length < 60) return null;
+        const ema20Series = ema(closes, 20);
+        const ema50Series = ema(closes, 50);
+        const e20 = ema20Series[ema20Series.length - 1] || 0;
+        const e50 = ema50Series[ema50Series.length - 1] || 0;
+        const prevE20 = ema20Series[ema20Series.length - 2] || e20;
+        const last = closes[closes.length - 1] || 0;
+        const prevClose = closes[closes.length - 2] || last;
+        const currentRsi = rsi(closes);
+        const macd = macdHistogram(closes);
+        const range20 = closes.slice(-21, -1);
+        const max20 = range20.length > 0 ? Math.max(...range20) : last;
+        const middleBand = sma(closes, 20);
+        const upperBand = middleBand + stdDev(closes, 20) * 2;
+        const vol = Math.abs(last - prevClose) / (last || 1);
+
+        const checks = {
+          emaTrend: last > e20 && e20 > e50,
+          rsiMacd: currentRsi >= 52 && currentRsi <= 70 && macd > 0,
+          breakout20: last > max20,
+          bollingerBias: last > middleBand && last < upperBand * 1.01,
+          emaReclaim: prevClose <= prevE20 && last > e20,
+          volatilityFilter: vol >= 0.001 && vol <= 0.055,
+        };
+
+        const activeRules = strategyRules.filter((rule) => state.strategyState[rule.key]);
+        if (activeRules.length === 0) return null;
+        const passedRules = activeRules.filter((rule) => checks[rule.key]);
+        const minimumPass = activeRules.length <= 2 ? activeRules.length : Math.ceil(activeRules.length * 0.67);
+        if (passedRules.length < minimumPass) return null;
+
+        const passRatio = passedRules.length / activeRules.length;
+        const confidence = Math.min(95, Math.round(64 + passRatio * 26 + (currentRsi >= 56 && currentRsi <= 64 ? 5 : 0)));
+        const targetFactor = Math.max(1.012, Math.min(1.045, 1 + vol * 4.2));
+        const stopFactor = Math.max(0.968, Math.min(0.992, 1 - vol * 2.7));
+        const entry = item.price > 0 ? item.price : last;
+
+        return {
+          id: uid(),
+          watchId: item.id,
+          symbol: item.symbol,
+          name: item.name,
+          market: item.market,
+          timeframe,
+          entry,
+          target: entry * targetFactor,
+          stopLoss: entry * stopFactor,
+          confidence,
+          strategy: passedRules.map((r) => r.label).join(" + "),
+          status: "تحت المتابعة",
+          createdAt: new Date().toISOString(),
+          expiresAt: new Date(Date.now() + timeframeDurationMs(timeframe)).toISOString(),
+        };
+      }
+
+      function formatPriceDisplay(item) {
+        if (item.market === "الكريبتو") {
+          if (item.priceText) return item.priceText;
+          return item.price.toLocaleString("en-US", { useGrouping: false, maximumFractionDigits: 12 });
+        }
+        return item.price.toLocaleString();
+      }
+
+      function formatOpportunityPrice(op, value) {
+        if (op.market === "الكريبتو") {
+          return value.toLocaleString("en-US", { useGrouping: false, maximumFractionDigits: 12 });
+        }
+        return value.toLocaleString();
+      }
+
+      function persist() {
+        localStorage.setItem(WATCH_KEY, JSON.stringify(state.watchItems));
+        localStorage.setItem(ACTIVE_OPPORTUNITY_KEY, JSON.stringify(state.activeOpportunities));
+        localStorage.setItem(HISTORY_OPPORTUNITY_KEY, JSON.stringify(state.historyOpportunities));
+        localStorage.setItem(STRATEGY_SETTINGS_KEY, JSON.stringify(state.strategyState));
+      }
+
+      function render() {
+        const tracking = state.activeOpportunities.length;
+        const wins = state.historyOpportunities.filter((op) => op.status === "نجحت التوصية").length;
+        const losses = state.historyOpportunities.filter((op) => op.status === "خاسرة").length;
+        const pending = state.historyOpportunities.filter((op) => op.status === "تحت المتابعة").length;
+        const watchMap = new Map(state.watchItems.map((w) => [w.symbol, formatPriceDisplay(w)]));
+
+        app.innerHTML = `
+          <section class="border-b border-white/10 px-6 pb-14 pt-16 md:px-10">
+            <div class="mx-auto max-w-6xl">
+              <p class="mb-4 text-sm tracking-[0.2em] text-cyan-300">LIVE SPOT WATCH</p>
+              <h1 class="text-4xl font-bold leading-tight md:text-6xl">مراقبة حية مباشرة: بينانس للكريبتو + السوق السعودي</h1>
+              <p class="mt-4 max-w-3xl text-slate-300">صفحة واحدة جاهزة للرفع على GitHub Pages مع كل الميزات: متابعة حية، توصيات متعددة المنهجيات، نقل للتاريخ، وتتبع النتائج.</p>
+
+              <form id="searchForm" class="mt-7 flex flex-wrap gap-3">
+                <input id="queryInput" value="${state.query}" placeholder="اكتب الرمز: 2222 أو SOL" class="min-w-[260px] flex-1 rounded-xl border border-white/20 bg-slate-900/80 px-4 py-3 outline-none ring-cyan-300 focus:ring" />
+                <button ${state.isSearching ? "disabled" : ""} class="rounded-xl bg-cyan-400 px-5 py-3 text-sm font-semibold text-slate-950 hover:bg-cyan-300 disabled:opacity-70" type="submit">${state.isSearching ? "جاري البحث..." : "بحث وإضافة للمراقبة"}</button>
+                <button id="scanNowBtn" class="rounded-xl bg-emerald-400 px-5 py-3 text-sm font-semibold text-slate-950 hover:bg-emerald-300 disabled:opacity-70" type="button" ${state.watchItems.length === 0 ? "disabled" : ""}>فحص فوري الآن</button>
+              </form>
+
+              <div class="mt-5 grid gap-2 md:grid-cols-2 lg:grid-cols-3">
+                ${strategyRules
+                  .map((rule) => {
+                    const enabled = state.strategyState[rule.key];
+                    return `<label class="flex cursor-pointer items-start gap-2 rounded-xl border px-3 py-3 text-xs ${enabled ? "border-cyan-300/40 bg-cyan-500/10 text-cyan-100" : "border-white/15 bg-slate-900/40 text-slate-300"}"><input data-strategy="${rule.key}" type="checkbox" class="mt-0.5 h-4 w-4 accent-cyan-300" ${enabled ? "checked" : ""} /><span><strong class="block text-xs">${rule.label}</strong><span class="text-[11px] opacity-90">${rule.short}</span></span></label>`;
+                  })
+                  .join("")}
+              </div>
+
+              ${state.message ? `<p class="mt-3 text-sm text-cyan-200">${state.message}</p>` : ""}
+              <p class="mt-2 text-xs text-slate-400">المراقبة التلقائية كل 60 ثانية والكريبتو يتحدث لحظيا من Binance WebSocket.</p>
+            </div>
+          </section>
+
+          <section class="mx-auto w-full max-w-6xl px-6 py-10 md:px-10">
+            <div class="overflow-hidden rounded-2xl border border-white/15 bg-slate-900/55">
+              <div class="overflow-auto">
+                <table class="min-w-full text-right text-sm"><thead class="bg-slate-950/65 text-slate-300"><tr><th class="px-4 py-3">الأصل تحت المراقبة</th><th class="px-4 py-3">السعر الحالي</th><th class="px-4 py-3">التغير %</th><th class="px-4 py-3">اخر تحديث</th><th class="px-4 py-3">إجراء</th></tr></thead>
+                  <tbody>
+                  ${state.watchItems
+                    .map(
+                      (item) => `<tr class="border-t border-white/10"><td class="px-4 py-3"><p class="font-semibold">${item.name}</p><p class="text-xs text-slate-300">${item.symbol} - ${item.market}</p></td><td class="px-4 py-3">${formatPriceDisplay(item)}</td><td class="px-4 py-3 ${item.changePercent >= 0 ? "text-emerald-300" : "text-rose-300"}">${item.changePercent.toFixed(2)}%</td><td class="px-4 py-3 text-xs text-slate-300">${new Date(item.updatedAt).toLocaleString("ar-SA")}</td><td class="px-4 py-3"><button data-remove-watch="${item.id}" class="rounded-lg border border-rose-300/35 px-3 py-2 text-xs text-rose-200 hover:bg-rose-500/10">حذف</button></td></tr>`,
+                    )
+                    .join("")}
+                  </tbody>
+                </table>
+              </div>
+              ${state.watchItems.length === 0 ? '<p class="p-6 text-sm text-slate-400">لا توجد أصول حاليا. ابدأ بالبحث عن الرمز.</p>' : ""}
+            </div>
+          </section>
+
+          <section class="mx-auto w-full max-w-6xl px-6 pb-8 md:px-10">
+            <div class="mb-4 flex flex-wrap gap-2 text-sm">
+              <span class="rounded-full border border-white/15 px-3 py-1">توصيات قيد المتابعة: ${tracking}</span>
+              <span class="rounded-full border border-emerald-300/35 px-3 py-1 text-emerald-200">ناجحة: ${wins}</span>
+              <span class="rounded-full border border-rose-300/35 px-3 py-1 text-rose-200">خاسرة: ${losses}</span>
+              <span class="rounded-full border border-cyan-300/35 px-3 py-1 text-cyan-200">سابقة تحت المتابعة: ${pending}</span>
+            </div>
+
+            <div class="overflow-hidden rounded-2xl border border-white/15 bg-slate-900/60">
+              <div class="border-b border-white/10 bg-slate-950/45 px-4 py-3 text-sm font-semibold">التوصيات الحالية</div>
+              <div class="overflow-auto">
+                <table class="min-w-full text-right text-sm"><thead class="bg-slate-950/65 text-slate-300"><tr><th class="px-4 py-3">الأصل</th><th class="px-4 py-3">الفريم</th><th class="px-4 py-3">الدخول/الهدف/وقف الخسارة</th><th class="px-4 py-3">السعر الحالي</th><th class="px-4 py-3">المنهجية</th><th class="px-4 py-3">الحالة</th></tr></thead><tbody>
+                  ${state.activeOpportunities
+                    .map(
+                      (op) => `<tr class="border-t border-white/10"><td class="px-4 py-3"><p class="font-semibold">${op.name}</p><p class="text-xs text-slate-300">${op.symbol} - ${op.market}</p></td><td class="px-4 py-3 text-xs"><p>${op.timeframe}</p><p class="text-cyan-300">ثقة: ${op.confidence}%</p></td><td class="px-4 py-3 text-xs leading-6"><p>دخول: ${formatOpportunityPrice(op, op.entry)}</p><p>هدف: ${formatOpportunityPrice(op, op.target)}</p><p>وقف خسارة: ${formatOpportunityPrice(op, op.stopLoss)}</p></td><td class="px-4 py-3 text-xs text-cyan-200">${watchMap.get(op.symbol) || "-"}</td><td class="px-4 py-3 text-xs text-slate-300">${op.strategy}</td><td class="px-4 py-3 text-sm font-semibold ${op.status === "نجحت التوصية" ? "text-emerald-300" : op.status === "خاسرة" ? "text-rose-300" : "text-cyan-300"}">${op.status}</td></tr>`,
+                    )
+                    .join("")}
+                </tbody></table>
+              </div>
+              ${state.activeOpportunities.length === 0 ? '<p class="p-6 text-sm text-slate-400">لا توجد توصيات نشطة حاليا.</p>' : ""}
+            </div>
+          </section>
+
+          <section class="mx-auto w-full max-w-6xl px-6 pb-16 md:px-10">
+            <div class="overflow-hidden rounded-2xl border border-white/15 bg-slate-900/60">
+              <div class="flex items-center justify-between border-b border-white/10 bg-slate-950/45 px-4 py-3"><p class="text-sm font-semibold">التوصيات السابقة</p><button id="clearHistoryBtn" class="rounded-lg border border-white/20 px-3 py-1 text-xs text-slate-300 hover:bg-white/5">حذف الكل</button></div>
+              <div class="overflow-auto">
+                <table class="min-w-full text-right text-sm"><thead class="bg-slate-950/65 text-slate-300"><tr><th class="px-4 py-3">الأصل</th><th class="px-4 py-3">الفريم</th><th class="px-4 py-3">المنهجية</th><th class="px-4 py-3">النتيجة</th><th class="px-4 py-3">وقت النقل</th><th class="px-4 py-3">حذف</th></tr></thead><tbody>
+                  ${state.historyOpportunities
+                    .map(
+                      (op) => `<tr class="border-t border-white/10"><td class="px-4 py-3"><p class="font-semibold">${op.name}</p><p class="text-xs text-slate-300">${op.symbol}</p></td><td class="px-4 py-3 text-xs">${op.timeframe}</td><td class="px-4 py-3 text-xs text-slate-300">${op.strategy}</td><td class="px-4 py-3 font-semibold ${op.status === "نجحت التوصية" ? "text-emerald-300" : op.status === "خاسرة" ? "text-rose-300" : "text-cyan-300"}">${op.status}</td><td class="px-4 py-3 text-xs text-slate-300">${op.movedToHistoryAt ? new Date(op.movedToHistoryAt).toLocaleString("ar-SA") : "-"}</td><td class="px-4 py-3"><button data-remove-history="${op.id}" class="rounded-lg border border-rose-300/35 px-3 py-1 text-xs text-rose-200 hover:bg-rose-500/10">حذف</button></td></tr>`,
+                    )
+                    .join("")}
+                </tbody></table>
+              </div>
+              ${state.historyOpportunities.length === 0 ? '<p class="p-6 text-sm text-slate-400">لا توجد توصيات سابقة.</p>' : ""}
+            </div>
+          </section>
+        `;
+      }
+
+      function moveFinishedOpportunities() {
+        const now = Date.now();
+        const quoteBySymbol = new Map(state.watchItems.map((w) => [w.symbol, w]));
+        const moved = [];
+        const kept = [];
+
+        for (const op of state.activeOpportunities) {
+          const quote = quoteBySymbol.get(op.symbol);
+          let status = op.status;
+          const canEvaluate = now >= new Date(op.createdAt).getTime() + OUTCOME_GRACE_MS;
+
+          if (quote && canEvaluate) {
+            if (quote.price >= op.target) status = "نجحت التوصية";
+            else if (quote.price <= op.stopLoss) status = "خاسرة";
+          }
+
+          const ended = status !== "تحت المتابعة" || now >= new Date(op.expiresAt).getTime();
+          if (ended) moved.push({ ...op, status, movedToHistoryAt: new Date().toISOString() });
+          else kept.push({ ...op, status });
+        }
+
+        state.activeOpportunities = kept;
+        if (moved.length > 0) state.historyOpportunities = [...moved, ...state.historyOpportunities];
+
+        state.historyOpportunities = state.historyOpportunities.map((op) => {
+          if (op.status !== "تحت المتابعة") return op;
+          const quote = quoteBySymbol.get(op.symbol);
+          const canEvaluate = now >= new Date(op.createdAt).getTime() + OUTCOME_GRACE_MS;
+          if (!quote || !canEvaluate) return op;
+          if (quote.price >= op.target) return { ...op, status: "نجحت التوصية" };
+          if (quote.price <= op.stopLoss) return { ...op, status: "خاسرة" };
+          return op;
+        });
+      }
+
+      async function detectForItem(item, openSet) {
+        const rows = await Promise.all(
+          frames.map(async (frame) => {
+            if (openSet.has(`${item.symbol}-${frame.label}`)) return null;
+            const closes = await fetchCloses(item, frame);
+            return buildOpportunity(item, closes, frame.label);
+          }),
+        );
+        return rows.filter(Boolean);
+      }
+
+      async function detectAllOpportunities() {
+        if (state.watchItems.length === 0) return;
+        const now = Date.now();
+        const openSet = new Set(
+          state.activeOpportunities.filter((op) => now < new Date(op.expiresAt).getTime()).map((op) => `${op.symbol}-${op.timeframe}`),
+        );
+        const groups = await Promise.all(state.watchItems.map((item) => detectForItem(item, openSet)));
+        const fresh = groups.flat();
+        if (fresh.length > 0) {
+          const existing = new Set(state.activeOpportunities.map((op) => `${op.symbol}-${op.timeframe}`));
+          const uniqueFresh = fresh.filter((op) => !existing.has(`${op.symbol}-${op.timeframe}`));
+          if (uniqueFresh.length > 0) {
+            state.activeOpportunities = [...uniqueFresh, ...state.activeOpportunities];
+            state.message = `تم رصد ${uniqueFresh.length} فرصة جديدة تلقائيا.`;
+          }
+        }
+      }
+
+      async function refreshAllQuotes() {
+        if (state.watchItems.length === 0) return;
+        const updates = await Promise.allSettled(
+          state.watchItems.map((item) => (item.market === "الكريبتو" ? fetchCryptoQuote(item.symbol) : fetchSaudiQuote(item.symbol))),
+        );
+        state.watchItems = state.watchItems.map((item) => {
+          const update = updates.find((result) => result.status === "fulfilled" && result.value.symbol === item.symbol);
+          if (!update || update.status !== "fulfilled") return item;
+          return {
+            ...item,
+            name: update.value.name || item.name,
+            price: update.value.price,
+            priceText: update.value.priceText || item.priceText,
+            changePercent: update.value.changePercent,
+            updatedAt: new Date().toISOString(),
+          };
+        });
+      }
+
+      function connectBinanceWs() {
+        if (ws) ws.close();
+        const symbols = state.watchItems
+          .filter((item) => item.market === "الكريبتو")
+          .map((item) => item.symbol.toLowerCase())
+          .sort();
+        if (symbols.length === 0) return;
+        const streams = symbols.map((s) => `${s}@trade`).join("/");
+        ws = new WebSocket(`wss://stream.binance.com:9443/stream?streams=${streams}`);
+        ws.onmessage = (event) => {
+          const payload = JSON.parse(event.data);
+          const symbol = payload && payload.data && payload.data.s ? payload.data.s.toUpperCase() : null;
+          const priceText = payload && payload.data ? payload.data.p : null;
+          const price = Number(priceText);
+          if (!symbol || !Number.isFinite(price)) return;
+          state.watchItems = state.watchItems.map((item) =>
+            item.symbol === symbol ? { ...item, price, priceText, updatedAt: new Date().toISOString() } : item,
+          );
+          moveFinishedOpportunities();
+          persist();
+          render();
+        };
+      }
+
+      async function runMonitor() {
+        await refreshAllQuotes();
+        moveFinishedOpportunities();
+        await detectAllOpportunities();
+        persist();
+        render();
+      }
+
+      async function addBySearch(event) {
+        event.preventDefault();
+        state.message = "";
+        state.isSearching = true;
+        render();
+        try {
+          const normalized = normalizeInput(state.query);
+          const quote = normalized.market === "الكريبتو" ? await fetchCryptoQuote(normalized.symbol) : await fetchSaudiQuote(normalized.symbol);
+          const exists = state.watchItems.some((item) => item.symbol === quote.symbol);
+          if (exists) {
+            state.watchItems = state.watchItems.map((item) =>
+              item.symbol === quote.symbol
+                ? { ...item, name: quote.name, price: quote.price, priceText: quote.priceText, changePercent: quote.changePercent, updatedAt: new Date().toISOString() }
+                : item,
+            );
+            state.message = "الرمز موجود مسبقا، تم تحديث بياناته مباشرة.";
+          } else {
+            const newItem = {
+              id: uid(),
+              market: quote.market,
+              symbol: quote.symbol,
+              name: quote.name,
+              price: quote.price,
+              priceText: quote.priceText,
+              changePercent: quote.changePercent,
+              updatedAt: new Date().toISOString(),
+            };
+            state.watchItems = [newItem, ...state.watchItems];
+            const openSet = new Set(state.activeOpportunities.map((op) => `${op.symbol}-${op.timeframe}`));
+            const firstSignals = await detectForItem(newItem, openSet);
+            if (firstSignals.length > 0) {
+              state.activeOpportunities = [...firstSignals, ...state.activeOpportunities];
+            }
+            state.message = "تمت الاضافة للمراقبة الحية بنجاح.";
+          }
+          state.query = "";
+          connectBinanceWs();
+        } catch (error) {
+          state.message = error instanceof Error ? error.message : "فشل البحث عن الرمز";
+        } finally {
+          state.isSearching = false;
+          persist();
+          render();
+        }
+      }
+
+      function attachEvents() {
+        app.addEventListener("submit", (event) => {
+          if (event.target && event.target.id === "searchForm") addBySearch(event);
+        });
+
+        app.addEventListener("input", (event) => {
+          if (event.target && event.target.id === "queryInput") {
+            state.query = event.target.value;
+          }
+        });
+
+        app.addEventListener("click", async (event) => {
+          const target = event.target;
+          if (!(target instanceof HTMLElement)) return;
+
+          const watchId = target.getAttribute("data-remove-watch");
+          if (watchId) {
+            state.watchItems = state.watchItems.filter((item) => item.id !== watchId);
+            connectBinanceWs();
+            persist();
+            render();
+            return;
+          }
+
+          const historyId = target.getAttribute("data-remove-history");
+          if (historyId) {
+            state.historyOpportunities = state.historyOpportunities.filter((op) => op.id !== historyId);
+            persist();
+            render();
+            return;
+          }
+
+          if (target.id === "clearHistoryBtn") {
+            state.historyOpportunities = [];
+            persist();
+            render();
+            return;
+          }
+
+          if (target.id === "scanNowBtn") {
+            await detectAllOpportunities();
+            state.message = "تم تشغيل فحص فوري على كل الفريمات.";
+            persist();
+            render();
+            return;
+          }
+
+          const strategy = target.getAttribute("data-strategy");
+          if (strategy && Object.prototype.hasOwnProperty.call(state.strategyState, strategy)) {
+            state.strategyState[strategy] = !state.strategyState[strategy];
+            persist();
+            render();
+          }
+        });
+      }
+
+      function hydrate() {
+        state.watchItems = JSON.parse(localStorage.getItem(WATCH_KEY) || "[]");
+        state.activeOpportunities = (JSON.parse(localStorage.getItem(ACTIVE_OPPORTUNITY_KEY) || "[]") || []).map(normalizeOpportunity);
+        state.historyOpportunities = (JSON.parse(localStorage.getItem(HISTORY_OPPORTUNITY_KEY) || "[]") || []).map(normalizeOpportunity);
+
+        const oldCombined = JSON.parse(localStorage.getItem("market-opportunities-live-v3") || "null");
+        if (state.activeOpportunities.length === 0 && state.historyOpportunities.length === 0 && Array.isArray(oldCombined)) {
+          state.activeOpportunities = oldCombined.map(normalizeOpportunity);
+        }
+
+        const strategyState = JSON.parse(localStorage.getItem(STRATEGY_SETTINGS_KEY) || "null");
+        if (strategyState) {
+          state.strategyState = { ...state.strategyState, ...strategyState };
+        }
+      }
+
+      hydrate();
+      attachEvents();
+      connectBinanceWs();
+      moveFinishedOpportunities();
+      persist();
+      render();
+
+      monitorInterval = setInterval(runMonitor, 60_000);
+      expiryInterval = setInterval(() => {
+        moveFinishedOpportunities();
+        persist();
+        render();
+      }, 30_000);
+
+      runMonitor();
+    </script>
+  </body>
+</html>

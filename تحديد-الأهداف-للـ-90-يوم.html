@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>استوديو ذكاء</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Cairo',sans-serif;
+  background:#0b1020;
+  background-image:linear-gradient(135deg,#7c3aed 0%,#3b82f6 100%);
+  color:#fff;
+  line-height:1.8
+}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+header{text-align:center;padding:80px 20px}
+h1{font-size:3rem;font-weight:900;margin-bottom:20px;text-shadow:0 4px 20px rgba(0,0,0,0.3)}
+.subtitle{font-size:1.3rem;opacity:0.95}
+.btn{
+  display:inline-block;
+  background:#fff;
+  color:#7c3aed;
+  padding:16px 40px;
+  border-radius:50px;
+  text-decoration:none;
+  font-weight:700;
+  font-size:1.1rem;
+  margin-top:30px;
+  transition:0.3s;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3)
+}
+.btn:hover{transform:translateY(-4px);box-shadow:0 15px 40px rgba(0,0,0,0.4)}
+section{
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:24px;
+  padding:50px;
+  margin:40px 0;
+  box-shadow:0 8px 32px rgba(0,0,0,0.2)
+}
+h2{font-size:2.2rem;margin-bottom:30px;text-align:center;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px}
+.card{
+  background:rgba(255,255,255,0.06);
+  padding:30px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,0.1);
+  transition:0.3s
+}
+.card:hover{transform:translateY(-6px);background:rgba(255,255,255,0.12);box-shadow:0 12px 40px rgba(124,58,237,0.3)}
+.card h3{font-size:1.4rem;margin-bottom:12px;color:#c4b5fd}
+.portfolio img{
+  width:100%;
+  height:220px;
+  object-fit:cover;
+  border-radius:12px;
+  margin-bottom:12px;
+  border:2px solid rgba(255,255,255,0.1)
+}
+.pricing{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;text-align:center}
+.price{font-size:2.5rem;font-weight:900;color:#fbbf24;margin:15px 0}
+.process{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:30px;text-align:center}
+.step-num{
+  display:inline-block;
+  width:50px;height:50px;
+  line-height:50px;
+  background:linear-gradient(135deg,#7c3aed,#3b82f6);
+  border-radius:50%;
+  font-size:1.5rem;font-weight:900;
+  margin-bottom:15px
+}
+.contact{text-align:center}
+.contact a{color:#c4b5fd;text-decoration:none;font-weight:700}
+footer{text-align:center;padding:40px;opacity:0.6}
+@media(max-width:768px){
+  h1{font-size:2.2rem}
+  section{padding:30px 20px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>استوديو ذكاء</h1>
+    <p class="subtitle">حول فكرتك لصورة ومحتوى جاهز في 24 ساعة بالذكاء الاصطناعي</p>
+    <a href="https://wa.me/966598686902" class="btn">اطلب عبر واتساب</a>
+  </header>
+
+  <section>
+    <h2>خدماتنا</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>🎨 تصميم الصور بالذكاء الاصطناعي</h3>
+        <p>بوستات انستقرام، إعلانات، صور منتجات، ستوري، لوجوهات. تسليم خلال 24 ساعة بجودة عالية.</p>
+      </div>
+      <div class="card">
+        <h3>✍️ كتابة المحتوى</h3>
+        <p>وصف منتجات، منشورات سوشيال ميديا، خطط محتوى شهرية، سكريبتات ريلز. جاهز للنشر فوراً.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="portfolio">
+    <h2>نماذج من أعمالنا</h2>
+    <div class="grid">
+      <div>
+        <img src="https://images.unsplash.com/photo-1611162618071-b39a2ecedcfe?w=600&auto=format&fit=crop" alt="تصميم متجر">
+        <p><strong>تصميم متجر إلكتروني</strong></p>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&auto=format&fit=crop" alt="اعلان منتج">
+        <p><strong>إعلان منتج احترافي</strong></p>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=600&auto=format&fit=crop" alt="بوست انستقرام">
+        <p><strong>بوست انستقرام</strong></p>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&auto=format&fit=crop" alt="هوية بصرية">
+        <p><strong>هوية بصرية كاملة</strong></p>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=600&auto=format&fit=crop" alt="تصميم اعلان">
+        <p><strong>تصميم إعلاني</strong></p>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&auto=format&fit=crop" alt="محتوى بصري">
+        <p><strong>محتوى بصري للبراند</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>الباقات والأسعار</h2>
+    <div class="pricing">
+      <div class="card">
+        <h3>أساسي</h3>
+        <p class="price">100 ر.س</p>
+        <p>5 تصاميم سوشيال ميديا<br>تسليم 24 ساعة</p>
+      </div>
+      <div class="card">
+        <h3>متقدم</h3>
+        <p class="price">200 ر.س</p>
+        <p>5 تصاميم + 10 نصوص محتوى<br>الأكثر طلباً</p>
+      </div>
+      <div class="card">
+        <h3>احترافي</h3>
+        <p class="price">350 ر.س</p>
+        <p>خطة محتوى شهر كامل<br>30 بوست جاهز</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>كيف نعمل؟</h2>
+    <div class="process">
+      <div>
+        <div class="step-num">1</div>
+        <h3>ترسل طلبك</h3>
+        <p>تحدد الخدمة عبر واتساب</p>
+      </div>
+      <div>
+        <div class="step-num">2</div>
+        <h3>نفذ بالذكاء الاصطناعي</h3>
+        <p>نصمم ونكتب باحترافية</p>
+      </div>
+      <div>
+        <div class="step-num">3</div>
+        <h3>تستلم خلال 24 ساعة</h3>
+        <p>ملفات جاهزة للنشر</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact">
+    <h2>تواصل معنا الآن</h2>
+    <p style="font-size:1.2rem;margin-bottom:20px">جاهز نبدأ مشروعك؟</p>
+    <p>واتساب: <a href="https://wa.me/966598686902">966598686902</a></p>
+    <p>إيميل: <a href="mailto:tur100@gmail.com">tur100@gmail.com</a></p>
+    <a href="https://wa.me/966598686902" class="btn" style="margin-top:25px">ابدأ طلبك الآن</a>
+  </section>
+
+  <footer>
+    <p>استوديو ذكاء © 2026 - نصنع لك محتوى يبيع</p>
+  </footer>
+</div>
+</body>
+</html>

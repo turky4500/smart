@@ -3,60 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تركي الصقر | المطور والبرمجة</title>
-    
-    <!-- Google Fonts: Cairo & Tajawal -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <title>تركي الصقر | الصفحة التعريفية ومعرض المشاريع</title>
     
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- GoatCounter Analytics (مستخلص ومحفوظ للإحصائيات الحية) -->
+    <!-- GoatCounter Analytics -->
     <script data-goatcounter="https://tur100.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
     <style>
+        /* تعريف خط المهند محلياً */
+        @font-face {
+            font-family: 'AlMohanad';
+            src: url('ae_AlMohanad.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         :root {
-            /* الوضع الداكن (الافتراضي للبرمجة والمظهر الفاخر) */
-            --bg-color: #080c14;
-            --card-bg: rgba(17, 24, 39, 0.75);
-            --card-border: rgba(255, 255, 255, 0.08);
+            /* نظام ألوان الوضع الداكن الاحترافي الفاخر */
+            --bg-color: #050811;
+            --bg-dots: rgba(255, 255, 255, 0.02);
+            --card-bg: rgba(13, 20, 35, 0.55);
+            --card-border: rgba(255, 255, 255, 0.05);
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
-            --primary-color: #10b981; /* الأخضر الزمردي المضيء */
-            --primary-hover: #059669;
-            --accent-color: #f59e0b;  /* الذهبي الدافئ */
-            --glow-color: rgba(16, 185, 129, 0.12);
-            --primary-light: rgba(16, 185, 129, 0.08);
             
+            --primary-color: #14b8a6; /* تيل زمردي */
+            --primary-hover: #0d9488;
+            --accent-color: #f59e0b; /* ذهبي دافئ */
+            
+            --hero-glow: rgba(20, 184, 166, 0.08);
             --transition-speed: 0.3s;
             --border-radius: 24px;
         }
 
         [data-theme="light"] {
-            /* الوضع الفاتح */
-            --bg-color: #f1f5f9;
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --card-border: rgba(0, 0, 0, 0.06);
+            /* نظام ألوان الوضع الفاتح العصري */
+            --bg-color: #f8fafc;
+            --bg-dots: rgba(15, 23, 42, 0.02);
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --card-border: rgba(15, 23, 42, 0.07);
             --text-main: #0f172a;
-            --text-muted: #475569;
-            --primary-color: #005a36; /* الأخضر البلدي */
-            --primary-hover: #004227;
-            --accent-color: #d4af37;  /* الذهبي الكلاسيكي */
-            --glow-color: rgba(0, 90, 86, 0.06);
-            --primary-light: rgba(0, 90, 54, 0.06);
+            --text-muted: #64748b;
+            
+            --primary-color: #0f766e;
+            --primary-hover: #115e59;
+            --accent-color: #d97706;
+            
+            --hero-glow: rgba(15, 118, 110, 0.04);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Tajawal', 'Cairo', sans-serif;
+            font-family: 'AlMohanad', 'Cairo', 'Tajawal', sans-serif;
         }
 
         body {
             background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(var(--bg-dots) 1.5px, transparent 1.5px),
+                radial-gradient(var(--bg-dots) 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
             color: var(--text-main);
             direction: rtl;
             transition: background-color var(--transition-speed), color var(--transition-speed);
@@ -67,42 +78,49 @@
             position: relative;
         }
 
-        /* لمسة فنية متحركة للخلفية لصفحة الهبوط */
-        .bg-glow {
+        /* مؤثرات الإضاءة الخلفية الفاخرة */
+        .bg-glow-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-glow-1 {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.08) 0%, transparent 70%);
+            top: -150px;
+            right: -100px;
+            animation: floatGlow1 20s infinite alternate ease-in-out;
+        }
+
+        .bg-glow-2 {
             position: absolute;
             width: 500px;
             height: 500px;
-            background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
-            top: -10%;
-            right: -10%;
-            z-index: 0;
-            pointer-events: none;
-            animation: floatGlow 15s infinite alternate ease-in-out;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.06) 0%, transparent 70%);
+            bottom: -100px;
+            left: -100px;
+            animation: floatGlow2 15s infinite alternate ease-in-out;
         }
 
-        .bg-glow-left {
-            position: absolute;
-            width: 450px;
-            height: 450px;
-            background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
-            bottom: -10%;
-            left: -10%;
-            z-index: 0;
-            pointer-events: none;
-            animation: floatGlowLeft 12s infinite alternate ease-in-out;
-        }
-
-        @keyframes floatGlow {
+        @keyframes floatGlow1 {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-80px, 80px) scale(1.15); }
+            100% { transform: translate(-100px, 50px) scale(1.1); }
         }
 
-        @keyframes floatGlowLeft {
-            0% { transform: translate(0, 0) scale(1.1); }
-            100% { transform: translate(60px, -60px) scale(0.9); }
+        @keyframes floatGlow2 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(80px, -50px) scale(1.05); }
         }
 
-        /* زر تبديل الوضع الداكن/الفاتح العائم والمثبت */
+        /* زر الوضع الداكن/الفاتح العائم والأنيق */
         .theme-toggle-container {
             position: fixed;
             top: 25px;
@@ -114,22 +132,23 @@
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             color: var(--text-main);
-            width: 46px;
-            height: 46px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             transition: all var(--transition-speed) ease;
         }
 
         .theme-toggle-btn:hover {
             border-color: var(--primary-color);
-            transform: scale(1.05) rotate(10deg);
-            box-shadow: 0 4px 20px var(--glow-color);
+            transform: scale(1.1) rotate(12deg);
+            box-shadow: 0 8px 32px rgba(20, 184, 166, 0.2);
         }
 
         .theme-toggle-btn svg {
@@ -138,140 +157,160 @@
             fill: none;
             stroke: currentColor;
             stroke-width: 2;
+            transition: transform 0.5s ease;
         }
 
-        /* الحاوية الرئيسية لصفحة الهبوط */
+        /* الحاوية وتنسيق العناصر */
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             width: 100%;
             margin: 0 auto;
-            padding: 80px 24px;
+            padding: 60px 24px 80px 24px;
             position: relative;
             z-index: 1;
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 60px;
+            gap: 50px;
         }
 
-        /* قسم التعريف (Hero Section) كصفحة هبوط احترافية */
+        /* الهيرو (Hero Section) - تصميم بنتو زجاجي رائع */
         .hero {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: var(--border-radius);
-            padding: 60px;
-            box-shadow: var(--shadow-md);
-            backdrop-filter: blur(15px);
+            padding: 50px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            position: relative;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             gap: 20px;
-            overflow: hidden;
-            position: relative;
-            transition: all var(--transition-speed);
         }
 
-        /* شريط متوهج علوي ناعم */
-        .hero::after {
+        .hero::before {
             content: '';
             position: absolute;
             top: 0;
-            left: 0;
+            right: 0;
             width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            height: 100%;
+            background: radial-gradient(circle at 80% 20%, var(--hero-glow) 0%, transparent 60%);
+            pointer-events: none;
         }
 
         .hero-badge {
             background: var(--primary-light);
             color: var(--primary-color);
-            padding: 6px 18px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 700;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: bold;
             width: fit-content;
-            border: 1px solid rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(20, 184, 166, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-badge i {
+            font-size: 12px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .hero h2 {
-            font-size: 42px;
-            font-weight: 900;
-            line-height: 1.25;
+            font-size: 38px;
+            font-weight: 800;
+            line-height: 1.3;
             color: var(--text-main);
-            font-family: 'Cairo', sans-serif;
         }
 
         .hero h2 span {
-            color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
         }
 
         .hero p {
             font-size: 17px;
             color: var(--text-muted);
-            line-height: 1.85;
-            font-weight: 500;
+            line-height: 1.8;
+            max-width: 800px;
         }
 
-        /* أزرار التواصل */
+        /* صندوق أزرار التواصل في الهيرو */
         .contact-box {
-            margin-top: 20px;
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 16px;
             align-items: center;
+            margin-top: 15px;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            background: var(--primary-color);
-            color: white;
+            justify-content: center;
+            gap: 12px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+            color: #ffffff;
             text-decoration: none;
             padding: 14px 28px;
             border-radius: 14px;
             font-size: 15px;
-            font-weight: 700;
+            font-weight: bold;
             border: none;
             cursor: pointer;
-            box-shadow: 0 8px 20px -6px var(--primary-color);
+            box-shadow: 0 8px 24px -8px var(--primary-color);
             transition: all var(--transition-speed) ease;
         }
 
         .btn:hover {
-            background: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -4px var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px -4px var(--primary-color);
         }
 
         .btn-secondary {
-            background: var(--bg-color);
+            background: rgba(255, 255, 255, 0.03);
             color: var(--text-main);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--card-border);
             box-shadow: none;
         }
 
         .btn-secondary:hover {
-            background: var(--card-bg);
+            background: rgba(255, 255, 255, 0.08);
             border-color: var(--primary-color);
-            box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 24px -10px rgba(0, 0, 0, 0.2);
         }
 
         .copied-toast {
-            font-size: 13px;
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: bold;
             color: var(--primary-color);
             opacity: 0;
-            transition: opacity 0.3s;
+            transform: scale(0.9);
+            transition: all var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
 
         .copied-toast.show {
             opacity: 1;
+            transform: scale(1);
         }
 
-        /* قسم معرض الأعمال (Portfolio Showcase) */
+        /* قسم معرض الأعمال - منظم واحترافي */
         .showcase {
             display: flex;
             flex-direction: column;
@@ -279,48 +318,32 @@
         }
 
         .section-title {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 800;
             display: flex;
             align-items: center;
             gap: 12px;
-            font-family: 'Cairo', sans-serif;
         }
 
         .section-title::before {
             content: '';
             display: block;
-            width: 5px;
-            height: 26px;
-            background: var(--primary-color);
-            border-radius: 4px;
+            width: 6px;
+            height: 24px;
+            background: linear-gradient(to bottom, var(--primary-color), var(--accent-color));
+            border-radius: 50px;
         }
 
-        /* شبكة الكروت التفاعلية */
+        /* شبكة المشاريع الاحترافية (2x2) */
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
+            gap: 24px;
         }
 
-        @media (max-width: 768px) {
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-            .hero {
-                padding: 40px 30px;
-            }
-            .hero h2 {
-                font-size: 32px;
-            }
-            .container {
-                padding: 50px 20px;
-                gap: 40px;
-            }
-        }
-
-        /* تصميم الكرت الاحترافي */
+        /* كرت المشروع الاحترافي الفردي */
         .project-card {
+            --card-brand-color: var(--primary-color);
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: var(--border-radius);
@@ -329,8 +352,9 @@
             flex-direction: column;
             justify-content: space-between;
             gap: 24px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             transition: all var(--transition-speed) ease;
             position: relative;
             overflow: hidden;
@@ -338,12 +362,28 @@
             color: inherit;
         }
 
-        .project-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-color);
-            box-shadow: var(--shadow-md), 0 10px 20px -10px var(--primary-color);
+        /* تخصيص هوية بصرية لكل كرت */
+        .project-card.card-riyadh {
+            --card-brand-color: #0f9f90;
+        }
+        .project-card.card-ai {
+            --card-brand-color: #8b5cf6;
+        }
+        .project-card.card-haraj {
+            --card-brand-color: #f59e0b;
+        }
+        .project-card.card-whatsapp {
+            --card-brand-color: #10b981;
         }
 
+        .project-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--card-brand-color);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3), 0 0 25px -5px rgba(var(--card-brand-color), 0.15);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 255, 255, 0.02);
+        }
+
+        /* تأثير الخط السفلي الملون التفاعلي */
         .project-card::after {
             content: '';
             position: absolute;
@@ -351,7 +391,7 @@
             bottom: 0;
             height: 4px;
             width: 0;
-            background: var(--primary-color);
+            background: linear-gradient(90deg, var(--card-brand-color), var(--accent-color));
             transition: width var(--transition-speed) ease;
         }
 
@@ -362,43 +402,45 @@
         .card-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
         }
 
         .project-icon {
-            width: 54px;
-            height: 54px;
-            background: var(--primary-light);
-            color: var(--primary-color);
-            border-radius: 14px;
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--card-brand-color);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            border: 1px solid rgba(16, 185, 129, 0.1);
+            font-size: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
             transition: all var(--transition-speed) ease;
         }
 
         .project-card:hover .project-icon {
-            background: var(--primary-color);
-            color: white;
-            transform: scale(1.05) rotate(5deg);
+            background: var(--card-brand-color);
+            color: #ffffff;
+            border-color: var(--card-brand-color);
+            transform: scale(1.08) rotate(6deg);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
 
         .external-badge {
-            font-size: 11px;
-            font-weight: 700;
-            background: var(--card-border);
+            font-size: 12px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.03);
             color: var(--text-muted);
-            padding: 4px 10px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
+            padding: 5px 12px;
+            border-radius: 30px;
+            border: 1px solid var(--card-border);
         }
 
         .external-badge.live {
-            background: rgba(245, 158, 11, 0.08);
+            background: rgba(245, 158, 11, 0.05);
             color: var(--accent-color);
-            border-color: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.15);
         }
 
         .card-body {
@@ -411,72 +453,102 @@
             font-size: 20px;
             font-weight: 800;
             color: var(--text-main);
-            font-family: 'Cairo', sans-serif;
+            transition: color var(--transition-speed);
+        }
+
+        .project-card:hover .card-body h3 {
+            color: var(--card-brand-color);
         }
 
         .card-body p {
             font-size: 14px;
             color: var(--text-muted);
-            line-height: 1.65;
-            font-weight: 500;
+            line-height: 1.7;
         }
 
-        /* وسوم التقنيات */
+        /* وسوم التقنيات بأسلوب متناسق */
         .tech-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-top: 5px;
+            margin-top: 6px;
         }
 
         .tag {
             font-size: 11px;
-            font-weight: 700;
-            background: var(--bg-color);
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.02);
             color: var(--text-muted);
             padding: 4px 10px;
             border-radius: 8px;
             border: 1px solid var(--card-border);
+            transition: all var(--transition-speed);
+        }
+
+        .project-card:hover .tag {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
         }
 
         .card-footer {
             display: flex;
             align-items: center;
             gap: 8px;
-            color: var(--primary-color);
+            color: var(--card-brand-color);
             font-size: 14px;
-            font-weight: 700;
-            margin-top: 5px;
+            font-weight: bold;
+            margin-top: 4px;
         }
 
         .card-footer i {
-            transition: transform 0.2s ease;
+            transition: transform var(--transition-speed) ease;
         }
 
         .project-card:hover .card-footer i {
-            transform: translateX(-5px);
+            transform: translateX(-6px);
         }
 
         /* فوتر الصفحة */
         footer {
             border-top: 1px solid var(--card-border);
-            padding: 35px 20px;
+            padding: 40px 20px;
             text-align: center;
-            font-size: 13px;
+            font-size: 14px;
             color: var(--text-muted);
-            font-weight: 600;
+            font-weight: bold;
             z-index: 1;
             position: relative;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        /* التجاوب مع شاشات الهواتف والأجهزة اللوحية */
+        @media (max-width: 868px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .hero {
+                padding: 40px 30px;
+            }
+            .hero h2 {
+                font-size: 32px;
+            }
+            .container {
+                padding: 40px 20px 60px 20px;
+                gap: 40px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- عناصر توهج الخلفية البصرية -->
-    <div class="bg-glow"></div>
-    <div class="bg-glow-left"></div>
+    <!-- مؤثرات الإضاءة الخلفية -->
+    <div class="bg-glow-container">
+        <div class="bg-glow-1"></div>
+        <div class="bg-glow-2"></div>
+    </div>
 
-    <!-- زر تبديل المظهر العائم والمثبت بالزاوية -->
+    <!-- زر تبديل الوضع الداكن/الفاتح العائم -->
     <div class="theme-toggle-container">
         <button class="theme-toggle-btn" id="theme-toggle" aria-label="تبديل المظهر">
             <svg id="theme-icon-sun" style="display: none;" viewBox="0 0 24 24">
@@ -491,38 +563,41 @@
 
     <div class="container">
         
-        <!-- بطاقة التعريف الرئيسية (Hero Section) كصفحة هبوط -->
+        <!-- الهيرو (Hero Section) التعريفية -->
         <section class="hero">
             <div class="hero-content">
-                <div class="hero-badge">مطور ومبرمج تطبيقات ويب</div>
+                <div class="hero-badge">
+                    <i class="fa-solid fa-code"></i>
+                    <span>مطور ومبرمج تطبيقات ويب</span>
+                </div>
                 <h2>أهلاً بك، أنا <span>تركي الصقر</span></h2>
                 <p>
-                    مرحبًا بك في صفحتي التعريفية. هذا الموقع وجميع المشاريع الرقمية المرتبطة به هي من تطويري وبرمجتي الخاصة. أركز على بناء حلول وتطبيقات ويب متقدمة، مصممة لتوفير واجهات عصرية تفاعلية وأداء عالي السرعة.
+                    مرحباً بك في صفحتي التعريفية الخاصة. جميع المشاريع والحلول الرقمية المعروضة أدناه هي من برمجة وتطويري الخاص. أركز على بناء حلول تفاعلية متميزة، وواجهات مستخدم عصرية ترتكز على سهولة الاستخدام وقوة الأداء البرمجي.
                 </p>
                 <div class="contact-box">
                     <a href="mailto:tur100@gmail.com" class="btn" title="راسلني مباشرة">
                         <i class="fa-solid fa-envelope"></i>
                         <span>تواصل معي</span>
                     </a>
-                    <button class="btn btn-secondary" id="btn-copy-email" title="نسخ الإيميل للحافظة">
+                    <button class="btn btn-secondary" id="btn-copy-email" title="نسخ البريد الإلكتروني">
                         <i class="fa-solid fa-clone"></i>
                         <span id="copy-text">tur100@gmail.com</span>
                     </button>
                     <div class="copied-toast" id="copied-toast">
                         <i class="fa-solid fa-circle-check"></i>
-                        <span>تم النسخ!</span>
+                        <span>تم نسخ الإيميل!</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- قسم معرض الأعمال (4 مشاريع) -->
+        <!-- معرض المشاريع (4 مشاريع) -->
         <section class="showcase">
-            <h3 class="section-title">المشاريع البارزة</h3>
+            <h3 class="section-title">المشاريع الرقمية</h3>
             <div class="projects-grid">
                 
-                <!-- المشروع الأول: بوابة الشركات المعتمدة -->
-                <a href="./a" class="project-card">
+                <!-- المشروع الأول: بوابة الشركات المعتمدة (أمانة الرياض) -->
+                <a href="./a" class="project-card card-riyadh">
                     <div>
                         <div class="card-header">
                             <div class="project-icon">
@@ -537,7 +612,7 @@
                                 <span class="tag">HTML5</span>
                                 <span class="tag">CSS Grid</span>
                                 <span class="tag">JavaScript</span>
-                                <span class="tag">CSV Data</span>
+                                <span class="tag">CSV Integration</span>
                             </div>
                         </div>
                     </div>
@@ -548,7 +623,7 @@
                 </a>
 
                 <!-- المشروع الثاني: استوديو ذكاء -->
-                <a href="./tur100" class="project-card">
+                <a href="./tur100" class="project-card card-ai">
                     <div>
                         <div class="card-header">
                             <div class="project-icon">
@@ -562,7 +637,7 @@
                             <div class="tech-tags">
                                 <span class="tag">Amiri Font</span>
                                 <span class="tag">Glassmorphism</span>
-                                <span class="tag">Responsive</span>
+                                <span class="tag">Responsive Design</span>
                                 <span class="tag">AI Showcase</span>
                             </div>
                         </div>
@@ -573,14 +648,14 @@
                     </div>
                 </a>
 
-                <!-- 🛒 المشروع الثالث: راصد حراج -->
-                <a href="https://haraj-saas.onrender.com/" target="_blank" rel="noopener" class="project-card">
+                <!-- المشروع الثالث: راصد حراج -->
+                <a href="https://haraj-saas.onrender.com/" target="_blank" rel="noopener" class="project-card card-haraj">
                     <div>
                         <div class="card-header">
                             <div class="project-icon">
                                 <i class="fa-solid fa-magnifying-glass-chart"></i>
                             </div>
-                            <span class="external-badge live">خارجي (Render)</span>
+                            <span class="external-badge live">تطبيق خارجي</span>
                         </div>
                         <div class="card-body">
                             <h3>راصد حراج</h3>
@@ -600,13 +675,13 @@
                 </a>
 
                 <!-- المشروع الرابع: مرسل واتساب المطور -->
-                <a href="https://wats-enzn.onrender.com/" target="_blank" rel="noopener" class="project-card">
+                <a href="https://wats-enzn.onrender.com/" target="_blank" rel="noopener" class="project-card card-whatsapp">
                     <div>
                         <div class="card-header">
                             <div class="project-icon">
                                 <i class="fa-brands fa-whatsapp"></i>
                             </div>
-                            <span class="external-badge live">خارجي (Render)</span>
+                            <span class="external-badge live">تطبيق خارجي</span>
                         </div>
                         <div class="card-body">
                             <h3>مرسل واتساب المطور</h3>
@@ -632,12 +707,12 @@
 
     <!-- فوتر الصفحة -->
     <footer>
-        <p>© تركي الصقر 1447هـ - 2026م. جميع الحقوق محفوظة ومحمية برمجياً.</p>
+        <p>© تركي الصقر 1447هـ - 2026م. جميع الحقوق محفوظة برمجياً.</p>
     </footer>
 
-    <!-- المنطق البرمجي للوضع الداكن ونسخ البريد الإلكتروني -->
+    <!-- منطق البرمجة المساعد للواجهة -->
     <script>
-        // 1. التحكم بتبديل الوضع الداكن/الفاتح وحفظ المظهر
+        // 1. إدارة الوضع الداكن/الفاتح بديناميكية تامة
         const themeToggleBtn = document.getElementById("theme-toggle");
         const sunIcon = document.getElementById("theme-icon-sun");
         const moonIcon = document.getElementById("theme-icon-moon");
@@ -666,7 +741,7 @@
             }
         }
 
-        // 2. كود نسخ البريد الإلكتروني للحافظة تلقائياً
+        // 2. منطق زر نسخ البريد الإلكتروني مع حركة تنبيهية ناعمة
         const btnCopyEmail = document.getElementById("btn-copy-email");
         const copiedToast = document.getElementById("copied-toast");
         
@@ -674,15 +749,13 @@
             const email = "tur100@gmail.com";
             
             navigator.clipboard.writeText(email).then(() => {
-                // إظهار تنبيه تم النسخ
                 copiedToast.classList.add("show");
                 
-                // إخفاء التنبيه بعد ثانيتين
                 setTimeout(() => {
                     copiedToast.classList.remove("show");
-                }, 2000);
+                }, 2500);
             }).catch(err => {
-                console.error("فشل نسخ الإيميل:", err);
+                console.error("فشل النسخ تلقائياً:", err);
             });
         });
     </script>

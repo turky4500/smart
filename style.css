@@ -231,8 +231,8 @@ body {
 
 /* قائمة الأسماء الرأسية المحدثة */
 .company-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
     margin-top: 10px;
 }
@@ -339,5 +339,9 @@ body {
         flex-direction: column;
         align-items: flex-start;
         gap: 12px;
+    }
+    
+    .company-list {
+        grid-template-columns: 1fr;
     }
 }

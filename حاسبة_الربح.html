@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حاسبة الربح - Trendyol</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:#fff;border-radius:24px;padding:35px 30px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+h1{font-size:22px;color:#333;text-align:center;margin-bottom:5px}
+.sub{font-size:13px;color:#888;text-align:center;margin-bottom:28px}
+.formula-badge{background:#f0f0f5;border-radius:10px;padding:10px 14px;font-size:12px;color:#666;text-align:center;margin-bottom:25px;line-height:1.7;direction:ltr}
+.group{margin-bottom:18px}
+label{display:block;font-size:14px;font-weight:600;color:#444;margin-bottom:6px}
+label .note{font-weight:400;color:#999;font-size:12px}
+.input-wrap{position:relative}
+.input-wrap .currency{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#999;font-size:14px;font-weight:600}
+.input-wrap .pct{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#999;font-size:14px;font-weight:600}
+input[type=number]{width:100%;padding:14px 16px;border:2px solid #e0e0e0;border-radius:12px;font-size:16px;outline:none;transition:border-color .2s;background:#fafafa;-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=number]:focus{border-color:#667eea;background:#fff}
+.input-wrap input{padding-left:45px}
+.results{margin-top:22px;background:linear-gradient(135deg,#f8f9ff 0%,#eef1ff 100%);border-radius:16px;padding:20px}
+.result-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
+.result-row:not(:last-child){border-bottom:1px dashed #d0d5f0}
+.result-label{font-size:14px;color:#555}
+.result-value{font-size:18px;font-weight:700;color:#333}
+.result-value.highlight{color:#667eea;font-size:22px}
+.result-value.profit{color:#2e7d32}
+.result-value.pct{color:#764ba2}
+.footer{text-align:center;margin-top:18px;font-size:12px;color:#aaa;direction:ltr}
+input.error{border-color:#e74c3c}
+.error-msg{color:#e74c3c;font-size:12px;margin-top:4px;display:none}
+@media(max-width:480px){.card{padding:25px 18px;border-radius:18px}h1{font-size:20px}.result-value{font-size:16px}.result-value.highlight{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>حاسبة الربح 🧮</h1>
+<p class="sub">Trendyol — 12% عمولة + 7 ريال شحن</p>
+
+<div class="formula-badge">
+سعر البيع = (سعر الشراء + 7) ÷ (0.88 − نسبة الربح)
+</div>
+
+<div class="group">
+<label>سعر الشراء <span class="note">(ريال)</span></label>
+<div class="input-wrap">
+<input type="number" id="cost" value="10" step="0.01" min="0">
+<span class="currency">ر.س</span>
+</div>
+</div>
+
+<div class="group">
+<label>نسبة الربح المطلوبة <span class="note">(مثال: 25 = 25%)</span></label>
+<div class="input-wrap">
+<input type="number" id="profitPct" value="25" step="0.5" min="0" max="87">
+<span class="pct">%</span>
+</div>
+<div class="error-msg" id="errorMsg">نسبة الربح يجب أن تكون أقل من 88%</div>
+</div>
+
+<div class="results">
+<div class="result-row">
+<span class="result-label">سعر البيع المطلوب</span>
+<span class="result-value highlight" id="sellingPrice">—</span>
+</div>
+<div class="result-row">
+<span class="result-label">صافي الربح</span>
+<span class="result-value profit" id="netProfit">—</span>
+</div>
+<div class="result-row">
+<span class="result-label">نسبة الربح الفعلية</span>
+<span class="result-value pct" id="actualPct">—</span>
+</div>
+</div>
+
+<div class="footer">Trendyol Pricing Calculator</div>
+</div>
+
+<script>
+const costInput=document.getElementById('cost');
+const pctInput=document.getElementById('profitPct');
+const sellingEl=document.getElementById('sellingPrice');
+const profitEl=document.getElementById('netProfit');
+const actualEl=document.getElementById('actualPct');
+const errorMsg=document.getElementById('errorMsg');
+
+function calc(){
+const cost=parseFloat(costInput.value)||0;
+const pct=parseFloat(pctInput.value)||0;
+const rate=pct/100;
+
+if(rate>=0.88){
+costInput.classList.add('error');
+errorMsg.style.display='block';
+sellingEl.textContent='—';
+profitEl.textContent='—';
+actualEl.textContent='—';
+return;
+}
+costInput.classList.remove('error');
+errorMsg.style.display='none';
+
+const selling=(cost+7)/(0.88-rate);
+const netProfit=selling*rate;
+const actualPct=rate*100;
+
+sellingEl.textContent=selling.toFixed(2)+' ر.س';
+profitEl.textContent=netProfit.toFixed(2)+' ر.س';
+actualEl.textContent=actualPct.toFixed(2)+'%';
+}
+
+costInput.addEventListener('input',calc);
+pctInput.addEventListener('input',calc);
+calc();
+</script>
+</body>
+</html>

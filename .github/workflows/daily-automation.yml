@@ -1,0 +1,33 @@
+name: Daily Auto Blogging & SEO Automation
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Generate Daily Article
+        run: python scripts/generate_post.py
+
+      - name: Update Sitemap & SEO Files
+        run: python scripts/update_seo.py
+
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "🤖 Auto-generated daily article and updated SEO sitemap"
+          branch: main

@@ -24,11 +24,21 @@ def update_sitemap_and_index():
         f.write(sitemap_content)
     print("تم أرشفة وتجميع كافة المشروعات والصفحات في sitemap.xml بنجاح!")
 
-    # 2. Update Index.html with list of posts
+    # 2. Update Index.html with beautiful post cards
     posts = glob.glob("posts/*.html")
-    posts_links_html = ""
+    posts_cards_html = ""
     
-    for post in sorted(posts, reverse=True):
+    icons = [
+        "fa-solid fa-lightbulb",
+        "fa-solid fa-chart-line",
+        "fa-solid fa-laptop-code",
+        "fa-solid fa-newspaper",
+        "fa-solid fa-rocket"
+    ]
+    
+    tags = ["استراتيجيات وتطوير", "SEO وتصنيف", "تسويق رقمي", "تقنية مستقبليات", "تنمية أرباح"]
+
+    for idx, post in enumerate(sorted(posts, reverse=True)):
         clean_post = post.replace("\\", "/")
         title = clean_post
         try:
@@ -36,29 +46,41 @@ def update_sitemap_and_index():
                 content = pf.read()
                 match = re.search(r"<title>(.*?)</title>", content)
                 if match:
-                    title = match.group(1)
+                    title = match.group(1).replace("- مدونة الفكر الذكي", "").strip()
         except Exception:
             pass
             
-        posts_links_html += f"""
-        <div class="post-card" style="background:#fff; border-right:4px solid #0056b3; padding:15px; margin-bottom:15px; border-radius:6px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
-            <h3 style="margin:0 0 10px 0;"><a href="{clean_post}" style="color:#0056b3; text-decoration:none;">{title}</a></h3>
-            <p style="margin:0; font-size:0.9em; color:#666;">رابط المقال: <a href="{clean_post}">{clean_post}</a></p>
-        </div>"""
+        icon = icons[idx % len(icons)]
+        tag = tags[idx % len(tags)]
         
-    if not posts_links_html:
-        posts_links_html = "<p>جاري توليد المقالات اليومية تلقائياً...</p>"
+        posts_cards_html += f"""
+        <article class="post-card">
+            <div class="card-header-icon">
+                <i class="{icon}"></i>
+            </div>
+            <div class="card-body">
+                <span class="card-tag">{tag}</span>
+                <a href="{clean_post}" class="card-title">{title}</a>
+                <div class="card-footer">
+                    <span><i class="fa-regular fa-calendar"></i> {today}</span>
+                    <a href="{clean_post}" class="btn-read">اقرأ المقال <i class="fa-solid fa-arrow-left"></i></a>
+                </div>
+            </div>
+        </article>"""
+        
+    if not posts_cards_html:
+        posts_cards_html = '<p style="color:var(--text-muted); text-align:center;">جاري نشر المقالات اليومية...</p>'
 
     if os.path.exists("index.html"):
         with open("index.html", "r", encoding="utf-8") as f:
             index_content = f.read()
             
-        pattern = r'(<div id="posts-list">)(.*?)(</div>)'
-        new_index_content = re.sub(pattern, f'\\1{posts_links_html}\\3', index_content, flags=re.DOTALL)
+        pattern = r'(<div id="posts-list"[^>]*>)(.*?)(</div>)'
+        new_index_content = re.sub(pattern, f'\\1{posts_cards_html}\n        \\3', index_content, flags=re.DOTALL)
         
         with open("index.html", "w", encoding="utf-8") as f:
             f.write(new_index_content)
-        print("تم تحديث الصفحة الرئيسية index.html بالمقالات الجديدة بنجاح!")
+        print("تم تحديث بطاقات المقالات في الصفحة الرئيسية index.html بنجاح!")
 
 if __name__ == "__main__":
     update_sitemap_and_index()

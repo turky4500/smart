@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://turky4500.github.io/smart/wats.html</loc>
-    <lastmod>2026-08-04</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/b.html</loc>
-    <lastmod>2026-08-04</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/s.html</loc>
+    <loc>https://turky4500.github.io/smart/posts/2026-08-04-785.html</loc>
     <lastmod>2026-08-04</lastmod>
     <priority>0.8</priority>
   </url>
@@ -21,7 +11,22 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://turky4500.github.io/smart/soq.html</loc>
+    <loc>https://turky4500.github.io/smart/a.html</loc>
+    <lastmod>2026-08-04</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/posts/2026-08-04-192.html</loc>
+    <lastmod>2026-08-04</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/tt.html</loc>
+    <lastmod>2026-08-04</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/s.html</loc>
     <lastmod>2026-08-04</lastmod>
     <priority>0.8</priority>
   </url>
@@ -36,23 +41,23 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://turky4500.github.io/smart/posts/2026-08-04-785.html</loc>
-    <lastmod>2026-08-04</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/tt.html</loc>
-    <lastmod>2026-08-04</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/a.html</loc>
-    <lastmod>2026-08-04</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://turky4500.github.io/smart/index.html</loc>
     <lastmod>2026-08-04</lastmod>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/b.html</loc>
+    <lastmod>2026-08-04</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/soq.html</loc>
+    <lastmod>2026-08-04</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/wats.html</loc>
+    <lastmod>2026-08-04</lastmod>
+    <priority>0.8</priority>
   </url>
 </urlset>

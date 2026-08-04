@@ -25,7 +25,7 @@ def generate_article():
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{selected_topic} - مدونة الفكر الذكي</title>
     <meta name="description" content="اقرأ مقالنا اليومي حول {selected_topic} وأحدث النصائح التقنية لتحسين موقعك والأرشفة في قوقل.">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID" crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7778135355055222" crossorigin="anonymous"></script>
     <style>
         body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.8; margin: 0; padding: 20px; background: #f9f9f9; color: #333; }}
         .container {{ max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }}

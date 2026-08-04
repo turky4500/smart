@@ -25,51 +25,164 @@ def generate_article():
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{selected_topic} - مدونة الفكر الذكي</title>
     <meta name="description" content="اقرأ مقالنا اليومي حول {selected_topic} وأحدث النصائح التقنية لتحسين موقعك والأرشفة في قوقل.">
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google AdSense Code -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7778135355055222" crossorigin="anonymous"></script>
     <style>
-        body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.8; margin: 0; padding: 20px; background: #f9f9f9; color: #333; }}
-        .container {{ max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }}
-        h1, h2 {{ color: #0056b3; }}
-        .meta {{ font-size: 0.9em; color: #666; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }}
-        .ad-slot {{ background: #f0f0f0; border: 1px dashed #ccc; padding: 15px; text-align: center; margin: 20px 0; border-radius: 4px; }}
+        :root {{
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: rgba(30, 41, 59, 0.85);
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }}
+        * {{ box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }}
+        body {{
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            background-image: radial-gradient(at 50% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+            line-height: 1.8;
+            padding-bottom: 60px;
+        }}
+        .navbar {{
+            padding: 20px 8%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }}
+        .logo {{
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #38bdf8;
+            text-decoration: none;
+        }}
+        .container {{
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 40px;
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }}
+        .badge {{
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 50px;
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }}
+        h1 {{ font-size: 2.2rem; font-weight: 900; color: #fff; margin-bottom: 15px; line-height: 1.4; }}
+        .meta {{ display: flex; gap: 20px; color: var(--text-muted); font-size: 0.9em; border-bottom: 1px solid var(--glass-border); padding-bottom: 20px; margin-bottom: 30px; }}
+        .ad-container {{
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px dashed rgba(148, 163, 184, 0.25);
+            border-radius: 12px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }}
+        .article-body p {{ font-size: 1.1rem; color: #cbd5e1; margin-bottom: 20px; }}
+        .article-body h3 {{ font-size: 1.4rem; color: #a78bfa; margin: 30px 0 15px; }}
+        .article-body ul {{ margin-right: 25px; margin-bottom: 25px; color: #cbd5e1; }}
+        .article-body li {{ margin-bottom: 10px; }}
+        .btn-back {{
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 24px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 30px;
+            transition: opacity 0.2s;
+        }}
+        .btn-back:hover {{ opacity: 0.9; }}
     </style>
 </head>
 <body>
+    <nav class="navbar">
+        <a href="../index.html" class="logo"><i class="fa-solid fa-brain"></i> الفكر الذكي</a>
+        <a href="../index.html" style="color:#a78bfa; text-decoration:none; font-weight:700;"><i class="fa-solid fa-arrow-right"></i> الرئيسية</a>
+    </nav>
     <div class="container">
-        <h1><a href="../index.html" style="text-decoration:none; color:#0056b3;">مدونة الفكر الذكي</a></h1>
-        <hr>
-        <article>
-            <h2>{selected_topic}</h2>
-            <div class="meta">تاريخ النشر: {today} | بقلم: محرر الذكاء الاصطناعي</div>
-            
-            <div class="ad-slot">
-                <!-- مكان إعلان AdSense العلوي -->
-            </div>
+        <span class="badge"><i class="fa-solid fa-tag"></i> مقال تقني يومي</span>
+        <h1>{selected_topic}</h1>
+        <div class="meta">
+            <span><i class="fa-regular fa-calendar"></i> {today}</span>
+            <span><i class="fa-regular fa-user"></i> محرر الذكاء الاصطناعي</span>
+        </div>
+        
+        <div class="ad-container">
+            <!-- موقع البودكاست -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-7778135355055222"
+                 data-ad-slot="5093830951"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({{}});
+            </script>
+        </div>
 
-            <p>مرحباً بكم في مقالنا اليومي المحدث تلقائياً. يمثل <strong>{selected_topic}</strong> أحد أهم المحاور التي تشغل بال المتخصصين في مجال التقنية والتسويق الرقمي اليوم.</p>
+        <div class="article-body">
+            <p>مرحباً بكم في مدونة الفكر الذكي. يمثل موضوع <strong>{selected_topic}</strong> حجر الزاوية في تحسين كفاءة العمليات الرقمية وتطوير استراتيجيات التدوين المعاصرة.</p>
             
-            <h3>أبرز النقاط المستفادة:</h3>
+            <h3>أهمية هذا الاتجاه المستقبلي:</h3>
+            <p>في عصر التحول الرقمي السريع، تعتمد الشركات والمدونات على أحدث حلول الأتمتة لضمان أرشفة فورية، تجربة متميزة للمستخدم، وتحقيق أعلى مستويات الأرباح من الإعلانات الرقمية.</p>
+            
+            <h3>أبرز التوصيات والاستراتيجيات:</h3>
             <ul>
-                <li>تحسين الأداء وسرعة التحميل.</li>
-                <li>توفير تصميم متجاوب مع جميع الأجهزة.</li>
-                <li>الأرشفة الفورية عبر محركات البحث.</li>
+                <li>تطبيق أفضل معايير تحسين محركات البحث SEO بشكل متواصل.</li>
+                <li>استخدام تصميم متجاوب فائق السرعة يدعم كافة الشاشات والأجهزة.</li>
+                <li>توفير محتوى حصري غني بالقيمة المضافة للقارئ والزائر.</li>
             </ul>
+        </div>
 
-            <div class="ad-slot">
-                <!-- مكان إعلان AdSense السفلي -->
-            </div>
-            
-            <p><small>آخر تحديث: {timestamp}</small></p>
-        </article>
-        <hr>
-        <p><a href="../index.html">العودة للصفحة الرئيسية</a></p>
+        <div class="ad-container">
+            <!-- موقع البودكاست -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-7778135355055222"
+                 data-ad-slot="5093830951"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({{}});
+            </script>
+        </div>
+
+        <a href="../index.html" class="btn-back"><i class="fa-solid fa-arrow-right"></i> العودة للرئيسية</a>
     </div>
 </body>
 </html>"""
 
     with open(filename, "w", encoding="utf-8") as f:
         f.write(html_content)
-    print(f"تم إنشاء المقال: {filename}")
+    print(f"تم إنشاء المقال وبداخله شفرة الإعلان 5093830951: {filename}")
 
 if __name__ == "__main__":
     generate_article()
+```
+
+,Description:

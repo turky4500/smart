@@ -3,58 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مدونة الفكر الذكي - الصفحة الرئيسية</title>
-    <meta name="description" content="مدونة تقنية يومية محدثة آلياً بأحدث مقالات الذكاء الاصطناعي والتسويق الرقمي والسيو.">
+    <title>مدونة الفكر الذكي - منصة الذكاء الاصطناعي والتكنولوجيا</title>
+    <meta name="description" content="منصة عالمية متطورة للتدوين الآلي وأحدث أخبار الذكاء الاصطناعي، السيو، والتسويق الرقمي.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID" crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7778135355055222" crossorigin="anonymous"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.8; margin: 0; padding: 20px; background: #f4f6f9; color: #333; }
-        .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        header { text-align: center; border-bottom: 2px solid #0056b3; padding-bottom: 20px; margin-bottom: 30px; }
-        h1 { color: #0056b3; margin: 0; }
-        .ad-banner { background: #eef2f7; border: 1px dashed #0056b3; padding: 20px; text-align: center; margin: 20px 0; border-radius: 6px; }
-        .welcome-card { background: #f8f9fa; border-right: 4px solid #28a745; padding: 15px 20px; margin-bottom: 30px; border-radius: 4px; }
-        footer { text-align: center; font-size: 0.9em; color: #777; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; }
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: rgba(30, 41, 59, 0.75);
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow-glow: 0 10px 30px -10px rgba(139, 92, 246, 0.35);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.18) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.18) 0px, transparent 50%);
+            background-attachment: fixed;
+            line-height: 1.7;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #a78bfa, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 20px;
+            border-radius: 50px;
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #c084fc;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            line-height: 1.3;
+            margin-bottom: 20px;
+            background: linear-gradient(to bottom, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        .ad-container {
+            max-width: 1100px;
+            margin: 25px auto;
+            padding: 15px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px dashed rgba(148, 163, 184, 0.25);
+            border-radius: 16px;
+            text-align: center;
+            position: relative;
+        }
+
+        .ad-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 15px;
+        }
+
+        .section-header h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 25px;
+        }
+
+        .post-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .post-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .card-header-icon {
+            height: 140px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(59, 130, 246, 0.25));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            color: #c084fc;
+        }
+
+        .card-body {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-tag {
+            align-self: flex-start;
+            padding: 4px 14px;
+            border-radius: 20px;
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .card-title:hover {
+            color: #38bdf8;
+        }
+
+        .card-footer {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .btn-read {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #a78bfa;
+            text-decoration: none;
+            font-weight: 700;
+            transition: gap 0.2s;
+        }
+
+        .post-card:hover .btn-read {
+            gap: 12px;
+            color: #c084fc;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(15, 23, 42, 0.95);
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .posts-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>مدونة الفكر الذكي 🚀</h1>
-            <p>منصة التدوين المؤتمتة يومياً بالأذكاء الاصطناعي والأرشفة السريعة</p>
-        </header>
 
-        <div class="ad-banner">
-            <!-- مساحة إعلانية - Google AdSense Header Banner -->
-            <p style="color: #666; font-size: 0.9em;">مساحة إعلانية جاهزة لـ Google AdSense</p>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-brain"></i> الفكر الذكي
         </div>
+    </nav>
 
-        <main>
-            <div class="welcome-card">
-                <h3>مرحباً بكم في مدونتنا!</h3>
-                <p>يتم تحديث هذه المدونة يومياً عبر بوتات <strong>GitHub Actions</strong> التلقائية لنشر أحدث المقالات وتحديث ملفات الـ SEO و Sitemap للظهور في الصفحة الأولى لمقالات قوقل.</p>
-            </div>
-
-            <h2>أحدث المقالات المضافة:</h2>
-            <div id="posts-list">
-        <div class="post-card" style="background:#fff; border-right:4px solid #0056b3; padding:15px; margin-bottom:15px; border-radius:6px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
-            <h3 style="margin:0 0 10px 0;"><a href="posts/2026-08-04-785.html" style="color:#0056b3; text-decoration:none;">طرق تحسين تجربة المستخدم SEO ودورها في زيادة الأرباح - مدونة الفكر الذكي</a></h3>
-            <p style="margin:0; font-size:0.9em; color:#666;">رابط المقال: <a href="posts/2026-08-04-785.html">posts/2026-08-04-785.html</a></p>
+    <header class="hero">
+        <div class="badge-pill">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> منصة تدوين عالمية بالذكاء الاصطناعي
         </div>
-        <div class="post-card" style="background:#fff; border-right:4px solid #0056b3; padding:15px; margin-bottom:15px; border-radius:6px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
-            <h3 style="margin:0 0 10px 0;"><a href="posts/2026-08-04-650.html" style="color:#0056b3; text-decoration:none;">كيف تحسن من سرعة موقعك الإلكتروني لزيادة تحويلات AdSense - مدونة الفكر الذكي</a></h3>
-            <p style="margin:0; font-size:0.9em; color:#666;">رابط المقال: <a href="posts/2026-08-04-650.html">posts/2026-08-04-650.html</a></p>
-        </div></div></div>
-        </main>
+        <h1>منصة التدوين التقني والمعرفة المتقدمة</h1>
+        <p>مقالات يومية متجددة ومؤتمتة فائقة الدقة في السيو، الذكاء الاصطناعي، وتطوير الأرباح الرقمية.</p>
+    </header>
 
-        <div class="ad-banner">
-            <!-- مساحة إعلانية - Google AdSense Footer Banner -->
-            <p style="color: #666; font-size: 0.9em;">مساحة إعلانية جاهزة لـ Google AdSense</p>
-        </div>
-
-        <footer>
-            <p>جميع الحقوق محفوظة &copy; 2026 - مدونة الفكر الذكي | <a href="sitemap.xml">خريطة الموقع Sitemap</a></p>
-        </footer>
+    <div class="ad-container">
+        <div class="ad-label">إعلان AdSense</div>
+        <!-- Google AdSense Header Slot -->
     </div>
+
+    <main class="main-container">
+        <div class="section-header">
+            <h2><i class="fa-solid fa-fire" style="color: #a78bfa;"></i> أحدث المقالات والنشرات الرقمية</h2>
+        </div>
+
+        <div id="posts-list" class="posts-grid">
+            <!-- Dynamic Post Cards -->
+        </div>
+    </main>
+
+    <div class="ad-container">
+        <div class="ad-label">إعلان AdSense</div>
+        <!-- Google AdSense Footer Slot -->
+    </div>
+
+    <footer>
+        <p>جميع الحقوق محفوظة &copy; 2026 <strong>مدونة الفكر الذكي</strong> | <a href="sitemap.xml">خريطة الموقع Sitemap</a></p>
+    </footer>
+
 </body>
 </html>

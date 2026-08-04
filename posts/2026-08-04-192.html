@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كيف تحسن من سرعة موقعك الإلكتروني لزيادة تحويلات AdSense - مدونة الفكر الذكي</title>
-    <meta name="description" content="اقرأ مقالنا اليومي حول كيف تحسن من سرعة موقعك الإلكتروني لزيادة تحويلات AdSense وأحدث النصائح التقنية لتحسين موقعك والأرشفة في قوقل.">
+    <title>كيفية اختيار واستغلال الكلمات المفتاحية ذات الربحية العالية (High CPC Keywords) - مدونة الفكر الذكي</title>
+    <meta name="description" content="تعلم كيفية العثور على الكلمات المفتاحية التي يدفع المعنون مبالغ مرتفعة لقاء الإعلان عليها ومضاعفة عائد ألف ظهور (RPM) في موقعك.">
     <!-- Google Fonts & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,7 +28,7 @@
             color: var(--text-main);
             min-height: 100vh;
             background-image: radial-gradient(at 50% 0%, rgba(124, 58, 237, 0.05) 0px, transparent 50%);
-            line-height: 1.8;
+            line-height: 1.9;
             padding-bottom: 60px;
         }
         .navbar {
@@ -39,6 +39,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         .logo {
             font-size: 1.5rem;
@@ -47,67 +50,91 @@
             text-decoration: none;
         }
         .container {
-            max-width: 850px;
+            max-width: 900px;
             margin: 40px auto;
-            padding: 40px;
+            padding: 45px;
             background: var(--bg-card);
             border: 1px solid var(--border-light);
             border-radius: 24px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.04);
         }
-        .badge {
+        .category-badge {
             display: inline-block;
-            padding: 6px 16px;
+            padding: 6px 18px;
             border-radius: 50px;
             background: #e0f2fe;
             color: #0284c7;
             font-weight: 700;
             font-size: 0.85rem;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
-        h1 { font-size: 2.2rem; font-weight: 900; color: #0f172a; margin-bottom: 15px; line-height: 1.4; }
-        .meta { display: flex; gap: 20px; color: var(--text-muted); font-size: 0.9em; border-bottom: 1px solid var(--border-light); padding-bottom: 20px; margin-bottom: 30px; }
+        h1 { font-size: 2.3rem; font-weight: 900; color: #0f172a; margin-bottom: 20px; line-height: 1.4; }
+        .meta { display: flex; flex-wrap: wrap; gap: 25px; color: var(--text-muted); font-size: 0.9em; border-bottom: 1px solid var(--border-light); padding-bottom: 20px; margin-bottom: 35px; }
+        .summary-box {
+            background: #f1f5f9;
+            border-right: 4px solid var(--accent-purple);
+            padding: 20px 25px;
+            border-radius: 12px;
+            font-size: 1.15rem;
+            color: #334155;
+            margin-bottom: 35px;
+            font-weight: 600;
+        }
         .ad-container {
-            margin: 30px 0;
-            padding: 20px;
+            margin: 35px 0;
+            padding: 15px;
             background: #f8fafc;
             border: 1px dashed var(--border-light);
-            border-radius: 12px;
+            border-radius: 14px;
             text-align: center;
-            color: var(--text-muted);
-            font-size: 0.8rem;
         }
-        .article-body p { font-size: 1.1rem; color: #334155; margin-bottom: 20px; }
-        .article-body h3 { font-size: 1.4rem; color: var(--accent-purple); margin: 30px 0 15px; }
-        .article-body ul { margin-right: 25px; margin-bottom: 25px; color: #334155; }
-        .article-body li { margin-bottom: 10px; }
+        .content-section { margin-bottom: 35px; }
+        .content-section h3 { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
+        .content-section p { font-size: 1.1rem; color: #334155; margin-bottom: 15px; }
+        .takeaways-card {
+            background: rgba(124, 58, 237, 0.04);
+            border: 1px solid rgba(124, 58, 237, 0.15);
+            border-radius: 18px;
+            padding: 25px 30px;
+            margin: 40px 0;
+        }
+        .takeaways-card h4 { font-size: 1.25rem; color: var(--accent-purple); margin-bottom: 15px; font-weight: 800; }
+        .takeaways-card ul { list-style: none; padding: 0; }
+        .takeaways-card li { font-size: 1.05rem; color: #334155; margin-bottom: 12px; display: flex; align-items: center; }
         .btn-back {
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            padding: 10px 24px;
+            padding: 12px 28px;
             border-radius: 50px;
             background: linear-gradient(135deg, #7c3aed, #2563eb);
             color: #fff;
             text-decoration: none;
             font-weight: 700;
-            margin-top: 30px;
-            transition: opacity 0.2s;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
+            transition: all 0.2s;
         }
-        .btn-back:hover { opacity: 0.9; }
+        .btn-back:hover { transform: translateY(-2px); opacity: 0.95; }
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <a href="../index.html" class="logo"><i class="fa-solid fa-brain"></i> الفكر الذكي</a>
-        <a href="../index.html" style="color:var(--accent-purple); text-decoration:none; font-weight:700;"><i class="fa-solid fa-arrow-right"></i> الرئيسية</a>
+        <a href="../index.html" class="logo"><i class="fa-solid fa-lightbulb"></i> الفكر الذكي</a>
+        <a href="../index.html" style="color:var(--accent-purple); text-decoration:none; font-weight:700;"><i class="fa-solid fa-arrow-right"></i> الصفحة الرئيسية</a>
     </nav>
+    
     <div class="container">
-        <span class="badge"><i class="fa-solid fa-tag"></i> مقال تقني يومي</span>
-        <h1>كيف تحسن من سرعة موقعك الإلكتروني لزيادة تحويلات AdSense</h1>
+        <span class="category-badge"><i class="fa-solid fa-folder-open"></i> تحقيق الدخل وAdSense</span>
+        <h1>كيفية اختيار واستغلال الكلمات المفتاحية ذات الربحية العالية (High CPC Keywords)</h1>
         <div class="meta">
-            <span><i class="fa-regular fa-calendar"></i> 2026-08-04</span>
-            <span><i class="fa-regular fa-user"></i> محرر الذكاء الاصطناعي</span>
+            <span><i class="fa-regular fa-calendar"></i> تاريخ النشر: 2026-08-04</span>
+            <span><i class="fa-regular fa-user"></i> أ. طارق عبدالكريم - متخصص أرباح الإعلانات</span>
+            <span><i class="fa-regular fa-clock"></i> وقت القراءة: 4 دقائق</span>
+        </div>
+
+        <div class="summary-box">
+            تعلم كيفية العثور على الكلمات المفتاحية التي يدفع المعنون مبالغ مرتفعة لقاء الإعلان عليها ومضاعفة عائد ألف ظهور (RPM) في موقعك.
         </div>
         
         <div class="ad-container">
@@ -123,17 +150,26 @@
             </script>
         </div>
 
-        <div class="article-body">
-            <p>مرحباً بكم في مدونة الفكر الذكي. يمثل موضوع <strong>كيف تحسن من سرعة موقعك الإلكتروني لزيادة تحويلات AdSense</strong> حجر الزاوية في تحسين كفاءة العمليات الرقمية وتطوير استراتيجيات التدوين المعاصرة.</p>
+        <article class="article-body">
             
-            <h3>أهمية هذا الاتجاه المستقبلي:</h3>
-            <p>في عصر التحول الرقمي السريع، تعتمد الشركات والمدونات على أحدث حلول الأتمتة لضمان أرشفة فورية، تجربة متميزة للمستخدم، وتحقيق أعلى مستويات الأرباح من الإعلانات الرقمية.</p>
-            
-            <h3>أبرز التوصيات والاستراتيجيات:</h3>
+        <section class="content-section">
+            <h3>فهم آلية المزادات في Google AdSense وكيفية حساب سعر النقرة</h3>
+            <p>تعتمد أرباح الإعلانات على نظام المزاد المباشر بين المعلنين. القطاعات التقنية والمالية والاستثمارية والتأمين تشهد منافسة شديدة تجعل سعر النقرة الواحدة يتضاعف مرات عديدة مقارنة بالقطاعات العامة.</p>
+        </section>
+        <section class="content-section">
+            <h3>أدوات البحث عن الكلمات المفتاحية الربحية</h3>
+            <p>استخدم أدوات مثل Google Keyword Planner و Ahrefs للتعرف على تكلفة النقرة المتوقعة (CPC) وحجم البحث الشهري. قم باستهداف المواضيع ذات القيمة التجارية العالية لتغطيتها بمقالات دقيقة.</p>
+        </section>
+        <section class="content-section">
+            <h3>التوزيع الذكي للإعلانات بداخل المقال لتحقيق أعلى معدل مشاهدة (Viewability)</h3>
+            <p>قم بوضع الإعلانات في أماكن انتباه القارئ الطبيعية، مثل أعلى المقال وتحت الفقرات الرئيسية. تجنب تكثيف الإعلانات بشكل يزعج الزائر، بل حافظ على توازن رائع بين تجربة القراءة وتصميم الإعلان.</p>
+        </section>
+        </article>
+
+        <div class="takeaways-card">
+            <h4><i class="fa-solid fa-star"></i> النقاط الجوهرية للرفع من أدائك:</h4>
             <ul>
-                <li>تطبيق أفضل معايير تحسين محركات البحث SEO بشكل متواصل.</li>
-                <li>استخدام تصميم متجاوب فائق السرعة يدعم كافة الشاشات والأجهزة.</li>
-                <li>توفير محتوى حصري غني بالقيمة المضافة للقارئ والزائر.</li>
+                <li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> استهداف النيش (Niche) التخصصي يرفع سعر النقرة بنسبة تصل إلى 300%.</li><li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> التوزيع الجيد للإعلان يمنع النقرات الخاطئة ويحافظ على حساب AdSense سليم.</li><li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> متابعة تحليلات AdSense الدورية تمكنك من معرفة أفضل المقالات أرباحاً وتكرار تجربتها.</li>
             </ul>
         </div>
 
@@ -150,7 +186,7 @@
             </script>
         </div>
 
-        <a href="../index.html" class="btn-back"><i class="fa-solid fa-arrow-right"></i> العودة للرئيسية</a>
+        <a href="../index.html" class="btn-back"><i class="fa-solid fa-arrow-right"></i> العودة للصفحة الرئيسية</a>
     </div>
 </body>
 </html>

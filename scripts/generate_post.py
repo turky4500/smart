@@ -34,29 +34,28 @@ def generate_article():
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7778135355055222" crossorigin="anonymous"></script>
     <style>
         :root {{
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-card: rgba(30, 41, 59, 0.85);
-            --accent-purple: #8b5cf6;
-            --accent-blue: #3b82f6;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --bg-primary: #f8fafc;
+            --bg-card: #ffffff;
+            --accent-purple: #7c3aed;
+            --accent-blue: #2563eb;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-light: #e2e8f0;
         }}
         * {{ box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }}
         body {{
             background-color: var(--bg-primary);
             color: var(--text-main);
             min-height: 100vh;
-            background-image: radial-gradient(at 50% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+            background-image: radial-gradient(at 50% 0%, rgba(124, 58, 237, 0.05) 0px, transparent 50%);
             line-height: 1.8;
             padding-bottom: 60px;
         }}
         .navbar {{
-            padding: 20px 8%;
-            background: rgba(15, 23, 42, 0.9);
+            padding: 18px 8%;
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--border-light);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -64,7 +63,7 @@ def generate_article():
         .logo {{
             font-size: 1.5rem;
             font-weight: 900;
-            color: #38bdf8;
+            color: var(--accent-purple);
             text-decoration: none;
         }}
         .container {{
@@ -72,36 +71,35 @@ def generate_article():
             margin: 40px auto;
             padding: 40px;
             background: var(--bg-card);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--border-light);
             border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
         }}
         .badge {{
             display: inline-block;
             padding: 6px 16px;
             border-radius: 50px;
-            background: rgba(56, 189, 248, 0.15);
-            color: #38bdf8;
+            background: #e0f2fe;
+            color: #0284c7;
             font-weight: 700;
             font-size: 0.85rem;
             margin-bottom: 15px;
         }}
-        h1 {{ font-size: 2.2rem; font-weight: 900; color: #fff; margin-bottom: 15px; line-height: 1.4; }}
-        .meta {{ display: flex; gap: 20px; color: var(--text-muted); font-size: 0.9em; border-bottom: 1px solid var(--glass-border); padding-bottom: 20px; margin-bottom: 30px; }}
+        h1 {{ font-size: 2.2rem; font-weight: 900; color: #0f172a; margin-bottom: 15px; line-height: 1.4; }}
+        .meta {{ display: flex; gap: 20px; color: var(--text-muted); font-size: 0.9em; border-bottom: 1px solid var(--border-light); padding-bottom: 20px; margin-bottom: 30px; }}
         .ad-container {{
             margin: 30px 0;
             padding: 20px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px dashed rgba(148, 163, 184, 0.25);
+            background: #f8fafc;
+            border: 1px dashed var(--border-light);
             border-radius: 12px;
             text-align: center;
             color: var(--text-muted);
             font-size: 0.8rem;
         }}
-        .article-body p {{ font-size: 1.1rem; color: #cbd5e1; margin-bottom: 20px; }}
-        .article-body h3 {{ font-size: 1.4rem; color: #a78bfa; margin: 30px 0 15px; }}
-        .article-body ul {{ margin-right: 25px; margin-bottom: 25px; color: #cbd5e1; }}
+        .article-body p {{ font-size: 1.1rem; color: #334155; margin-bottom: 20px; }}
+        .article-body h3 {{ font-size: 1.4rem; color: var(--accent-purple); margin: 30px 0 15px; }}
+        .article-body ul {{ margin-right: 25px; margin-bottom: 25px; color: #334155; }}
         .article-body li {{ margin-bottom: 10px; }}
         .btn-back {{
             display: inline-flex;
@@ -109,7 +107,7 @@ def generate_article():
             gap: 10px;
             padding: 10px 24px;
             border-radius: 50px;
-            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
             color: #fff;
             text-decoration: none;
             font-weight: 700;
@@ -122,7 +120,7 @@ def generate_article():
 <body>
     <nav class="navbar">
         <a href="../index.html" class="logo"><i class="fa-solid fa-brain"></i> الفكر الذكي</a>
-        <a href="../index.html" style="color:#a78bfa; text-decoration:none; font-weight:700;"><i class="fa-solid fa-arrow-right"></i> الرئيسية</a>
+        <a href="../index.html" style="color:var(--accent-purple); text-decoration:none; font-weight:700;"><i class="fa-solid fa-arrow-right"></i> الرئيسية</a>
     </nav>
     <div class="container">
         <span class="badge"><i class="fa-solid fa-tag"></i> مقال تقني يومي</span>
@@ -179,7 +177,7 @@ def generate_article():
 
     with open(filename, "w", encoding="utf-8") as f:
         f.write(html_content)
-    print(f"تم إنشاء المقال: {filename}")
+    print(f"تم إنشاء المقال بستايل نهاري فاخر: {filename}")
 
 if __name__ == "__main__":
     generate_article()

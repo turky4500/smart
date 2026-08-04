@@ -179,10 +179,7 @@ def generate_article():
 
     with open(filename, "w", encoding="utf-8") as f:
         f.write(html_content)
-    print(f"تم إنشاء المقال وبداخله شفرة الإعلان 5093830951: {filename}")
+    print(f"تم إنشاء المقال: {filename}")
 
 if __name__ == "__main__":
     generate_article()
-```
-
-,Description:

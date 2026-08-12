@@ -1,123 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://turky4500.github.io/smart/index.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>1.0</priority>
-  </url>
-  <url>
     <loc>https://turky4500.github.io/smart/tur100.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/posts/2026-08-06-286.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/posts/2026-08-04-650.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/a.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/b.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/s.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/posts/2026-08-10-130.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/tt.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/posts/2026-08-04-785.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/posts/2026-08-07-565.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/posts/2026-08-09-516.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/b1.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/posts/2026-08-04-524.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/posts/2026-08-04-548.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/posts/2026-08-04-192.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/posts/2026-08-04-563.html</loc>
-    <lastmod>2026-08-10</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://turky4500.github.io/smart/posts/2026-08-08-472.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-12</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://turky4500.github.io/smart/soq.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-12</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://turky4500.github.io/smart/posts/2026-08-04-894.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <loc>https://turky4500.github.io/smart/posts/2026-08-10-130.html</loc>
+    <lastmod>2026-08-12</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://turky4500.github.io/smart/posts/2026-08-04-883.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <loc>https://turky4500.github.io/smart/b.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/posts/2026-08-04-650.html</loc>
+    <lastmod>2026-08-12</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://turky4500.github.io/smart/posts/2026-08-04-989.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/posts/2026-08-04-883.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/posts/2026-08-04-548.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/posts/2026-08-12-295.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/posts/2026-08-07-565.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/posts/2026-08-09-516.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/posts/2026-08-04-524.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/posts/2026-08-04-894.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/posts/2026-08-08-472.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/posts/2026-08-04-192.html</loc>
+    <lastmod>2026-08-12</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://turky4500.github.io/smart/posts/2026-08-05-535.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-12</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://turky4500.github.io/smart/posts/2026-08-04-785.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/s.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/b1.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/posts/2026-08-04-563.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/tt.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/posts/2026-08-06-286.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/a.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://turky4500.github.io/smart/index.html</loc>
+    <lastmod>2026-08-12</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
     <loc>https://turky4500.github.io/smart/wats.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-12</lastmod>
     <priority>0.8</priority>
   </url>
 </urlset>

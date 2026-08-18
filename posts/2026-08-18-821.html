@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل تصميم وتجربة المستخدم UX/UI لزيادة وقت بقاء الزائر ومعدل التفاعل - مدونة الفكر الذكي</title>
+    <meta name="description" content="شرح عملي لأهم مبادئ واجهة وتجربة المستخدم وكيفية تحويل مدونتك إلى منصة جذابة تشجع الزوار على الاستمرار والاستكشاف.">
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google AdSense Code -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7778135355055222" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-card: #ffffff;
+            --accent-purple: #7c3aed;
+            --accent-blue: #2563eb;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-light: #e2e8f0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            background-image: radial-gradient(at 50% 0%, rgba(124, 58, 237, 0.05) 0px, transparent 50%);
+            line-height: 1.9;
+            padding-bottom: 60px;
+        }
+        .navbar {
+            padding: 18px 8%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--accent-purple);
+            text-decoration: none;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 45px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        }
+        .category-badge {
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 50px;
+            background: #e0f2fe;
+            color: #0284c7;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+        h1 { font-size: 2.3rem; font-weight: 900; color: #0f172a; margin-bottom: 20px; line-height: 1.4; }
+        .meta { display: flex; flex-wrap: wrap; gap: 25px; color: var(--text-muted); font-size: 0.9em; border-bottom: 1px solid var(--border-light); padding-bottom: 20px; margin-bottom: 35px; }
+        .summary-box {
+            background: #f1f5f9;
+            border-right: 4px solid var(--accent-purple);
+            padding: 20px 25px;
+            border-radius: 12px;
+            font-size: 1.15rem;
+            color: #334155;
+            margin-bottom: 35px;
+            font-weight: 600;
+        }
+        .ad-container {
+            margin: 35px 0;
+            padding: 15px;
+            background: #f8fafc;
+            border: 1px dashed var(--border-light);
+            border-radius: 14px;
+            text-align: center;
+        }
+        .content-section { margin-bottom: 35px; }
+        .content-section h3 { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
+        .content-section p { font-size: 1.1rem; color: #334155; margin-bottom: 15px; }
+        .takeaways-card {
+            background: rgba(124, 58, 237, 0.04);
+            border: 1px solid rgba(124, 58, 237, 0.15);
+            border-radius: 18px;
+            padding: 25px 30px;
+            margin: 40px 0;
+        }
+        .takeaways-card h4 { font-size: 1.25rem; color: var(--accent-purple); margin-bottom: 15px; font-weight: 800; }
+        .takeaways-card ul { list-style: none; padding: 0; }
+        .takeaways-card li { font-size: 1.05rem; color: #334155; margin-bottom: 12px; display: flex; align-items: center; }
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 28px;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
+            transition: all 0.2s;
+        }
+        .btn-back:hover { transform: translateY(-2px); opacity: 0.95; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="../index.html" class="logo"><i class="fa-solid fa-lightbulb"></i> الفكر الذكي</a>
+        <a href="../index.html" style="color:var(--accent-purple); text-decoration:none; font-weight:700;"><i class="fa-solid fa-arrow-right"></i> الصفحة الرئيسية</a>
+    </nav>
+    
+    <div class="container">
+        <span class="category-badge"><i class="fa-solid fa-folder-open"></i> تصميم وتجربة المستخدم</span>
+        <h1>دليل تصميم وتجربة المستخدم UX/UI لزيادة وقت بقاء الزائر ومعدل التفاعل</h1>
+        <div class="meta">
+            <span><i class="fa-regular fa-calendar"></i> تاريخ النشر: 2026-08-18</span>
+            <span><i class="fa-regular fa-user"></i> أ. مريم يوسف - مصممة واجهات رقمية</span>
+            <span><i class="fa-regular fa-clock"></i> وقت القراءة: 4 دقائق</span>
+        </div>
+
+        <div class="summary-box">
+            شرح عملي لأهم مبادئ واجهة وتجربة المستخدم وكيفية تحويل مدونتك إلى منصة جذابة تشجع الزوار على الاستمرار والاستكشاف.
+        </div>
+        
+        <div class="ad-container">
+            <!-- موقع البودكاست -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-7778135355055222"
+                 data-ad-slot="5093830951"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <article class="article-body">
+            
+        <section class="content-section">
+            <h3>أهمية التناسق البصري وقراءة الخطوط على الشاشات المختلفة</h3>
+            <p>التصميم الأنيق البسيط يعتمد على خطوط واضحة مثل Cairo وبحجم مريح للعاطفة، مع مسافات فاصلة بين الأسطر (Line Height). التناسق بين الألوان الداكنة والفاتحة يعطي شعوراً بالفخامة والاحترافية.</p>
+        </section>
+        <section class="content-section">
+            <h3>تصميم بطاقات المقالات (Article Cards) الجذابة</h3>
+            <p>البطاقات المنسقة ذات الحدود الناعمة والوسوم الملونة تزيد من نسبة الضغط على المقالات (CTR) بشكل ملحوظ مقارنة بالقوائم النصية التقليدية البحتة.</p>
+        </section>
+        <section class="content-section">
+            <h3>التنقل السلس والوصول المباشر للمحتوى ذات الصلة</h3>
+            <p>وفر دائماً أزرار العودة للرئيسية وروابط المقالات المتصلة في نهاية كل مقال لتمكين القارئ من التنقل بحرية دون مغادرة موقعك.</p>
+        </section>
+        </article>
+
+        <div class="takeaways-card">
+            <h4><i class="fa-solid fa-star"></i> النقاط الجوهرية للرفع من أدائك:</h4>
+            <ul>
+                <li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> زيادة وقت بقاء الزائر ترفع تقييم موقعك في خوارزميات محركات البحث.</li><li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> التصميم النظيف الاستجابي يضمن عمل الموقع بكفاءة على شاشات الأبل والأندرويد.</li><li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> الألوان المتناسقة المريحة للعين تقلل معدل مغادرة الصفحة السريعة.</li>
+            </ul>
+        </div>
+
+        <div class="ad-container">
+            <!-- موقع البودكاست -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-7778135355055222"
+                 data-ad-slot="5093830951"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <a href="../index.html" class="btn-back"><i class="fa-solid fa-arrow-right"></i> العودة للصفحة الرئيسية</a>
+    </div>
+</body>
+</html>

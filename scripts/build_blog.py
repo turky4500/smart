@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Build only the blog pages. Does not touch the other tools in the repo."""
 import os
+import re
 import datetime
 import html
 from articles_data import ARTICLES
@@ -259,44 +260,58 @@ def build_index():
     write("index.html", page)
 
 
-def build_posts():
-    lookup = by_file()
-    for raw in ARTICLES:
-        a = expanded(raw)
-        url = f"{SITE}/posts/{a['file']}"
-        sections = []
-        for i, (title, paras) in enumerate(a["sections"]):
-            block = f"<h2>{html.escape(title)}</h2>" + "".join(f"<p>{html.escape(p)}</p>" for p in paras)
-            sections.append(block)
-            if i == 1:
-                sections.append(ad_box())
+def related_title(filename):
+    name = os.path.basename(filename)
+    path = os.path.join(ROOT, "posts", name)
+    if not os.path.exists(path):
+        lookup = by_file()
+        if name in lookup:
+            return lookup[name]["title"]
+        return None
+    with open(path, encoding="utf-8") as f:
+        html_text = f.read()
+    m = re.search(r"<h1>(.*?)</h1>", html_text, re.S)
+    if not m:
+        return None
+    return re.sub(r"\s+", " ", m.group(1)).strip()
 
-        takes = "".join(f"<li>{html.escape(t)}</li>" for t in a["takeaways"])
-        faqs = []
-        faq_schema = []
-        for q, ans in a["faqs"]:
-            faqs.append(f"<details><summary>{html.escape(q)}</summary><p>{html.escape(ans)}</p></details>")
-            faq_schema.append({
-                "@type": "Question",
-                "name": q,
-                "acceptedAnswer": {"@type": "Answer", "text": ans},
-            })
 
-        related = []
-        for rf in a["related"]:
-            if rf in lookup:
-                related.append(f'<a href="{rf}">{html.escape(lookup[rf]["title"])}</a>')
+def write_post(a):
+    import json
+    url = f"{SITE}/posts/{a['file']}"
+    sections = []
+    for i, (title, paras) in enumerate(a["sections"]):
+        block = f"<h2>{html.escape(title)}</h2>" + "".join(f"<p>{html.escape(p)}</p>" for p in paras)
+        sections.append(block)
+        if i == 1:
+            sections.append(ad_box())
 
-        import json
-        faq_json = json.dumps({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": faq_schema,
-        }, ensure_ascii=False)
+    takes = "".join(f"<li>{html.escape(t)}</li>" for t in a.get("takeaways", []))
+    faqs = []
+    faq_schema = []
+    for q, ans in a.get("faqs", []):
+        faqs.append(f"<details><summary>{html.escape(q)}</summary><p>{html.escape(ans)}</p></details>")
+        faq_schema.append({
+            "@type": "Question",
+            "name": q,
+            "acceptedAnswer": {"@type": "Answer", "text": ans},
+        })
 
-        extra = schema_article(a, url) + f'\n  <script type="application/ld+json">{faq_json}</script>'
-        mins = read_minutes(a)
-        page = f"""{head(a['title'] + " | مدونة الفكر الذكي", a['description'], url, "../", extra, "article")}
+    related = []
+    for rf in a.get("related", []):
+        title = related_title(rf)
+        if title:
+            related.append(f'<a href="{os.path.basename(rf)}">{html.escape(title)}</a>')
+
+    faq_json = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": faq_schema,
+    }, ensure_ascii=False)
+
+    extra = schema_article(a, url) + f'\n  <script type="application/ld+json">{faq_json}</script>'
+    mins = read_minutes(a)
+    page = f"""{head(a['title'] + " | مدونة الفكر الذكي", a['description'], url, "../", extra, "article")}
 <body>
 {nav_html("../", "المقالات")}
   <main id="main" class="wrap">
@@ -326,7 +341,12 @@ def build_posts():
     </article>
   </main>
 {footer_html("../")}"""
-        write(f"posts/{a['file']}", page)
+    write(f"posts/{a['file']}", page)
+
+
+def build_posts():
+    for raw in ARTICLES:
+        write_post(expanded(raw))
 
 
 def build_static():

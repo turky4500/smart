@@ -57,22 +57,27 @@ def post_meta(path):
 
 
 def update_sitemap(posts):
-    today = datetime.date.today().isoformat()
     lines = ['<?xml version="1.0" encoding="UTF-8"?>',
              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for path, pri in BLOG_PAGES:
         loc = f"{SITE}/" if path == "index.html" else f"{SITE}/{path}"
-        last = today if path == "index.html" else today
-        if os.path.exists(os.path.join(ROOT, path)):
+        full = os.path.join(ROOT, path)
+        if os.path.exists(full):
+            last = datetime.date.fromtimestamp(os.path.getmtime(full)).isoformat()
             lines.append(f"  <url><loc>{loc}</loc><lastmod>{last}</lastmod><priority>{pri}</priority></url>")
     for p in posts:
         lines.append(
             f"  <url><loc>{SITE}/{p['file']}</loc><lastmod>{p['date']}</lastmod><priority>0.8</priority></url>"
         )
     lines.append("</urlset>\n")
-    with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8") as f:
-        f.write("\n".join(lines))
-    print("sitemap updated:",  len(posts), "posts")
+    path = os.path.join(ROOT, "sitemap.xml")
+    content = "\n".join(lines)
+    if os.path.exists(path) and open(path, encoding="utf-8").read() == content:
+        print("sitemap unchanged")
+        return
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
+    print("sitemap updated:", len(posts), "posts")
 
 
 def card_html(p):
@@ -114,6 +119,21 @@ def update_index(posts):
         html,
         count=1,
     )
+    cats = ["الكل"] + sorted({p["category"] for p in posts if p["category"]})
+    filters = []
+    for i, c in enumerate(cats):
+        cls = "filter-btn active" if i == 0 else "filter-btn"
+        filters.append(f'<button class="{cls}" type="button" data-filter="{c}">{c}</button>')
+    html = re.sub(
+        r'<div class="filters">.*?</div>',
+        f'<div class="filters">{"".join(filters)}</div>',
+        html,
+        count=1,
+        flags=re.S,
+    )
+    if os.path.exists(index_path) and open(index_path, encoding="utf-8").read() == html:
+        print("index unchanged")
+        return
     with open(index_path, "w", encoding="utf-8") as f:
         f.write(html)
     print("index cards updated")

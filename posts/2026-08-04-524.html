@@ -1,192 +1,138 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دليل تصميم وتجربة المستخدم UX/UI لزيادة وقت بقاء الزائر ومعدل التفاعل - مدونة الفكر الذكي</title>
-    <meta name="description" content="شرح عملي لأهم مبادئ واجهة وتجربة المستخدم وكيفية تحويل مدونتك إلى منصة جذابة تشجع الزوار على الاستمرار والاستكشاف.">
-    <!-- Google Fonts & FontAwesome -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Google AdSense Code -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7778135355055222" crossorigin="anonymous"></script>
-    <style>
-        :root {
-            --bg-primary: #f8fafc;
-            --bg-card: #ffffff;
-            --accent-purple: #7c3aed;
-            --accent-blue: #2563eb;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border-light: #e2e8f0;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-main);
-            min-height: 100vh;
-            background-image: radial-gradient(at 50% 0%, rgba(124, 58, 237, 0.05) 0px, transparent 50%);
-            line-height: 1.9;
-            padding-bottom: 60px;
-        }
-        .navbar {
-            padding: 18px 8%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--accent-purple);
-            text-decoration: none;
-        }
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 45px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-        }
-        .category-badge {
-            display: inline-block;
-            padding: 6px 18px;
-            border-radius: 50px;
-            background: #e0f2fe;
-            color: #0284c7;
-            font-weight: 700;
-            font-size: 0.85rem;
-            margin-bottom: 20px;
-        }
-        h1 { font-size: 2.3rem; font-weight: 900; color: #0f172a; margin-bottom: 20px; line-height: 1.4; }
-        .meta { display: flex; flex-wrap: wrap; gap: 25px; color: var(--text-muted); font-size: 0.9em; border-bottom: 1px solid var(--border-light); padding-bottom: 20px; margin-bottom: 35px; }
-        .summary-box {
-            background: #f1f5f9;
-            border-right: 4px solid var(--accent-purple);
-            padding: 20px 25px;
-            border-radius: 12px;
-            font-size: 1.15rem;
-            color: #334155;
-            margin-bottom: 35px;
-            font-weight: 600;
-        }
-        .ad-container {
-            margin: 35px 0;
-            padding: 15px;
-            background: #f8fafc;
-            border: 1px dashed var(--border-light);
-            border-radius: 14px;
-            text-align: center;
-        }
-        .content-section { margin-bottom: 35px; }
-        .content-section h3 { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
-        .content-section p { font-size: 1.1rem; color: #334155; margin-bottom: 15px; }
-        .takeaways-card {
-            background: rgba(124, 58, 237, 0.04);
-            border: 1px solid rgba(124, 58, 237, 0.15);
-            border-radius: 18px;
-            padding: 25px 30px;
-            margin: 40px 0;
-        }
-        .takeaways-card h4 { font-size: 1.25rem; color: var(--accent-purple); margin-bottom: 15px; font-weight: 800; }
-        .takeaways-card ul { list-style: none; padding: 0; }
-        .takeaways-card li { font-size: 1.05rem; color: #334155; margin-bottom: 12px; display: flex; align-items: center; }
-        .btn-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 28px;
-            border-radius: 50px;
-            background: linear-gradient(135deg, #7c3aed, #2563eb);
-            color: #fff;
-            text-decoration: none;
-            font-weight: 700;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
-            transition: all 0.2s;
-        }
-        .btn-back:hover { transform: translateY(-2px); opacity: 0.95; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>النسخ الاحتياطي للصور على الجوال: طريقة لا تندم عليها بعد ضياع الجوال | مدونة الفكر الذكي</title>
+  <meta name="description" content="خطة بسيطة لنسخ صور الآيفون والأندرويد احتياطيًا، مع التفريق بين النسخ السحابي والنسخ على الكمبيوتر.">
+  <meta name="author" content="فريق التحرير">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://turky4500.github.io/smart/posts/2026-08-04-524.html">
+  <link rel="alternate" hreflang="ar" href="https://turky4500.github.io/smart/posts/2026-08-04-524.html">
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="ar_AR">
+  <meta property="og:site_name" content="مدونة الفكر الذكي">
+  <meta property="og:title" content="النسخ الاحتياطي للصور على الجوال: طريقة لا تندم عليها بعد ضياع الجوال | مدونة الفكر الذكي">
+  <meta property="og:description" content="خطة بسيطة لنسخ صور الآيفون والأندرويد احتياطيًا، مع التفريق بين النسخ السحابي والنسخ على الكمبيوتر.">
+  <meta property="og:url" content="https://turky4500.github.io/smart/posts/2026-08-04-524.html">
+  <meta name="theme-color" content="#5b21b6">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../blog.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7778135355055222" crossorigin="anonymous"></script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "النسخ الاحتياطي للصور على الجوال: طريقة لا تندم عليها بعد ضياع الجوال",
+    "description": "خطة بسيطة لنسخ صور الآيفون والأندرويد احتياطيًا، مع التفريق بين النسخ السحابي والنسخ على الكمبيوتر.",
+    "inLanguage": "ar",
+    "datePublished": "2026-08-04",
+    "dateModified": "2026-08-04",
+    "author": {"@type": "Organization", "name": "فريق التحرير"},
+    "publisher": {"@type": "Organization", "name": "مدونة الفكر الذكي", "url": "https://turky4500.github.io/smart/"},
+    "mainEntityOfPage": "https://turky4500.github.io/smart/posts/2026-08-04-524.html",
+    "articleSection": "حياة رقمية"
+  }
+  </script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "هل يكفي رفع الصور على واتساب؟", "acceptedAnswer": {"@type": "Answer", "text": "لا. واتساب يضغط الصور، وقد تُحذف من جهازك أو من النسخ الاحتياطي للمحادثات. ليست أرشيفًا للصور."}}, {"@type": "Question", "name": "ما المساحة التي أحتاجها؟", "acceptedAnswer": {"@type": "Answer", "text": "سنة من التصوير اليومي قد تتجاوز عشرات الجيجابايت. راجع باقة السحابة أو استخدم قرصًا خارجيًا رخيصًا للأرشيف."}}, {"@type": "Question", "name": "هل أفعّل النسخ على بيانات الجوال؟", "acceptedAnswer": {"@type": "Answer", "text": "يفضّل الواي فاي حتى لا تُستهلك الباقة. فعّله على البيانات فقط إذا كنت تعرف حدّ استهلاكك."}}]}</script>
 </head>
 <body>
-    <nav class="navbar">
-        <a href="../index.html" class="logo"><i class="fa-solid fa-lightbulb"></i> الفكر الذكي</a>
-        <a href="../index.html" style="color:var(--accent-purple); text-decoration:none; font-weight:700;"><i class="fa-solid fa-arrow-right"></i> الصفحة الرئيسية</a>
-    </nav>
-    
-    <div class="container">
-        <span class="category-badge"><i class="fa-solid fa-folder-open"></i> تصميم وتجربة المستخدم</span>
-        <h1>دليل تصميم وتجربة المستخدم UX/UI لزيادة وقت بقاء الزائر ومعدل التفاعل</h1>
-        <div class="meta">
-            <span><i class="fa-regular fa-calendar"></i> تاريخ النشر: 2026-08-04</span>
-            <span><i class="fa-regular fa-user"></i> أ. مريم يوسف - مصممة واجهات رقمية</span>
-            <span><i class="fa-regular fa-clock"></i> وقت القراءة: 4 دقائق</span>
-        </div>
 
-        <div class="summary-box">
-            شرح عملي لأهم مبادئ واجهة وتجربة المستخدم وكيفية تحويل مدونتك إلى منصة جذابة تشجع الزوار على الاستمرار والاستكشاف.
-        </div>
-        
-        <div class="ad-container">
-            <!-- موقع البودكاست -->
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-7778135355055222"
-                 data-ad-slot="5093830951"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
-
-        <article class="article-body">
-            
-        <section class="content-section">
-            <h3>أهمية التناسق البصري وقراءة الخطوط على الشاشات المختلفة</h3>
-            <p>التصميم الأنيق البسيط يعتمد على خطوط واضحة مثل Cairo وبحجم مريح للعاطفة، مع مسافات فاصلة بين الأسطر (Line Height). التناسق بين الألوان الداكنة والفاتحة يعطي شعوراً بالفخامة والاحترافية.</p>
-        </section>
-        <section class="content-section">
-            <h3>تصميم بطاقات المقالات (Article Cards) الجذابة</h3>
-            <p>البطاقات المنسقة ذات الحدود الناعمة والوسوم الملونة تزيد من نسبة الضغط على المقالات (CTR) بشكل ملحوظ مقارنة بالقوائم النصية التقليدية البحتة.</p>
-        </section>
-        <section class="content-section">
-            <h3>التنقل السلس والوصول المباشر للمحتوى ذات الصلة</h3>
-            <p>وفر دائماً أزرار العودة للرئيسية وروابط المقالات المتصلة في نهاية كل مقال لتمكين القارئ من التنقل بحرية دون مغادرة موقعك.</p>
-        </section>
-        </article>
-
-        <div class="takeaways-card">
-            <h4><i class="fa-solid fa-star"></i> النقاط الجوهرية للرفع من أدائك:</h4>
-            <ul>
-                <li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> زيادة وقت بقاء الزائر ترفع تقييم موقعك في خوارزميات محركات البحث.</li><li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> التصميم النظيف الاستجابي يضمن عمل الموقع بكفاءة على شاشات الأبل والأندرويد.</li><li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> الألوان المتناسقة المريحة للعين تقلل معدل مغادرة الصفحة السريعة.</li>
-            </ul>
-        </div>
-
-        <div class="ad-container">
-            <!-- موقع البودكاست -->
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-7778135355055222"
-                 data-ad-slot="5093830951"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
-
-        <a href="../index.html" class="btn-back"><i class="fa-solid fa-arrow-right"></i> العودة للصفحة الرئيسية</a>
+  <a class="skip-link" href="#main">تجاوز إلى المحتوى</a>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="logo" href="../index.html">
+        <span class="logo-mark"><i class="fa-solid fa-lightbulb"></i></span>
+        الفكر الذكي
+      </a>
+      <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="nav-links">القائمة</button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../index.html">الرئيسية</a></li><li><a href="../index.html#articles" class="active">المقالات</a></li><li><a href="../about.html">من نحن</a></li><li><a href="../contact.html">تواصل</a></li><li><a href="../privacy.html">الخصوصية</a></li>
+      </ul>
     </div>
+  </header>
+  <main id="main" class="wrap">
+    <article class="page">
+      <nav class="breadcrumb"><a href="../index.html">الرئيسية</a> / <a href="../index.html#articles">حياة رقمية</a></nav>
+      <span class="tag">حياة رقمية</span>
+      <h1>النسخ الاحتياطي للصور على الجوال: طريقة لا تندم عليها بعد ضياع الجوال</h1>
+      <div class="meta">
+        <span><i class="fa-regular fa-calendar"></i> 4 أغسطس 2026</span>
+        <span><i class="fa-regular fa-user"></i> فريق التحرير</span>
+        <span><i class="fa-regular fa-clock"></i> 6 دقائق قراءة</span>
+      </div>
+      <p class="summary">الصور تروح مع الجوال المسروق أو العطل المفاجئ. نسخة واحدة مرتبة في مكان ثاني تكفي تمنع هالخسارة.</p>
+      <div class="article-body">
+        <h2>ليش «الصور عندي بالجوال» مو خطة</h2><p>الجوال جهاز واحد. يسقط في الماء، ينسرق، أو يتوقف عن الإقلاع بعد تحديث فاشل. إذا صورك موجودة فيه فقط، فأنت تحتفظ بذاكرتك في مكان قابل للضياع في ثانية.</p><p>ناس كثيرة تكتشف هالحقيقة بعد الحادثة. الحل مو شراء جوال أغلى، الحل إن تكون عندك نسخة ثانية تشتغل وأنت مرتاح.</p><h2>خياران واضحان: سحابة أو جهاز عندك</h2><p>النسخ السحابي (مثل iCloud أو Google Photos) يعمل بهدوء في الخلفية، مفيد إذا كنت تسافر أو تبدّل جوالك كثير. عيبه أنه يعتمد على حسابك ومساحة الباقة.</p><p>النسخ على كمبيوتر أو قرص خارجي يعطيك نسخة تملكها أنت. مفيد كطبقة ثانية، خصوصًا لألبومات العائلة والمناسبات. عيبه أنك تحتاج تتذكر توصله بين فترة وفترة.</p><p>الخطة الجيدة لمعظم الناس: سحابة يومية + نسخة على جهاز كل شهر أو قبل سفر طويل.</p>
+    <div class="ad-box">
+      <div class="ad-label">إعلان</div>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-7778135355055222"
+           data-ad-slot="5093830951"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div><h2>على الآيفون</h2><p>من الإعدادات فعّل صور iCloud إذا كانت مساحتك تكفي. تأكد أن النسخ يعمل على الواي فاي، وراجع أن الصور الأصلية تُرفع لا المصغّرات فقط.</p><p>بديل عملي: وصّل الآيفون بالكمبيوتر وانسخ مجلد الصور يدويًا، أو استخدم أداة النظام الرسمية. لا تعتمد على «سأفعلها لاحقًا» بعد ما يمتلئ الجوال.</p><h2>على الأندرويد</h2><p>تطبيق Google Photos ينجز المهمة لمعظم المستخدمين إذا فعّلت النسخ الاحتياطي للحساب الصحيح. راجع جودة الرفع: هل تُحفظ الصورة بحجمها الأصلي أم بنسخة مضغوطة؟</p><p>إذا كنت لا تريد السحابة، انسخ مجلد DCIM إلى الكمبيوتر أو إلى بطاقة/قرص خارجي. سمّ المجلد بتاريخ واضح مثل 2026-08-صور-العيد حتى لا تختلط النسخ.</p><h2>قاعدة بسيطة للعائلة</h2><p>قبل سفر أو مناسبة كبيرة، اعمل نسخة. بعد المناسبة، تأكد أن الصور ظهرت في السحابة أو على الكمبيوتر ثم افرّغ المساحة إذا احتجت.</p><p>لا تحذف من الجوال إلا بعد ما تفتح النسخة الثانية بعينك، مو بعد ما تشوف علامة «جارٍ الرفع» فقط.</p><h2>كيف تتأكد أن النسخة موجودة فعلًا</h2><p>بعد تفعيل السحابة افتح المعرض من متصفح الكمبيوتر أو من جهاز ثانٍ وسجّل الدخول لنفس الحساب. إذا ظهرت الصور هناك فالنسخ يعمل. علامة «جارٍ الرفع» على الجوال وحده لا تكفي.</p><p>للنسخة على القرص: افتح مجلدًا عشوائيًا وتأكد أن الصور تُفتح لا أن المجلد فارغ أو تالف. مرة كل ثلاثة أشهر كافية لمعظم العائلات.</p><h2>ترتيب الألبومات قبل ما تكبر الفوضى</h2><p>أنشئ ألبومات حسب المناسبة لا حسب التطبيق: عائلة، سفر، وثائق. صور الوثائق — الهوية والرخص — لا تتركها مختلطة مع صور الرحلات في رابط يُشارك بسهولة.</p><p>إذا كان الجوال مشتركًا مع طفل، عطّل الرفع التلقائي لألبوم الوثائق أو انقلها إلى مجلد مقفل.</p><h2>خطة نسخ لأول مرة هذا الأسبوع</h2><p>اليوم الأول: فعّل النسخ السحابي وتأكد من الحساب الصحيح. كثير من الناس يرفعون الصور لحساب قديم نسوا كلمة مروره.</p><p>اليوم الثاني: وصّل الجوال بالكمبيوتر أو بالقرص وانسخ مجلد السنة الحالية فقط. لا تبدأ بأرشفة عشر سنوات في ليلة واحدة فتتوقف.</p><p>اليوم الثالث: افتح ثلاث صور من مناسبات مختلفة من النسخة الثانية. إذا فُتحت فأنت انتهيت من الأساس. الوثائق امسحها في مجلد مستقل مقفل أو غير مزامن للمجموعات.</p><p>ضع تذكيرًا في التقويم قبل أي سفر: «نسخة صور». التذكير أهم من النية.</p>
+        <div class="callout">
+          <h3>خلاصة سريعة</h3>
+          <ul><li>نسخة واحدة على الجوال تعني أن ضياع الجهاز يساوي ضياع الصور.</li><li>السحابة للنسخ اليومي، والجهاز عندك للنسخة الأهم.</li><li>لا تحذف أصل الصورة إلا بعد فتح النسخة الثانية والتأكد منها.</li><li>سمّ مجلدات النسخ بتاريخ واضح حتى يسهل الرجوع لها.</li></ul>
+        </div>
+        <h2>أسئلة شائعة</h2>
+        <div class="faq"><details><summary>هل يكفي رفع الصور على واتساب؟</summary><p>لا. واتساب يضغط الصور، وقد تُحذف من جهازك أو من النسخ الاحتياطي للمحادثات. ليست أرشيفًا للصور.</p></details><details><summary>ما المساحة التي أحتاجها؟</summary><p>سنة من التصوير اليومي قد تتجاوز عشرات الجيجابايت. راجع باقة السحابة أو استخدم قرصًا خارجيًا رخيصًا للأرشيف.</p></details><details><summary>هل أفعّل النسخ على بيانات الجوال؟</summary><p>يفضّل الواي فاي حتى لا تُستهلك الباقة. فعّله على البيانات فقط إذا كنت تعرف حدّ استهلاكك.</p></details></div>
+        <h2>اقرأ أيضًا</h2>
+        <div class="related"><a href="2026-08-18-821.html">ملفات PDF في الشغل والدراسة: قراءة وتوقيع ومشاركة بدون تعقيد</a><a href="2026-08-10-130.html">ترتيب البريد الإلكتروني حتى لا يتحول إلى قائمة مهام ضائعة</a></div>
+      </div>
+      
+    <div class="ad-box">
+      <div class="ad-label">إعلان</div>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-7778135355055222"
+           data-ad-slot="5093830951"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+      <p style="margin-top:18px"><a class="btn btn-primary" href="../index.html">العودة لكل المقالات</a></p>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <h3>مدونة الفكر الذكي</h3>
+        <p>مدونة عربية مستقلة تكتب شروحًا عملية عن التقنية اليومية، الأمان الرقمي، وتنظيم العمل والدراسة. نكتب للقارئ غير المتخصص، ونراجع كل مقال قبل نشره.</p>
+        <p>التواصل: <a href="mailto:tur100@gmail.com">tur100@gmail.com</a></p>
+      </div>
+      <div>
+        <h3>تصفح</h3>
+        <ul>
+          <li><a href="../index.html">الرئيسية</a></li>
+          <li><a href="../about.html">من نحن</a></li>
+          <li><a href="../contact.html">تواصل معنا</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>الصفحات القانونية</h3>
+        <ul>
+          <li><a href="../privacy.html">سياسة الخصوصية</a></li>
+          <li><a href="../disclaimer.html">إخلاء المسؤولية</a></li>
+          <li><a href="../sitemap.xml">خريطة الموقع</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copy">© 2026 مدونة الفكر الذكي — محتوى أصلي مستقل</div>
+  </footer>
+  <div class="cookie" id="cookie-banner">
+    <p>نستخدم ملفات تعريف الارتباط لعرض الإعلانات عبر Google وقياس استخدام الصفحات. راجع <a href="../privacy.html">سياسة الخصوصية</a>.</p>
+    <button type="button" id="cookie-ok">حسنًا</button>
+  </div>
+  <script src="../blog.js"></script>
 </body>
 </html>

@@ -1,196 +1,138 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دليل شامل: كيف تحسن من سرعة موقعك الإلكتروني لزيادة أرباح AdSense ومعدل التحويل - مدونة الفكر الذكي</title>
-    <meta name="description" content="استكشف في هذا المقال العملي أفضل الاستراتيجيات والتقنيات المتقدمة لتسريع موقعك الإلكتروني، وتقليل وقت استجابة السيرفر، ومضاعفة أرباح إعلاناتك عبر تحسين تجربة المستخدم.">
-    <!-- Google Fonts & FontAwesome -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Google AdSense Code -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7778135355055222" crossorigin="anonymous"></script>
-    <style>
-        :root {
-            --bg-primary: #f8fafc;
-            --bg-card: #ffffff;
-            --accent-purple: #7c3aed;
-            --accent-blue: #2563eb;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border-light: #e2e8f0;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-main);
-            min-height: 100vh;
-            background-image: radial-gradient(at 50% 0%, rgba(124, 58, 237, 0.05) 0px, transparent 50%);
-            line-height: 1.9;
-            padding-bottom: 60px;
-        }
-        .navbar {
-            padding: 18px 8%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--accent-purple);
-            text-decoration: none;
-        }
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 45px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-        }
-        .category-badge {
-            display: inline-block;
-            padding: 6px 18px;
-            border-radius: 50px;
-            background: #e0f2fe;
-            color: #0284c7;
-            font-weight: 700;
-            font-size: 0.85rem;
-            margin-bottom: 20px;
-        }
-        h1 { font-size: 2.3rem; font-weight: 900; color: #0f172a; margin-bottom: 20px; line-height: 1.4; }
-        .meta { display: flex; flex-wrap: wrap; gap: 25px; color: var(--text-muted); font-size: 0.9em; border-bottom: 1px solid var(--border-light); padding-bottom: 20px; margin-bottom: 35px; }
-        .summary-box {
-            background: #f1f5f9;
-            border-right: 4px solid var(--accent-purple);
-            padding: 20px 25px;
-            border-radius: 12px;
-            font-size: 1.15rem;
-            color: #334155;
-            margin-bottom: 35px;
-            font-weight: 600;
-        }
-        .ad-container {
-            margin: 35px 0;
-            padding: 15px;
-            background: #f8fafc;
-            border: 1px dashed var(--border-light);
-            border-radius: 14px;
-            text-align: center;
-        }
-        .content-section { margin-bottom: 35px; }
-        .content-section h3 { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
-        .content-section p { font-size: 1.1rem; color: #334155; margin-bottom: 15px; }
-        .takeaways-card {
-            background: rgba(124, 58, 237, 0.04);
-            border: 1px solid rgba(124, 58, 237, 0.15);
-            border-radius: 18px;
-            padding: 25px 30px;
-            margin: 40px 0;
-        }
-        .takeaways-card h4 { font-size: 1.25rem; color: var(--accent-purple); margin-bottom: 15px; font-weight: 800; }
-        .takeaways-card ul { list-style: none; padding: 0; }
-        .takeaways-card li { font-size: 1.05rem; color: #334155; margin-bottom: 12px; display: flex; align-items: center; }
-        .btn-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 28px;
-            border-radius: 50px;
-            background: linear-gradient(135deg, #7c3aed, #2563eb);
-            color: #fff;
-            text-decoration: none;
-            font-weight: 700;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
-            transition: all 0.2s;
-        }
-        .btn-back:hover { transform: translateY(-2px); opacity: 0.95; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>كيف تشارك ملفًا كبيرًا بأمان بدون ما ترسله لكل الناس بالخطأ | مدونة الفكر الذكي</title>
+  <meta name="description" content="دليل لاختيار طريقة المشاركة المناسبة: واتساب، السحابة، أو رابط مؤقت، مع ضبط صلاحية الاطلاع.">
+  <meta name="author" content="فريق التحرير">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://turky4500.github.io/smart/posts/2026-08-04-894.html">
+  <link rel="alternate" hreflang="ar" href="https://turky4500.github.io/smart/posts/2026-08-04-894.html">
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="ar_AR">
+  <meta property="og:site_name" content="مدونة الفكر الذكي">
+  <meta property="og:title" content="كيف تشارك ملفًا كبيرًا بأمان بدون ما ترسله لكل الناس بالخطأ | مدونة الفكر الذكي">
+  <meta property="og:description" content="دليل لاختيار طريقة المشاركة المناسبة: واتساب، السحابة، أو رابط مؤقت، مع ضبط صلاحية الاطلاع.">
+  <meta property="og:url" content="https://turky4500.github.io/smart/posts/2026-08-04-894.html">
+  <meta name="theme-color" content="#5b21b6">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../blog.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7778135355055222" crossorigin="anonymous"></script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "كيف تشارك ملفًا كبيرًا بأمان بدون ما ترسله لكل الناس بالخطأ",
+    "description": "دليل لاختيار طريقة المشاركة المناسبة: واتساب، السحابة، أو رابط مؤقت، مع ضبط صلاحية الاطلاع.",
+    "inLanguage": "ar",
+    "datePublished": "2026-08-04",
+    "dateModified": "2026-08-04",
+    "author": {"@type": "Organization", "name": "فريق التحرير"},
+    "publisher": {"@type": "Organization", "name": "مدونة الفكر الذكي", "url": "https://turky4500.github.io/smart/"},
+    "mainEntityOfPage": "https://turky4500.github.io/smart/posts/2026-08-04-894.html",
+    "articleSection": "مهارات تقنية"
+  }
+  </script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "هل كلمة مرور على ملف PDF تكفي؟", "acceptedAnswer": {"@type": "Answer", "text": "تساعد، خصوصًا عند الإرسال عبر قناة غير محكمة. أرسل الكلمة من قناة مختلفة، لا في نفس الرسالة."}}, {"@type": "Question", "name": "كيف أشارك فيديو حجمه كبير؟", "acceptedAnswer": {"@type": "Answer", "text": "ارفعه سحابيًا وأرسل رابطًا بدل ضغطه عشر مرات في واتساب حتى يصبح غير صالح."}}, {"@type": "Question", "name": "ماذا لو أرسلت الملف للشخص الخطأ؟", "acceptedAnswer": {"@type": "Answer", "text": "احذف الرسالة إن أمكن، أوقف الرابط السحابي فورًا، وأبلغ المستلم الخطأ بلطف أن يتجاهل الملف ويحذفه."}}]}</script>
 </head>
 <body>
-    <nav class="navbar">
-        <a href="../index.html" class="logo"><i class="fa-solid fa-lightbulb"></i> الفكر الذكي</a>
-        <a href="../index.html" style="color:var(--accent-purple); text-decoration:none; font-weight:700;"><i class="fa-solid fa-arrow-right"></i> الصفحة الرئيسية</a>
-    </nav>
-    
-    <div class="container">
-        <span class="category-badge"><i class="fa-solid fa-folder-open"></i> تحسين الأداء وSEO</span>
-        <h1>دليل شامل: كيف تحسن من سرعة موقعك الإلكتروني لزيادة أرباح AdSense ومعدل التحويل</h1>
-        <div class="meta">
-            <span><i class="fa-regular fa-calendar"></i> تاريخ النشر: 2026-08-04</span>
-            <span><i class="fa-regular fa-user"></i> م. أحمد سليمان - خبير البنية التحتية والسيو</span>
-            <span><i class="fa-regular fa-clock"></i> وقت القراءة: 4 دقائق</span>
-        </div>
 
-        <div class="summary-box">
-            استكشف في هذا المقال العملي أفضل الاستراتيجيات والتقنيات المتقدمة لتسريع موقعك الإلكتروني، وتقليل وقت استجابة السيرفر، ومضاعفة أرباح إعلاناتك عبر تحسين تجربة المستخدم.
-        </div>
-        
-        <div class="ad-container">
-            <!-- موقع البودكاست -->
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-7778135355055222"
-                 data-ad-slot="5093830951"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
-
-        <article class="article-body">
-            
-        <section class="content-section">
-            <h3>أهمية سرعة الموقع في معادلة أرباح أدسينس وترتيب محركات البحث</h3>
-            <p>تعتبر سرعة تحميل الموقع الإلكتروني أحد أهم العوامل الرئيسية التي تعتمد عليها خوارزميات قوقل (Core Web Vitals) لتحديد ترتيب موقعك في نتائج البحث الأولى. تشير الدراسات إلى أن تأخر تحميل الصفحة لمدة ثانية واحدة فقط قد يؤدي إلى خسارة أكثر من 10% من الزوار، وبالتالي انخفاض مباشر في نقرات الإعلانات وعائد الأرباح (RPM).</p>
-        </section>
-        <section class="content-section">
-            <h3>1. ضغط الصور واختيار الصيغ الحديثة (WebP & AVIF)</h3>
-            <p>تمثل الصور عادة أكثر من 60% من حجم الصفحة الكلي. للحصول على سرعة فائقة، يجب تحويل كافة الصور إلى صيغ حديثة مثل WebP أو AVIF، وضغطها دون التأثير على الجودة بصرياً. كما يُوصى بشدة باستخدام ميزة التحميل الكسول (Lazy Loading) لعدم تحميل الصور إلا عند وصول الزائر إليها أثناء التمرير.</p>
-        </section>
-        <section class="content-section">
-            <h3>2. الاستفادة من شبكات توزيع المحتوى (CDN) والتخزين المؤقت</h3>
-            <p>تتيح لك شبكات توزيع المحتوى مثل Cloudflare تقديم صفحات موقعك من أقرب سيرفر جغرافي للزائر، مما يقلل زمن التردد (Latency) بشكل هائل. قم أيضاً بتفعيل التخزين المؤقت للمتصفح (Browser Caching) وتقليل طلبات HTTP المباشرة للسيرفر الرئيسي.</p>
-        </section>
-        <section class="content-section">
-            <h3>3. ضغط وتحسين أكواد CSS و JavaScript</h3>
-            <p>الأكواد البرمجية الزائدة تؤدي إلى إبطاء عملية رندر الصفحة (Render-Blocking Resources). قم بتجميع وضغظ ملفات السكريبت والأنماط، وتأجيل تحميل أكواد الإعلانات والتحليلات لتعمل بشكل غير متزامن (Asynchronous Loading) حتى لا تعطل ظهور المحتوى الأساسي للزائر.</p>
-        </section>
-        </article>
-
-        <div class="takeaways-card">
-            <h4><i class="fa-solid fa-star"></i> النقاط الجوهرية للرفع من أدائك:</h4>
-            <ul>
-                <li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> سرعة التحميل تحت 2 ثانية ترفع معدل البقاء في الموقع بنسبة 40%.</li><li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> استخدام صيغ WebP يوفر أكثر من 50% من حجم البيانات.</li><li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> التأجيل الذكي لأكواد الإعلانات يزيد من نسبة الظهور الفعلي (Viewability Rate).</li>
-            </ul>
-        </div>
-
-        <div class="ad-container">
-            <!-- موقع البودكاست -->
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-7778135355055222"
-                 data-ad-slot="5093830951"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
-
-        <a href="../index.html" class="btn-back"><i class="fa-solid fa-arrow-right"></i> العودة للصفحة الرئيسية</a>
+  <a class="skip-link" href="#main">تجاوز إلى المحتوى</a>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="logo" href="../index.html">
+        <span class="logo-mark"><i class="fa-solid fa-lightbulb"></i></span>
+        الفكر الذكي
+      </a>
+      <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="nav-links">القائمة</button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../index.html">الرئيسية</a></li><li><a href="../index.html#articles" class="active">المقالات</a></li><li><a href="../about.html">من نحن</a></li><li><a href="../contact.html">تواصل</a></li><li><a href="../privacy.html">الخصوصية</a></li>
+      </ul>
     </div>
+  </header>
+  <main id="main" class="wrap">
+    <article class="page">
+      <nav class="breadcrumb"><a href="../index.html">الرئيسية</a> / <a href="../index.html#articles">مهارات تقنية</a></nav>
+      <span class="tag">مهارات تقنية</span>
+      <h1>كيف تشارك ملفًا كبيرًا بأمان بدون ما ترسله لكل الناس بالخطأ</h1>
+      <div class="meta">
+        <span><i class="fa-regular fa-calendar"></i> 4 أغسطس 2026</span>
+        <span><i class="fa-regular fa-user"></i> فريق التحرير</span>
+        <span><i class="fa-regular fa-clock"></i> 6 دقائق قراءة</span>
+      </div>
+      <p class="summary">خطأ مشاركة شائع: رابط يفتح لأي شخص، ويبقى مفتوحًا بعد انتهاء الحاجة. حدّد من يرى ومتى ينتهي.</p>
+      <div class="article-body">
+        <h2>اختر الأداة حسب حساسية الملف</h2><p>صورة مناسبة أو ملف PDF عام يمكن أن يمر عبر واتساب. كشف رواتب، هوية، عقود، أو بيانات طلاب لا تُرسل في مجموعة ولا تُرفع برابط مفتوح.</p><p>السؤال المفيد: لو وصل هذا الملف لشخص غريب غدًا، هل أتحمل النتيجة؟ إذا الجواب لا، ارفع مستوى الحماية.</p><h2>الرابط السحابي أفضل حين تضبطه</h2><p>ارفع الملف على درايف أو آي كلاود أو خدمة مشابهة، ثم شارك رابطًا. قبل الإرسال غيّر الصلاحية من «أي شخص يملك الرابط» إلى أشخاص محددين إن أمكن.</p><p>اجعل الاطلاع للعرض فقط إذا لم يكن الآخر يحتاج التعديل. كثير من الفوضى تبدأ لأن الجميع يملكون حق التحرير.</p><p>بعد انتهاء المهمة، أوقف الرابط. الروابط القديمة تُنسى وتبقى حيّة.</p>
+    <div class="ad-box">
+      <div class="ad-label">إعلان</div>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-7778135355055222"
+           data-ad-slot="5093830951"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div><h2>واتساب سريع لكنه يضغط وينتشر</h2><p>واتساب مناسب للملفات الصغيرة العاجلة بين شخصين. في المجموعات يكبر خطر التحويل إلى خارج الدائرة.</p><p>لا ترسل صورة هوية «بجودة أصلية» في مجموعة عمل. اقطع البيانات الزائدة أو استخدم قناة العمل الرسمية إن وُجدت.</p><h2>قبل الضغط على إرسال</h2><p>تحقق من اسم الملف. ملف اسمه final-final2 قد يكون النسخة الغلط. افتحه بنفسك.</p><p>تحقق من المستلم: الإكمال التلقائي يرسل أحيانًا لشخص بنفس الاسم الأول.</p><p>إذا كان الملف سريًا جدًا، أخبر المستلم بطريقة ثانية أنك أرسلته، وتأكد أنه استلمه هو لا أحد غيره.</p><h2>مشاركة داخل جهة العمل أو الجامعة</h2><p>إذا وفّرت جهتكم مساحة رسمية فاستخدمها للملفات الحساسة. البريد الشخصي وواتساب ليسا أرشيف جهة.</p><p>عند العمل الجماعي على ملف واحد، اتفقوا من يحرر الآن. نسختان تُعدَّلان في الوقت نفسه تنتجان فوضى «نهائي3».</p><h2>بعد انتهاء المشروع</h2><p>أوقف الروابط، انقل النسخة النهائية للأرشيف، واحذف المسودات المكررة من التنزيلات.</p><p>إذا كان الملف يحتوي بيانات أشخاص، لا تتركه في مجموعة تبقى نشطة بعد تخرج الدفعة أو انتهاء العقد.</p><h2>قائمة فحص قبل إرسال ملف حساس</h2><p>هل فتحت الملف وتأكدت أنه النسخة الصحيحة؟ هل اسم المستلم اكتمل تلقائيًا لشخص آخر بنفس الاسم؟ هل الرابط للعرض فقط؟ هل ينتهي بعد أيام؟</p><p>هل يمكن الاستغناء عن بيانات زائدة داخل الملف — أرقام هوية في هامش أو كشف كامل بينما يحتاج الطرف صفحة واحدة؟</p><p>بعد الإرسال سجّل في سطر: ماذا أُرسل ولمن ومتى. إذا طُلب إعادة الإرسال بعد شهر تعرف أين النسخة.</p>
+        <div class="callout">
+          <h3>خلاصة سريعة</h3>
+          <ul><li>حساسية الملف تحدّد الأداة، لا سرعة الإرسال وحدها.</li><li>لا تترك رابطًا مفتوحًا لأي شخص بعد انتهاء الحاجة.</li><li>أعطِ حق العرض لا التعديل إلا إذا لزم.</li><li>راجع اسم المستلم واسم الملف قبل الإرسال.</li></ul>
+        </div>
+        <h2>أسئلة شائعة</h2>
+        <div class="faq"><details><summary>هل كلمة مرور على ملف PDF تكفي؟</summary><p>تساعد، خصوصًا عند الإرسال عبر قناة غير محكمة. أرسل الكلمة من قناة مختلفة، لا في نفس الرسالة.</p></details><details><summary>كيف أشارك فيديو حجمه كبير؟</summary><p>ارفعه سحابيًا وأرسل رابطًا بدل ضغطه عشر مرات في واتساب حتى يصبح غير صالح.</p></details><details><summary>ماذا لو أرسلت الملف للشخص الخطأ؟</summary><p>احذف الرسالة إن أمكن، أوقف الرابط السحابي فورًا، وأبلغ المستلم الخطأ بلطف أن يتجاهل الملف ويحذفه.</p></details></div>
+        <h2>اقرأ أيضًا</h2>
+        <div class="related"><a href="2026-08-08-472.html">الملفات الكبيرة: ضغطها ومشاركتها وأرشفتها بدون برامج معقدة</a><a href="2026-08-04-650.html">إعدادات واتساب التي تستحق دقيقة من وقتك</a></div>
+      </div>
+      
+    <div class="ad-box">
+      <div class="ad-label">إعلان</div>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-7778135355055222"
+           data-ad-slot="5093830951"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+      <p style="margin-top:18px"><a class="btn btn-primary" href="../index.html">العودة لكل المقالات</a></p>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <h3>مدونة الفكر الذكي</h3>
+        <p>مدونة عربية مستقلة تكتب شروحًا عملية عن التقنية اليومية، الأمان الرقمي، وتنظيم العمل والدراسة. نكتب للقارئ غير المتخصص، ونراجع كل مقال قبل نشره.</p>
+        <p>التواصل: <a href="mailto:tur100@gmail.com">tur100@gmail.com</a></p>
+      </div>
+      <div>
+        <h3>تصفح</h3>
+        <ul>
+          <li><a href="../index.html">الرئيسية</a></li>
+          <li><a href="../about.html">من نحن</a></li>
+          <li><a href="../contact.html">تواصل معنا</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>الصفحات القانونية</h3>
+        <ul>
+          <li><a href="../privacy.html">سياسة الخصوصية</a></li>
+          <li><a href="../disclaimer.html">إخلاء المسؤولية</a></li>
+          <li><a href="../sitemap.xml">خريطة الموقع</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copy">© 2026 مدونة الفكر الذكي — محتوى أصلي مستقل</div>
+  </footer>
+  <div class="cookie" id="cookie-banner">
+    <p>نستخدم ملفات تعريف الارتباط لعرض الإعلانات عبر Google وقياس استخدام الصفحات. راجع <a href="../privacy.html">سياسة الخصوصية</a>.</p>
+    <button type="button" id="cookie-ok">حسنًا</button>
+  </div>
+  <script src="../blog.js"></script>
 </body>
 </html>

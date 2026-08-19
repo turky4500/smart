@@ -1,192 +1,138 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دليل بناء سلطة المورد الرقمي (Domain Authority) وتصدر نتائج محركات البحث SEO - مدونة الفكر الذكي</title>
-    <meta name="description" content="خطوات عملية وواضحة لتحسين ترتيب موقعك في محرك البحث قوقل وبناء الروابط الخلفية عالية الجودة بطرق شرعية وآمنة.">
-    <!-- Google Fonts & FontAwesome -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Google AdSense Code -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7778135355055222" crossorigin="anonymous"></script>
-    <style>
-        :root {
-            --bg-primary: #f8fafc;
-            --bg-card: #ffffff;
-            --accent-purple: #7c3aed;
-            --accent-blue: #2563eb;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border-light: #e2e8f0;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-main);
-            min-height: 100vh;
-            background-image: radial-gradient(at 50% 0%, rgba(124, 58, 237, 0.05) 0px, transparent 50%);
-            line-height: 1.9;
-            padding-bottom: 60px;
-        }
-        .navbar {
-            padding: 18px 8%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--accent-purple);
-            text-decoration: none;
-        }
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 45px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-        }
-        .category-badge {
-            display: inline-block;
-            padding: 6px 18px;
-            border-radius: 50px;
-            background: #e0f2fe;
-            color: #0284c7;
-            font-weight: 700;
-            font-size: 0.85rem;
-            margin-bottom: 20px;
-        }
-        h1 { font-size: 2.3rem; font-weight: 900; color: #0f172a; margin-bottom: 20px; line-height: 1.4; }
-        .meta { display: flex; flex-wrap: wrap; gap: 25px; color: var(--text-muted); font-size: 0.9em; border-bottom: 1px solid var(--border-light); padding-bottom: 20px; margin-bottom: 35px; }
-        .summary-box {
-            background: #f1f5f9;
-            border-right: 4px solid var(--accent-purple);
-            padding: 20px 25px;
-            border-radius: 12px;
-            font-size: 1.15rem;
-            color: #334155;
-            margin-bottom: 35px;
-            font-weight: 600;
-        }
-        .ad-container {
-            margin: 35px 0;
-            padding: 15px;
-            background: #f8fafc;
-            border: 1px dashed var(--border-light);
-            border-radius: 14px;
-            text-align: center;
-        }
-        .content-section { margin-bottom: 35px; }
-        .content-section h3 { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
-        .content-section p { font-size: 1.1rem; color: #334155; margin-bottom: 15px; }
-        .takeaways-card {
-            background: rgba(124, 58, 237, 0.04);
-            border: 1px solid rgba(124, 58, 237, 0.15);
-            border-radius: 18px;
-            padding: 25px 30px;
-            margin: 40px 0;
-        }
-        .takeaways-card h4 { font-size: 1.25rem; color: var(--accent-purple); margin-bottom: 15px; font-weight: 800; }
-        .takeaways-card ul { list-style: none; padding: 0; }
-        .takeaways-card li { font-size: 1.05rem; color: #334155; margin-bottom: 12px; display: flex; align-items: center; }
-        .btn-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 28px;
-            border-radius: 50px;
-            background: linear-gradient(135deg, #7c3aed, #2563eb);
-            color: #fff;
-            text-decoration: none;
-            font-weight: 700;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
-            transition: all 0.2s;
-        }
-        .btn-back:hover { transform: translateY(-2px); opacity: 0.95; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>خصوصية حساباتك على الشبكات: إعدادات تقلل الغرباء دون عزلة | مدونة الفكر الذكي</title>
+  <meta name="description" content="مراجعة هادئة لحسابات التواصل: من يرى المنشورات، من يراسل، وما الذي يظهر في البحث.">
+  <meta name="author" content="فريق التحرير">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://turky4500.github.io/smart/posts/2026-08-12-295.html">
+  <link rel="alternate" hreflang="ar" href="https://turky4500.github.io/smart/posts/2026-08-12-295.html">
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="ar_AR">
+  <meta property="og:site_name" content="مدونة الفكر الذكي">
+  <meta property="og:title" content="خصوصية حساباتك على الشبكات: إعدادات تقلل الغرباء دون عزلة | مدونة الفكر الذكي">
+  <meta property="og:description" content="مراجعة هادئة لحسابات التواصل: من يرى المنشورات، من يراسل، وما الذي يظهر في البحث.">
+  <meta property="og:url" content="https://turky4500.github.io/smart/posts/2026-08-12-295.html">
+  <meta name="theme-color" content="#5b21b6">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../blog.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7778135355055222" crossorigin="anonymous"></script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "خصوصية حساباتك على الشبكات: إعدادات تقلل الغرباء دون عزلة",
+    "description": "مراجعة هادئة لحسابات التواصل: من يرى المنشورات، من يراسل، وما الذي يظهر في البحث.",
+    "inLanguage": "ar",
+    "datePublished": "2026-08-12",
+    "dateModified": "2026-08-12",
+    "author": {"@type": "Organization", "name": "فريق التحرير"},
+    "publisher": {"@type": "Organization", "name": "مدونة الفكر الذكي", "url": "https://turky4500.github.io/smart/"},
+    "mainEntityOfPage": "https://turky4500.github.io/smart/posts/2026-08-12-295.html",
+    "articleSection": "أمان رقمي"
+  }
+  </script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "هل الحساب الخاص يمنع التسريب تمامًا؟", "acceptedAnswer": {"@type": "Answer", "text": "لا. من داخل الدائرة قد يحوّل. الخصوصية تقلل الانتشار ولا تلغيه."}}, {"@type": "Question", "name": "هل أحذف الحساب القديم؟", "acceptedAnswer": {"@type": "Answer", "text": "إذا هجرته وفيه صور أو بيانات، احذفه أو فرّغه. الحساب المنسي ثغرة ناعمة."}}, {"@type": "Question", "name": "ماذا عن الاسم الحقيقي؟", "acceptedAnswer": {"@type": "Answer", "text": "للحساب العائلي مع أقارب معروفين الاسم الحقيقي أوضح. للحساب العام فكّر ماذا يظهر مع الاسم من عنوان وعمل."}}]}</script>
 </head>
 <body>
-    <nav class="navbar">
-        <a href="../index.html" class="logo"><i class="fa-solid fa-lightbulb"></i> الفكر الذكي</a>
-        <a href="../index.html" style="color:var(--accent-purple); text-decoration:none; font-weight:700;"><i class="fa-solid fa-arrow-right"></i> الصفحة الرئيسية</a>
-    </nav>
-    
-    <div class="container">
-        <span class="category-badge"><i class="fa-solid fa-folder-open"></i> استراتيجيات SEO</span>
-        <h1>دليل بناء سلطة المورد الرقمي (Domain Authority) وتصدر نتائج محركات البحث SEO</h1>
-        <div class="meta">
-            <span><i class="fa-regular fa-calendar"></i> تاريخ النشر: 2026-08-12</span>
-            <span><i class="fa-regular fa-user"></i> م. خالد منصور - خبير تحسين محركات البحث</span>
-            <span><i class="fa-regular fa-clock"></i> وقت القراءة: 4 دقائق</span>
-        </div>
 
-        <div class="summary-box">
-            خطوات عملية وواضحة لتحسين ترتيب موقعك في محرك البحث قوقل وبناء الروابط الخلفية عالية الجودة بطرق شرعية وآمنة.
-        </div>
-        
-        <div class="ad-container">
-            <!-- موقع البودكاست -->
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-7778135355055222"
-                 data-ad-slot="5093830951"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
-
-        <article class="article-body">
-            
-        <section class="content-section">
-            <h3>ما هو الـ Domain Authority وكيف تؤثر خوارزميات قوقل عليه؟</h3>
-            <p>يُعبر الدومين أثوريتي عن جودة ومدى ثقة محركات البحث في موقعك مقارنة بآلاف المواقع المنافسة. يبنى هذا المؤشر عبر تضافر عوامل متعددة تشمل قدم النطاق، جودة المحتوى، وهيكلية الموقع البرمجية السليمة.</p>
-        </section>
-        <section class="content-section">
-            <h3>استراتيجية الروابط الخلفية الخارجية (Backlinks) الطبيعية</h3>
-            <p>الروابط الخارجية القادمة من مواقع ذات موثوقية عالية تعمل كشهادة تزكية لموقعك لدى محركات البحث. تجنب شراء الروابط العشوائية أو السبام، وركز على نشر أبحاث ومقالات مميزة تجعل المواقع العالمية تشير إليك كمصدر رسمي.</p>
-        </section>
-        <section class="content-section">
-            <h3>تحسين تجربة المستخدم الهيكلية (Technical SEO)</h3>
-            <p>تأكد من خلو موقعك من أخطاء الروابط المكسورة (404 Error)، وتوفير شهادة الأمان SSL (HTTPS)، وضمان توافق كافة الصفحات مع الهواتف الذكية بنسبة 100%.</p>
-        </section>
-        </article>
-
-        <div class="takeaways-card">
-            <h4><i class="fa-solid fa-star"></i> النقاط الجوهرية للرفع من أدائك:</h4>
-            <ul>
-                <li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> الروابط الخلفية القوية تزيد من سرعة أرشفة الصفحات الجديدة.</li><li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> استخدام شهادة SSL وحماية البيانات هو شرط أساسي للترتيب في الصفحة الأولى.</li><li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> الهيكلية الواضحة لملف sitemap تفهرس كل مقال خلال ساعات قليلة.</li>
-            </ul>
-        </div>
-
-        <div class="ad-container">
-            <!-- موقع البودكاست -->
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-7778135355055222"
-                 data-ad-slot="5093830951"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
-
-        <a href="../index.html" class="btn-back"><i class="fa-solid fa-arrow-right"></i> العودة للصفحة الرئيسية</a>
+  <a class="skip-link" href="#main">تجاوز إلى المحتوى</a>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="logo" href="../index.html">
+        <span class="logo-mark"><i class="fa-solid fa-lightbulb"></i></span>
+        الفكر الذكي
+      </a>
+      <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="nav-links">القائمة</button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../index.html">الرئيسية</a></li><li><a href="../index.html#articles" class="active">المقالات</a></li><li><a href="../about.html">من نحن</a></li><li><a href="../contact.html">تواصل</a></li><li><a href="../privacy.html">الخصوصية</a></li>
+      </ul>
     </div>
+  </header>
+  <main id="main" class="wrap">
+    <article class="page">
+      <nav class="breadcrumb"><a href="../index.html">الرئيسية</a> / <a href="../index.html#articles">أمان رقمي</a></nav>
+      <span class="tag">أمان رقمي</span>
+      <h1>خصوصية حساباتك على الشبكات: إعدادات تقلل الغرباء دون عزلة</h1>
+      <div class="meta">
+        <span><i class="fa-regular fa-calendar"></i> 12 أغسطس 2026</span>
+        <span><i class="fa-regular fa-user"></i> فريق التحرير</span>
+        <span><i class="fa-regular fa-clock"></i> 6 دقائق قراءة</span>
+      </div>
+      <p class="summary">الخصوصية ليست إغلاق الحساب. هي اختيار واعٍ من يرى صور بيتك وتفاصيل عائلتك.</p>
+      <div class="article-body">
+        <h2>افترض أن المنشور العام يعيش أكثر من لحظة النشر</h2><p>صورة المنزل من الداخل، موقع المدرسة، أو تذكرة سفر بتاريخ العودة معلومات مفيدة لمن لا تعرفهم. حتى لو حذفت المنشور لاحقًا، قد تكون أخذت لقطة.</p><p>اسأل قبل النشر: هل أقول هذا لشخص في المجلس أمام غرباء؟ إذا لا، اجعل الرؤية للأصدقاء أو لقائمة أضيق.</p><h2>الرسائل والطلبات</h2><p>قيّد من يراسلك إن كان حسابك يظهر في البحث. الرسائل العشوائية ليست مجاملة، بعضها تصيد أو إزعاج.</p><p>لا توافق على طلبات بلا صورة واضحة أو بلا أي أصدقاء مشتركين إذا كان حسابك شخصيًا عائليًا.</p>
+    <div class="ad-box">
+      <div class="ad-label">إعلان</div>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-7778135355055222"
+           data-ad-slot="5093830951"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div><h2>التطبيقات المرتبطة</h2><p>راجع التطبيقات التي سمح لها بالدخول عبر حسابك. ألعاب قديمة واستبيانات قد تبقى متصلة سنوات.</p><p>اسحب الصلاحية مما لا تستخدمه. الحساب القوي يضعف إذا بقيت أبوابه الجانبية مفتوحة.</p><h2>حسابات الأبناء المرتبطة بك</h2><p>لا تنشر وجوه الأطفال الصغار للعامة بشكل يومي إن كان يمكن تجنب ذلك. هذا تفضيل عائلي، لكنه قرار يستحق نقاشًا لا عادة تلقائية.</p><p>إذا كان للحساب العائلي دور تواصل مع الأقارب، أنشئ مجموعة خاصة بدل الجدار العام.</p><h2>الصور في القصص والبث المباشر</h2><p>القصة تختفي عن المتابعين لكنها قد تُحفظ عندهم. لا تعتبر الاختفاء حماية.</p><p>البث من البيت يكشف الشارع أو مدخل العمارة أحيانًا. حرّك الكاميرا بعين المكان لا بعين التفاعل فقط.</p><h2>العمل والحساب الشخصي</h2><p>خلط شكاوى العمل مع الحساب العائلي يوسع دائرة من يقرأ ما لا يعنيهم. إن احتجت حسابًا مهنيًا فافصله.</p><p>راجع المنشورات القديمة مرة في السنة. منشور عمره سبع سنوات قد يظهر في بحث جديد.</p><h2>مراجعة خصوصية ربع سنوية</h2><p>ادخل إعدادات كل حساب تستخدمه أسبوعيًا: من يرى المنشورات، من يراسل، التطبيقات المرتبطة. اسحب صلاحية تطبيق لا تذكره.</p><p>ابحث باسمك في نفس المنصة وأنت خارج الحساب أو في تصفح خاص. ماذا يظهر للغريب؟ إن ظهرت صور بيت أو أطفال بشكل أوسع مما تريد فضيّق الرؤية.</p><p>احذف أو أخفِ منشورات قديمة لم تعد تمثلك. عشر دقائق كل ثلاثة أشهر أرخص من مفاجأة بحث بعد سنوات.</p>
+        <div class="callout">
+          <h3>خلاصة سريعة</h3>
+          <ul><li>المنشور العام لا يُعامل كلحظة عابرة.</li><li>ضيّق من يراسل ومن يرى القصص إذا كان الحساب شخصيًا.</li><li>ألغِ التطبيقات القديمة المرتبطة بحسابك.</li><li>صور الأطفال قرار عائلي واعٍ لا عادة تلقائية.</li></ul>
+        </div>
+        <h2>أسئلة شائعة</h2>
+        <div class="faq"><details><summary>هل الحساب الخاص يمنع التسريب تمامًا؟</summary><p>لا. من داخل الدائرة قد يحوّل. الخصوصية تقلل الانتشار ولا تلغيه.</p></details><details><summary>هل أحذف الحساب القديم؟</summary><p>إذا هجرته وفيه صور أو بيانات، احذفه أو فرّغه. الحساب المنسي ثغرة ناعمة.</p></details><details><summary>ماذا عن الاسم الحقيقي؟</summary><p>للحساب العائلي مع أقارب معروفين الاسم الحقيقي أوضح. للحساب العام فكّر ماذا يظهر مع الاسم من عنوان وعمل.</p></details></div>
+        <h2>اقرأ أيضًا</h2>
+        <div class="related"><a href="2026-08-04-650.html">إعدادات واتساب التي تستحق دقيقة من وقتك</a><a href="2026-08-07-565.html">حماية الأطفال على الإنترنت: إعدادات عملية للوالدين بدون مراقبة خانقة</a></div>
+      </div>
+      
+    <div class="ad-box">
+      <div class="ad-label">إعلان</div>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-7778135355055222"
+           data-ad-slot="5093830951"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+      <p style="margin-top:18px"><a class="btn btn-primary" href="../index.html">العودة لكل المقالات</a></p>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <h3>مدونة الفكر الذكي</h3>
+        <p>مدونة عربية مستقلة تكتب شروحًا عملية عن التقنية اليومية، الأمان الرقمي، وتنظيم العمل والدراسة. نكتب للقارئ غير المتخصص، ونراجع كل مقال قبل نشره.</p>
+        <p>التواصل: <a href="mailto:tur100@gmail.com">tur100@gmail.com</a></p>
+      </div>
+      <div>
+        <h3>تصفح</h3>
+        <ul>
+          <li><a href="../index.html">الرئيسية</a></li>
+          <li><a href="../about.html">من نحن</a></li>
+          <li><a href="../contact.html">تواصل معنا</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>الصفحات القانونية</h3>
+        <ul>
+          <li><a href="../privacy.html">سياسة الخصوصية</a></li>
+          <li><a href="../disclaimer.html">إخلاء المسؤولية</a></li>
+          <li><a href="../sitemap.xml">خريطة الموقع</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copy">© 2026 مدونة الفكر الذكي — محتوى أصلي مستقل</div>
+  </footer>
+  <div class="cookie" id="cookie-banner">
+    <p>نستخدم ملفات تعريف الارتباط لعرض الإعلانات عبر Google وقياس استخدام الصفحات. راجع <a href="../privacy.html">سياسة الخصوصية</a>.</p>
+    <button type="button" id="cookie-ok">حسنًا</button>
+  </div>
+  <script src="../blog.js"></script>
 </body>
 </html>

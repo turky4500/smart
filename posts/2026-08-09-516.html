@@ -1,192 +1,138 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دليل بناء سلطة المورد الرقمي (Domain Authority) وتصدر نتائج محركات البحث SEO - مدونة الفكر الذكي</title>
-    <meta name="description" content="خطوات عملية وواضحة لتحسين ترتيب موقعك في محرك البحث قوقل وبناء الروابط الخلفية عالية الجودة بطرق شرعية وآمنة.">
-    <!-- Google Fonts & FontAwesome -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Google AdSense Code -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7778135355055222" crossorigin="anonymous"></script>
-    <style>
-        :root {
-            --bg-primary: #f8fafc;
-            --bg-card: #ffffff;
-            --accent-purple: #7c3aed;
-            --accent-blue: #2563eb;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border-light: #e2e8f0;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-main);
-            min-height: 100vh;
-            background-image: radial-gradient(at 50% 0%, rgba(124, 58, 237, 0.05) 0px, transparent 50%);
-            line-height: 1.9;
-            padding-bottom: 60px;
-        }
-        .navbar {
-            padding: 18px 8%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--accent-purple);
-            text-decoration: none;
-        }
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 45px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-        }
-        .category-badge {
-            display: inline-block;
-            padding: 6px 18px;
-            border-radius: 50px;
-            background: #e0f2fe;
-            color: #0284c7;
-            font-weight: 700;
-            font-size: 0.85rem;
-            margin-bottom: 20px;
-        }
-        h1 { font-size: 2.3rem; font-weight: 900; color: #0f172a; margin-bottom: 20px; line-height: 1.4; }
-        .meta { display: flex; flex-wrap: wrap; gap: 25px; color: var(--text-muted); font-size: 0.9em; border-bottom: 1px solid var(--border-light); padding-bottom: 20px; margin-bottom: 35px; }
-        .summary-box {
-            background: #f1f5f9;
-            border-right: 4px solid var(--accent-purple);
-            padding: 20px 25px;
-            border-radius: 12px;
-            font-size: 1.15rem;
-            color: #334155;
-            margin-bottom: 35px;
-            font-weight: 600;
-        }
-        .ad-container {
-            margin: 35px 0;
-            padding: 15px;
-            background: #f8fafc;
-            border: 1px dashed var(--border-light);
-            border-radius: 14px;
-            text-align: center;
-        }
-        .content-section { margin-bottom: 35px; }
-        .content-section h3 { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
-        .content-section p { font-size: 1.1rem; color: #334155; margin-bottom: 15px; }
-        .takeaways-card {
-            background: rgba(124, 58, 237, 0.04);
-            border: 1px solid rgba(124, 58, 237, 0.15);
-            border-radius: 18px;
-            padding: 25px 30px;
-            margin: 40px 0;
-        }
-        .takeaways-card h4 { font-size: 1.25rem; color: var(--accent-purple); margin-bottom: 15px; font-weight: 800; }
-        .takeaways-card ul { list-style: none; padding: 0; }
-        .takeaways-card li { font-size: 1.05rem; color: #334155; margin-bottom: 12px; display: flex; align-items: center; }
-        .btn-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 28px;
-            border-radius: 50px;
-            background: linear-gradient(135deg, #7c3aed, #2563eb);
-            color: #fff;
-            text-decoration: none;
-            font-weight: 700;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
-            transition: all 0.2s;
-        }
-        .btn-back:hover { transform: translateY(-2px); opacity: 0.95; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>واي فاي البيت: كلمة مرور وشبكة ضيف وتغطية أفضل بغرفة الجلوس | مدونة الفكر الذكي</title>
+  <meta name="description" content="ضبط الراوتر المنزلي بشكل مفهوم: اسم الشبكة، كلمة سر قوية، شبكة للزوار، وأين تضع الجهاز.">
+  <meta name="author" content="فريق التحرير">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://turky4500.github.io/smart/posts/2026-08-09-516.html">
+  <link rel="alternate" hreflang="ar" href="https://turky4500.github.io/smart/posts/2026-08-09-516.html">
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="ar_AR">
+  <meta property="og:site_name" content="مدونة الفكر الذكي">
+  <meta property="og:title" content="واي فاي البيت: كلمة مرور وشبكة ضيف وتغطية أفضل بغرفة الجلوس | مدونة الفكر الذكي">
+  <meta property="og:description" content="ضبط الراوتر المنزلي بشكل مفهوم: اسم الشبكة، كلمة سر قوية، شبكة للزوار، وأين تضع الجهاز.">
+  <meta property="og:url" content="https://turky4500.github.io/smart/posts/2026-08-09-516.html">
+  <meta name="theme-color" content="#5b21b6">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../blog.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7778135355055222" crossorigin="anonymous"></script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "واي فاي البيت: كلمة مرور وشبكة ضيف وتغطية أفضل بغرفة الجلوس",
+    "description": "ضبط الراوتر المنزلي بشكل مفهوم: اسم الشبكة، كلمة سر قوية، شبكة للزوار، وأين تضع الجهاز.",
+    "inLanguage": "ar",
+    "datePublished": "2026-08-09",
+    "dateModified": "2026-08-09",
+    "author": {"@type": "Organization", "name": "فريق التحرير"},
+    "publisher": {"@type": "Organization", "name": "مدونة الفكر الذكي", "url": "https://turky4500.github.io/smart/"},
+    "mainEntityOfPage": "https://turky4500.github.io/smart/posts/2026-08-09-516.html",
+    "articleSection": "حياة رقمية"
+  }
+  </script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "هل أخفي اسم الشبكة؟", "acceptedAnswer": {"@type": "Answer", "text": "إخفاؤها لا يضيف أمانًا حقيقيًا ويصعّب الربط على ضيوفك. كلمة قوية أهم."}}, {"@type": "Question", "name": "5GHz أم 2.4؟", "acceptedAnswer": {"@type": "Answer", "text": "5 أسرع وأقرب. 2.4 أضعف سرعة وأبعد وصولًا. ضع الأجهزة القريبة على 5 إن أمكن."}}, {"@type": "Question", "name": "الجار يستخدم شبكتي، كيف أعرف؟", "acceptedAnswer": {"@type": "Answer", "text": "من لوحة الراوتر تظهر الأجهزة المتصلة. إذا رأيت جهازًا لا تعرفه غيّر الكلمة فورًا وأعد ربط أجهزتك."}}]}</script>
 </head>
 <body>
-    <nav class="navbar">
-        <a href="../index.html" class="logo"><i class="fa-solid fa-lightbulb"></i> الفكر الذكي</a>
-        <a href="../index.html" style="color:var(--accent-purple); text-decoration:none; font-weight:700;"><i class="fa-solid fa-arrow-right"></i> الصفحة الرئيسية</a>
-    </nav>
-    
-    <div class="container">
-        <span class="category-badge"><i class="fa-solid fa-folder-open"></i> استراتيجيات SEO</span>
-        <h1>دليل بناء سلطة المورد الرقمي (Domain Authority) وتصدر نتائج محركات البحث SEO</h1>
-        <div class="meta">
-            <span><i class="fa-regular fa-calendar"></i> تاريخ النشر: 2026-08-09</span>
-            <span><i class="fa-regular fa-user"></i> م. خالد منصور - خبير تحسين محركات البحث</span>
-            <span><i class="fa-regular fa-clock"></i> وقت القراءة: 4 دقائق</span>
-        </div>
 
-        <div class="summary-box">
-            خطوات عملية وواضحة لتحسين ترتيب موقعك في محرك البحث قوقل وبناء الروابط الخلفية عالية الجودة بطرق شرعية وآمنة.
-        </div>
-        
-        <div class="ad-container">
-            <!-- موقع البودكاست -->
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-7778135355055222"
-                 data-ad-slot="5093830951"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
-
-        <article class="article-body">
-            
-        <section class="content-section">
-            <h3>ما هو الـ Domain Authority وكيف تؤثر خوارزميات قوقل عليه؟</h3>
-            <p>يُعبر الدومين أثوريتي عن جودة ومدى ثقة محركات البحث في موقعك مقارنة بآلاف المواقع المنافسة. يبنى هذا المؤشر عبر تضافر عوامل متعددة تشمل قدم النطاق، جودة المحتوى، وهيكلية الموقع البرمجية السليمة.</p>
-        </section>
-        <section class="content-section">
-            <h3>استراتيجية الروابط الخلفية الخارجية (Backlinks) الطبيعية</h3>
-            <p>الروابط الخارجية القادمة من مواقع ذات موثوقية عالية تعمل كشهادة تزكية لموقعك لدى محركات البحث. تجنب شراء الروابط العشوائية أو السبام، وركز على نشر أبحاث ومقالات مميزة تجعل المواقع العالمية تشير إليك كمصدر رسمي.</p>
-        </section>
-        <section class="content-section">
-            <h3>تحسين تجربة المستخدم الهيكلية (Technical SEO)</h3>
-            <p>تأكد من خلو موقعك من أخطاء الروابط المكسورة (404 Error)، وتوفير شهادة الأمان SSL (HTTPS)، وضمان توافق كافة الصفحات مع الهواتف الذكية بنسبة 100%.</p>
-        </section>
-        </article>
-
-        <div class="takeaways-card">
-            <h4><i class="fa-solid fa-star"></i> النقاط الجوهرية للرفع من أدائك:</h4>
-            <ul>
-                <li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> الروابط الخلفية القوية تزيد من سرعة أرشفة الصفحات الجديدة.</li><li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> استخدام شهادة SSL وحماية البيانات هو شرط أساسي للترتيب في الصفحة الأولى.</li><li><i class='fa-solid fa-check-circle' style='color:#7c3aed; margin-left:8px;'></i> الهيكلية الواضحة لملف sitemap تفهرس كل مقال خلال ساعات قليلة.</li>
-            </ul>
-        </div>
-
-        <div class="ad-container">
-            <!-- موقع البودكاست -->
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-7778135355055222"
-                 data-ad-slot="5093830951"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
-
-        <a href="../index.html" class="btn-back"><i class="fa-solid fa-arrow-right"></i> العودة للصفحة الرئيسية</a>
+  <a class="skip-link" href="#main">تجاوز إلى المحتوى</a>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="logo" href="../index.html">
+        <span class="logo-mark"><i class="fa-solid fa-lightbulb"></i></span>
+        الفكر الذكي
+      </a>
+      <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="nav-links">القائمة</button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../index.html">الرئيسية</a></li><li><a href="../index.html#articles" class="active">المقالات</a></li><li><a href="../about.html">من نحن</a></li><li><a href="../contact.html">تواصل</a></li><li><a href="../privacy.html">الخصوصية</a></li>
+      </ul>
     </div>
+  </header>
+  <main id="main" class="wrap">
+    <article class="page">
+      <nav class="breadcrumb"><a href="../index.html">الرئيسية</a> / <a href="../index.html#articles">حياة رقمية</a></nav>
+      <span class="tag">حياة رقمية</span>
+      <h1>واي فاي البيت: كلمة مرور وشبكة ضيف وتغطية أفضل بغرفة الجلوس</h1>
+      <div class="meta">
+        <span><i class="fa-regular fa-calendar"></i> 9 أغسطس 2026</span>
+        <span><i class="fa-regular fa-user"></i> فريق التحرير</span>
+        <span><i class="fa-regular fa-clock"></i> 6 دقائق قراءة</span>
+      </div>
+      <p class="summary">أغلب ضعف الشبكة في البيت سببه مكان الراوتر أو كلمة سر قديمة، لا «نوع الجوال».</p>
+      <div class="article-body">
+        <h2>ضع الراوتر حيث يعيش الناس لا حيث دخل الكابل</h2><p>الخزانة الحديدية، خلف التلفاز مباشرة، أو على الأرض خلف الأثاث تضعف الإشارة. مكان مرتفع ومكشوف في وسط البيت أفضل من غرفة النافذة البعيدة.</p><p>الجدران والأسقف الخرسانية تأكل الإشارة. إذا كان البيت كبيرًا، فكّر في مكرر إشارة أو نظام نقاط متعدد بدل لوم الجوال.</p><h2>كلمة السر واسم الشبكة</h2><p>غيّر كلمة سر الراوتر الافتراضية وكلمة الواي فاي معًا. الافتراضية مكتوبة على ملصق وقد تُستخدم كما هي لسنوات.</p><p>لا تضع اسم الشبكة برقم شقتك أو اسم العائلة إن كنت تفضل خصوصية أعلى في عمارة مزدحمة. الاسم اللطيف مقبول، لكن لا تضع بيانات تدل على عنوانك بدقة.</p><p>استخدم كلمة طويلة للجوالات المنزلية. لا تشاركها في مجموعة الوايتساب ثم تنسى من احتفظ بها.</p>
+    <div class="ad-box">
+      <div class="ad-label">إعلان</div>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-7778135355055222"
+           data-ad-slot="5093830951"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div><h2>شبكة الضيف ليست ترفًا</h2><p>إذا زاركم أحد، شبكة الضيف تمنعه من رؤية أجهزتكم وطابعتكم. كثير من الراوترات الحديثة فيها زر جاهز لهذا.</p><p>يمكنك إيقاف شبكة الضيف حين لا تحتاجها. هذا أهدى من إعطاء الكلمتين لكل من مرّ على المجلس.</p><h2>متى تعيد تشغيل الراوتر</h2><p>إذا صار الاتصال يقطع كل مساء، أعد التشغيل ولاحظ. جهاز يشتغل شهورًا بلا انقطاع قد يحمى أو يعلق.</p><p>حدّث برنامج الراوتر من صفحة الشركة أو تطبيق المزود إذا وُجدت تحديثات رسمية. لا تحمّل ملفًا من منتدى.</p><h2>أجهزة المنزل الذكية</h2><p>الكاميرات والمقابس الذكية إن وُجدت ضعها على الشبكة الأساسية لا على شبكة الضيف، لكن غيّر كلمات أجهزتها الافتراضية فور التركيب.</p><p>لا تعرض كاميرا المنزل على حساب سحابي بكلمة ضعيفة. الكاميرا جهاز حساس لا لعبة.</p><h2>انقطاع متكرر في وقت الذروة</h2><p>إذا ضعف النت بعد العصر فقد يكون ازدحام الحي أو قناة الراوتر القديمة. اختبر السرعة بالكابل إن أمكن لتعرف هل المشكلة بث لاسلكي أم الخط نفسه.</p><p>أعد تشغيل الراوتر في وقت الضعف مرة وراقب. إن تكرر يوميًا كلّم المزود برقم commitable من التطبيق الرسمي.</p><h2>جولة راوتر بعد العشاء</h2><p>انظر أين الجهاز الآن. إن كان في زاوية أرضية فانقله أعلى وخارج الخزانة. أعد التشغيل وانتظر دقيقتين.</p><p>ادخل لوحة الراوتر من العنوان المكتوب أسفل الجهاز — غالبًا على الملصق — وغيّر كلمة الدخول الافتراضية ثم كلمة الواي فاي. اكتب الكلمتين في دفتر البيت.</p><p>إن وُجد خيار شبكة ضيف فعّله بكلمة مختلفة. جرّب الجوال في أبعد غرفة. إن بقيت ضعيفة فكّر في مكرر إشارة لا في لوم المزود مباشرة.</p>
+        <div class="callout">
+          <h3>خلاصة سريعة</h3>
+          <ul><li>مكان الراوتر يؤثر أكثر مما يُظن.</li><li>غيّر كلمة الواي فاي وكلمة لوحة الراوتر معًا.</li><li>اجعل للزوار شبكة ضيف منفصلة.</li><li>حدّث الراوتر من مصدر المزود فقط.</li></ul>
+        </div>
+        <h2>أسئلة شائعة</h2>
+        <div class="faq"><details><summary>هل أخفي اسم الشبكة؟</summary><p>إخفاؤها لا يضيف أمانًا حقيقيًا ويصعّب الربط على ضيوفك. كلمة قوية أهم.</p></details><details><summary>5GHz أم 2.4؟</summary><p>5 أسرع وأقرب. 2.4 أضعف سرعة وأبعد وصولًا. ضع الأجهزة القريبة على 5 إن أمكن.</p></details><details><summary>الجار يستخدم شبكتي، كيف أعرف؟</summary><p>من لوحة الراوتر تظهر الأجهزة المتصلة. إذا رأيت جهازًا لا تعرفه غيّر الكلمة فورًا وأعد ربط أجهزتك.</p></details></div>
+        <h2>اقرأ أيضًا</h2>
+        <div class="related"><a href="2026-08-14-239.html">كيف تفهم استهلاك بيانات الجوال وتوقف النزيف بهدوء</a><a href="2026-08-04-563.html">إدارة كلمات المرور بدون ورقة على المكتب وبدون نسيان</a></div>
+      </div>
+      
+    <div class="ad-box">
+      <div class="ad-label">إعلان</div>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-7778135355055222"
+           data-ad-slot="5093830951"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+      <p style="margin-top:18px"><a class="btn btn-primary" href="../index.html">العودة لكل المقالات</a></p>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <h3>مدونة الفكر الذكي</h3>
+        <p>مدونة عربية مستقلة تكتب شروحًا عملية عن التقنية اليومية، الأمان الرقمي، وتنظيم العمل والدراسة. نكتب للقارئ غير المتخصص، ونراجع كل مقال قبل نشره.</p>
+        <p>التواصل: <a href="mailto:tur100@gmail.com">tur100@gmail.com</a></p>
+      </div>
+      <div>
+        <h3>تصفح</h3>
+        <ul>
+          <li><a href="../index.html">الرئيسية</a></li>
+          <li><a href="../about.html">من نحن</a></li>
+          <li><a href="../contact.html">تواصل معنا</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>الصفحات القانونية</h3>
+        <ul>
+          <li><a href="../privacy.html">سياسة الخصوصية</a></li>
+          <li><a href="../disclaimer.html">إخلاء المسؤولية</a></li>
+          <li><a href="../sitemap.xml">خريطة الموقع</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copy">© 2026 مدونة الفكر الذكي — محتوى أصلي مستقل</div>
+  </footer>
+  <div class="cookie" id="cookie-banner">
+    <p>نستخدم ملفات تعريف الارتباط لعرض الإعلانات عبر Google وقياس استخدام الصفحات. راجع <a href="../privacy.html">سياسة الخصوصية</a>.</p>
+    <button type="button" id="cookie-ok">حسنًا</button>
+  </div>
+  <script src="../blog.js"></script>
 </body>
 </html>

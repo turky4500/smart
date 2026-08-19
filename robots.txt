@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+Allow: /posts/
+
+Disallow: /a.html
+Disallow: /b.html
+Disallow: /b1.html
+Disallow: /s.html
+Disallow: /soq.html
+Disallow: /tt.html
+Disallow: /tur100.html
+Disallow: /wats.html
+Disallow: /app.py
+Disallow: /app.js
+Disallow: /companies.csv
+Disallow: /scripts/
+
+Sitemap: https://turky4500.github.io/smart/sitemap.xml

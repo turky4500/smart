@@ -1,86 +1,132 @@
+# -*- coding: utf-8 -*-
+"""Refresh sitemap and homepage cards from unique posts only."""
 import os
+import re
 import glob
 import datetime
-import re
 
-def update_sitemap_and_index():
-    domain = "https://turky4500.github.io/smart"
-    today = datetime.datetime.now().strftime("%Y-%m-%d")
-    
-    # 1. Update Sitemap
-    all_html_files = glob.glob("*.html") + glob.glob("posts/*.html")
-    urls = []
-    for file_path in set(all_html_files):
-        clean_path = file_path.replace("\\", "/")
-        priority = "1.0" if clean_path == "index.html" else "0.8"
-        urls.append(f"  <url>\n    <loc>{domain}/{clean_path}</loc>\n    <lastmod>{today}</lastmod>\n    <priority>{priority}</priority>\n  </url>")
-    
-    sitemap_content = f"""<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-{'\n'.join(urls)}
-</urlset>"""
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+SITE = "https://turky4500.github.io/smart"
 
-    with open("sitemap.xml", "w", encoding="utf-8") as f:
-        f.write(sitemap_content)
-    print("تم أرشفة وتجميع كافة المشروعات والصفحات في sitemap.xml بنجاح!")
+BLOG_PAGES = [
+    ("index.html", "1.0"),
+    ("about.html", "0.6"),
+    ("contact.html", "0.5"),
+    ("privacy.html", "0.5"),
+    ("disclaimer.html", "0.4"),
+]
 
-    # 2. Update Index.html with beautiful post cards
-    posts = glob.glob("posts/*.html")
-    posts_cards_html = ""
-    
-    icons = [
-        "fa-solid fa-lightbulb",
-        "fa-solid fa-chart-line",
-        "fa-solid fa-laptop-code",
-        "fa-solid fa-newspaper",
-        "fa-solid fa-rocket"
-    ]
-    
-    tags = ["استراتيجيات وتطوير", "SEO وتصنيف", "تسويق رقمي", "تقنية مستقبليات", "تنمية أرباح"]
+MONTHS = {
+    1: "يناير", 2: "فبراير", 3: "مارس", 4: "أبريل", 5: "مايو", 6: "يونيو",
+    7: "يوليو", 8: "أغسطس", 9: "سبتمبر", 10: "أكتوبر", 11: "نوفمبر", 12: "ديسمبر",
+}
 
-    for idx, post in enumerate(sorted(posts, reverse=True)):
-        clean_post = post.replace("\\", "/")
-        title = clean_post
-        try:
-            with open(post, "r", encoding="utf-8") as pf:
-                content = pf.read()
-                match = re.search(r"<title>(.*?)</title>", content)
-                if match:
-                    title = match.group(1).replace("- مدونة الفكر الذكي", "").strip()
-        except Exception:
-            pass
-            
-        icon = icons[idx % len(icons)]
-        tag = tags[idx % len(tags)]
-        
-        posts_cards_html += f"""
-        <article class="post-card">
-            <div class="card-header-icon">
-                <i class="{icon}"></i>
+
+def arabic_date(iso):
+    try:
+        y, m, d = [int(x) for x in iso.split("-")]
+        return f"{d} {MONTHS[m]} {y}"
+    except Exception:
+        return iso
+
+
+def post_meta(path):
+    name = os.path.basename(path)
+    date = name[:10] if re.match(r"\d{4}-\d{2}-\d{2}", name) else datetime.date.today().isoformat()
+    title = name
+    category = "مقال"
+    excerpt = ""
+    with open(path, encoding="utf-8") as f:
+        html = f.read()
+    m = re.search(r"<title>(.*?)</title>", html, re.S)
+    if m:
+        title = re.sub(r"\s+", " ", m.group(1)).replace("| مدونة الفكر الذكي", "").replace("- مدونة الفكر الذكي", "").strip()
+    m = re.search(r'class="tag">([^<]+)', html)
+    if m:
+        category = m.group(1).strip()
+    m = re.search(r'class="summary">([^<]+)', html)
+    if m:
+        excerpt = m.group(1).strip()
+    return {
+        "file": "posts/" + name,
+        "date": date,
+        "title": title,
+        "category": category,
+        "excerpt": excerpt,
+    }
+
+
+def update_sitemap(posts):
+    today = datetime.date.today().isoformat()
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>',
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for path, pri in BLOG_PAGES:
+        loc = f"{SITE}/" if path == "index.html" else f"{SITE}/{path}"
+        last = today if path == "index.html" else today
+        if os.path.exists(os.path.join(ROOT, path)):
+            lines.append(f"  <url><loc>{loc}</loc><lastmod>{last}</lastmod><priority>{pri}</priority></url>")
+    for p in posts:
+        lines.append(
+            f"  <url><loc>{SITE}/{p['file']}</loc><lastmod>{p['date']}</lastmod><priority>0.8</priority></url>"
+        )
+    lines.append("</urlset>\n")
+    with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+    print("sitemap updated:",  len(posts), "posts")
+
+
+def card_html(p):
+    excerpt = p["excerpt"] or p["title"]
+    return f"""
+        <article class="card" data-category="{p['category']}">
+          <div class="card-top"><i class="fa-solid fa-lightbulb"></i></div>
+          <div class="card-body">
+            <span class="tag">{p['category']}</span>
+            <h3><a href="{p['file']}">{p['title']}</a></h3>
+            <p class="excerpt">{excerpt}</p>
+            <div class="card-meta">
+              <span>{arabic_date(p['date'])}</span>
+              <a href="{p['file']}">اقرأ المقال</a>
             </div>
-            <div class="card-body">
-                <span class="card-tag">{tag}</span>
-                <a href="{clean_post}" class="card-title">{title}</a>
-                <div class="card-footer">
-                    <span><i class="fa-regular fa-calendar"></i> {today}</span>
-                    <a href="{clean_post}" class="btn-read">اقرأ المقال <i class="fa-solid fa-arrow-left"></i></a>
-                </div>
-            </div>
+          </div>
         </article>"""
-        
-    if not posts_cards_html:
-        posts_cards_html = '<p style="color:var(--text-muted); text-align:center;">جاري نشر المقالات اليومية...</p>'
 
-    if os.path.exists("index.html"):
-        with open("index.html", "r", encoding="utf-8") as f:
-            index_content = f.read()
-            
-        pattern = r'(<div id="posts-list"[^>]*>)(.*?)(</div>)'
-        new_index_content = re.sub(pattern, f'\\1{posts_cards_html}\n        \\3', index_content, flags=re.DOTALL)
-        
-        with open("index.html", "w", encoding="utf-8") as f:
-            f.write(new_index_content)
-        print("تم تحديث بطاقات المقالات في الصفحة الرئيسية index.html بنجاح!")
+
+def update_index(posts):
+    index_path = os.path.join(ROOT, "index.html")
+    with open(index_path, encoding="utf-8") as f:
+        html = f.read()
+    cards = "".join(card_html(p) for p in posts)
+    pattern = r"<!-- POSTS_START -->.*?<!-- POSTS_END -->"
+    if not re.search(pattern, html, re.S):
+        print("WARNING: POSTS markers missing in index.html — left unchanged")
+        return
+    html = re.sub(
+        pattern,
+        f"<!-- POSTS_START -->\n      {cards}\n      <!-- POSTS_END -->",
+        html,
+        count=1,
+        flags=re.S,
+    )
+    html = re.sub(
+        r"\d+ مقالًا أصليًا",
+        f"{len(posts)} مقالًا أصليًا",
+        html,
+        count=1,
+    )
+    with open(index_path, "w", encoding="utf-8") as f:
+        f.write(html)
+    print("index cards updated")
+
+
+def main():
+    os.chdir(ROOT)
+    files = sorted(glob.glob("posts/*.html"), reverse=True)
+    posts = [post_meta(p) for p in files]
+    posts.sort(key=lambda x: x["date"], reverse=True)
+    update_sitemap(posts)
+    update_index(posts)
+
 
 if __name__ == "__main__":
-    update_sitemap_and_index()
+    main()

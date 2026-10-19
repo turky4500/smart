@@ -318,6 +318,17 @@
 
     .muted { color: var(--muted); }
 
+    .page-footer {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 16px 20px 30px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      border-top: 1px solid var(--line);
+    }
+
     @media (max-width: 820px) {
       .row-2, .row-3 { grid-template-columns: 1fr; }
       .header-inner { flex-direction: column; align-items: flex-start; }
@@ -473,6 +484,10 @@
       <div id="rejectedWrap" class="status err hidden" style="margin-top:14px;"></div>
     </section>
   </main>
+
+  <footer class="page-footer">
+    برمجة وتصميم تركي الصقر - قطاع الجنوب
+  </footer>
 
   <script>
     const crDatabase = {

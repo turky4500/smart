@@ -307,7 +307,8 @@ body {
 
 /* حاويات إعلانات جوجل أدسنس */
 .ad-box {
-    margin: 20px auto;
+    width: 100%;
+    margin: 20px 0;
     padding: 12px;
     border: 1px dashed var(--border-color);
     border-radius: var(--border-radius);

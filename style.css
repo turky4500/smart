@@ -305,6 +305,26 @@ body {
     transition: border-color var(--transition-speed);
 }
 
+/* حاويات إعلانات جوجل أدسنس */
+.ad-box {
+    margin: 20px auto;
+    padding: 12px;
+    border: 1px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--card-bg);
+    text-align: center;
+    transition: border-color var(--transition-speed), background-color var(--transition-speed);
+}
+
+.ad-label {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
 /* التجاوب للجوال */
 @media (max-width: 600px) {
     body {

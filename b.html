@@ -334,6 +334,15 @@
       .header-inner { flex-direction: column; align-items: flex-start; }
       .stepper { grid-template-columns: repeat(2, minmax(0,1fr)); }
     }
+  
+    .sup-heading {display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+    .sup-eyebrow {color:var(--balady-green);font-weight:800;font-size:13px}.sup-muted {color:var(--muted);font-size:13px}.sup-heading h2 {margin:4px 0}.sup-heading p {margin:0 0 12px}
+    .sup-filters {display:grid;grid-template-columns:2fr repeat(4,1fr) auto;gap:10px;align-items:end;margin:22px 0}.sup-filters label {font-size:12px}.sup-filters input,.sup-filters select {font-size:13px;padding:10px}
+    .sup-kpis {display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}.sup-kpi,.sup-card {border:1px solid var(--line);border-radius:14px;padding:18px;background:white}.sup-kpi {border-top:3px solid var(--accent,var(--balady-blue))}.sup-kpi strong {display:block;font-size:30px;color:var(--accent,var(--balady-blue))}.sup-kpi small {color:var(--muted)}
+    .sup-charts {display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}.sup-card h3 {margin:0 0 12px;color:var(--balady-blue);font-size:16px}.sup-bar-row {display:flex;align-items:center;gap:12px;margin:12px 0;width:100%;background:none;border:0;text-align:right;color:var(--text);padding:0;font-size:13px}.sup-bar-row button {cursor:pointer}.sup-track {background:#f1f5f9;height:12px;border-radius:10px;flex:1;overflow:hidden}.sup-fill {display:block;height:100%;border-radius:10px;background:var(--balady-green)}.sup-label {width:125px}.sup-badge {display:inline-block;border-radius:20px;padding:4px 10px;font-size:12px;white-space:nowrap}.sup-table-wrap {overflow:auto}.sup-table {width:100%;border-collapse:collapse;text-align:right;font-size:13px}.sup-table th {background:#f8fafc;color:var(--muted)}.sup-table td,.sup-table th {padding:14px 10px;border-bottom:1px solid var(--line)}.sup-table small {display:block;color:var(--muted)}.sup-empty {padding:22px;text-align:center;color:var(--muted)}
+    #supDialog {border:1px solid var(--line);border-radius:18px;padding:24px;width:min(700px,94vw);max-height:85vh;overflow:auto;color:var(--text)}#supDialog::backdrop {background:#0f243d88}.sup-detail {border-bottom:1px solid var(--line);padding:10px 0;overflow-wrap:anywhere}.sup-detail b {color:var(--balady-blue)}
+    @media(max-width:900px){.sup-filters{grid-template-columns:1fr 1fr}.sup-kpis{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.sup-charts,.sup-filters{grid-template-columns:1fr}.tabs{flex-wrap:wrap}.sup-label{width:105px}}
+    @media print {header,.tabs,.page-footer,.sup-filters,.toolbar,#supDialog,.sup-table button{display:none!important}body{background:white}.app{max-width:none;padding:0}.panel{box-shadow:none;border:0}.sup-card,.sup-kpi{break-inside:avoid}.sup-table-wrap{overflow:visible}}
   </style>
 </head>
 <body>
@@ -354,6 +363,7 @@
     <div class="tabs">
       <button id="tabBeneficiary" class="tab-btn active">بوابة المستفيد</button>
       <button id="tabEmployee" class="tab-btn">بوابة الموظف</button>
+      <button id="tabSupervisor" class="tab-btn">بوابة المشرف</button>
     </div>
 
     <section id="beneficiaryPanel" class="panel">
@@ -483,6 +493,23 @@
       <div id="transferredWrap" class="status ok hidden" style="margin-top:14px;"></div>
       <div id="rejectedWrap" class="status err hidden" style="margin-top:14px;"></div>
     </section>
+    <section id="supervisorPanel" class="panel hidden">
+      <div class="sup-heading"><div><span class="sup-eyebrow">الإشراف والمتابعة التشغيلية</span><h2>لوحة مؤشرات الأداء</h2><p class="sup-muted">نظرة شاملة على الطلبات وقرارات المعالجة</p></div><div class="toolbar"><button id="supExport" class="btn btn-success">تصدير CSV</button><button id="supPrint" class="btn btn-outline">طباعة التقرير</button></div></div>
+      <div class="status info">نسخة تجريبية: البيانات محفوظة في هذا المتصفح فقط، ولا تتم مشاركتها بين الأجهزة. تبويب المشرف ليس محميًا بتسجيل دخول. المقبولة تعني «قبول وإحالة» وليست إصدار رخصة نهائية.</div>
+      <div class="sup-filters">
+        <div><label for="supSearch">البحث في الطلبات</label><input id="supSearch" placeholder="رقم الطلب، السجل، المنشأة أو الحي" type="search"></div>
+        <div><label for="supStatus">الحالة</label><select id="supStatus"><option value="">جميع الحالات</option><option value="submitted">قيد المعالجة</option><option value="transferred">مقبولة ومحالة</option><option value="returned_to_beneficiary">مرفوضة ومعادة</option></select></div>
+        <div><label for="supActivity">النشاط</label><select id="supActivity"><option value="">جميع الأنشطة</option></select></div>
+        <div><label for="supFrom">من تاريخ التقديم</label><input id="supFrom" type="date"></div>
+        <div><label for="supTo">إلى تاريخ التقديم</label><input id="supTo" type="date"></div>
+        <button id="supReset" class="btn btn-outline">مسح الفلاتر</button>
+      </div>
+      <div id="supKpis" class="sup-kpis"></div>
+      <div class="sup-charts"><article class="sup-card"><h3>توزيع حالات الطلبات</h3><p class="sup-muted">اضغط على الحالة لتصفية التقرير</p><div id="supDistribution"></div></article><article class="sup-card"><h3>حجم الطلبات حسب النشاط</h3><div id="supActivities"></div></article><article class="sup-card"><h3>الطلبات خلال آخر ٧ أيام</h3><p class="sup-muted">بحسب تاريخ التقديم، ضمن الفلاتر المحددة</p><div id="supTrend"></div></article><article class="sup-card"><h3>أسباب الرفض والإرجاع</h3><div id="supReasons"></div></article></div>
+      <article class="sup-card"><div class="sup-heading"><h3>سجل العمليات والطلبات</h3><span id="supCount" class="sup-muted"></span></div><div class="sup-table-wrap"><table class="sup-table"><thead><tr><th>رقم الطلب / تاريخ التقديم</th><th>المنشأة / السجل</th><th>النشاط / الحي</th><th>الحالة</th><th>مدة المعالجة</th><th>التفاصيل</th></tr></thead><tbody id="supRows"></tbody></table></div></article>
+      <p id="supUpdated" class="sup-muted"></p><p id="supStorage" role="status" class="sup-muted"></p>
+    </section>
+    <dialog id="supDialog"><div class="sup-heading"><h2>تفاصيل العملية</h2><button id="supClose" class="btn btn-outline">إغلاق</button></div><div id="supDetails"></div></dialog>
   </main>
 
   <footer class="page-footer">
@@ -677,6 +704,9 @@
       els.tabEmployee.classList.toggle("active", tab === "employee");
       els.beneficiaryPanel.classList.toggle("hidden", tab !== "beneficiary");
       els.employeePanel.classList.toggle("hidden", tab !== "employee");
+      document.getElementById("tabSupervisor").classList.toggle("active", tab === "supervisor");
+      document.getElementById("supervisorPanel").classList.toggle("hidden", tab !== "supervisor");
+      if (tab === "supervisor") renderSupervisor();
       if (tab === "employee") renderEmployee();
     }
 
@@ -868,11 +898,14 @@
           "تمت مراجعة المرفقات الرقمية",
           "تم اجتياز التدقيق الذكي النهائي"
         ],
+        createdAt: new Date().toISOString(),
+        history: [{at: new Date().toISOString(), action: "تقديم الطلب واجتياز التدقيق الذكي"}],
         status: "submitted",
         rejectionReason: ""
       };
 
       state.submittedRequests.unshift(request);
+      saveRequests();
 
       resetBeneficiaryForm();
       showStatus(els.beneficiaryNotice, "ok", `تم تقديم طلبك بنجاح برقم ${requestId}. تمت احالة المعاملة الى الموظف.`);
@@ -910,8 +943,10 @@
 
     function transferRequest(id) {
       const req = state.submittedRequests.find(r => r.id === id);
-      if (!req) return;
+      if (!req || req.status !== "submitted") return;
+      recordDecision(req, "قبول وإحالة الطلب");
       req.status = "transferred";
+      saveRequests();
       showStatus(els.employeeMsg, "info", `تم قبول الطلب ${id} ووضعه ضمن الطلبات المحالة.`);
       renderEmployee();
     }
@@ -923,9 +958,11 @@
         return;
       }
       const req = state.submittedRequests.find(r => r.id === id);
-      if (!req) return;
+      if (!req || req.status !== "submitted") return;
+      recordDecision(req, "رفض وإرجاع الطلب: " + reason);
       req.status = "returned_to_beneficiary";
       req.rejectionReason = reason;
+      saveRequests();
       showStatus(els.employeeMsg, "info", `تم ارجاع الطلب ${id} للمستفيد مع سبب الرفض.`);
       renderEmployee();
     }
@@ -945,17 +982,17 @@
         els.employeePendingWrap.innerHTML = submitted.map(req => `
           <div class="request">
             <h4>رقم الطلب: ${req.id}</h4>
-            <p>السجل: ${req.crNumber}</p>
-            <p>الاسم التجاري: ${req.crName}</p>
+            <p>السجل: ${esc(req.crNumber)}</p>
+            <p>الاسم التجاري: ${esc(req.crName)}</p>
             <p>النشاط: ${activityLabels[req.selectedActivity]}</p>
-            <p>الموقع: مخطط ${req.planNumber} - قطعة ${req.parcelNumber} - ${req.district}</p>
-            <p>عقد الايجار: ${req.ejarNumber} | المستاجر: ${req.ejarTenantName}</p>
+            <p>الموقع: مخطط ${esc(req.planNumber)} - قطعة ${esc(req.parcelNumber)} - ${esc(req.district)}</p>
+            <p>عقد الايجار: ${esc(req.ejarNumber)} | المستاجر: ${esc(req.ejarTenantName)}</p>
             <div class="box" style="margin-top:8px;">
               <strong>ما تم التحقق منه:</strong>
-              <ul class="list">${req.verificationSummary.map(i => `<li>${i}</li>`).join("")}</ul>
+              <ul class="list">${req.verificationSummary.map(i => `<li>${esc(i)}</li>`).join("")}</ul>
             </div>
             <div style="margin-top:8px;">
-              <textarea id="reject-${req.id}" placeholder="في حال الرفض اكتب السبب هنا">${state.employeeRejectionDraft[req.id] || ""}</textarea>
+              <textarea id="reject-${req.id}" placeholder="في حال الرفض اكتب السبب هنا">${esc(state.employeeRejectionDraft[req.id] || "")}</textarea>
             </div>
             <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
               <button class="btn btn-success" onclick="transferRequest('${req.id}')">قبول واحالة</button>
@@ -977,7 +1014,7 @@
         els.transferredWrap.className = "status ok";
         els.transferredWrap.innerHTML = `
           <strong>الطلبات المحالة:</strong>
-          <ul class="list">${transferred.map(r => `<li>${r.id} - ${r.crName}</li>`).join("")}</ul>
+          <ul class="list">${transferred.map(r => `<li>${r.id} - ${esc(r.crName)}</li>`).join("")}</ul>
         `;
       } else {
         els.transferredWrap.classList.add("hidden");
@@ -988,7 +1025,7 @@
         els.rejectedWrap.className = "status err";
         els.rejectedWrap.innerHTML = `
           <strong>طلبات تمت اعادتها للمستفيد:</strong>
-          <ul class="list">${rejected.map(r => `<li>${r.id} - سبب الارجاع: ${r.rejectionReason}</li>`).join("")}</ul>
+          <ul class="list">${rejected.map(r => `<li>${r.id} - سبب الارجاع: ${esc(r.rejectionReason)}</li>`).join("")}</ul>
         `;
       } else {
         els.rejectedWrap.classList.add("hidden");
@@ -1076,7 +1113,46 @@
 
     els.btnFillDemo.onclick = fillDemoData;
 
+    const storageKey = 'balady-requests-v1';
+    const statusNames = {submitted:'قيد المعالجة',transferred:'مقبولة ومحالة',returned_to_beneficiary:'مرفوضة ومعادة'};
+    const statusColors = {submitted:'#b7791f',transferred:'#1e944d',returned_to_beneficiary:'#dc2626'};
+    const $ = id => document.getElementById(id);
+    function esc(v) {return String(v ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+    function saveRequests() {try {localStorage.setItem(storageKey,JSON.stringify(state.submittedRequests));$('supStorage').textContent='';} catch(e) {$('supStorage').textContent='تعذر الحفظ في المتصفح. قد تفقد البيانات عند إغلاق الصفحة.';}}
+    function loadRequests() {try {const data=JSON.parse(localStorage.getItem(storageKey)||'[]');if(Array.isArray(data)) state.submittedRequests=data.filter(r=>r && /^BAL-\d+$/.test(r.id) && statusNames[r.status] && Array.isArray(r.verificationSummary));}catch(e){$('supStorage').textContent='تعذر استعادة البيانات المحفوظة.';}}
+    function recordDecision(r,action) {r.decidedAt=new Date().toISOString();r.history=r.history||[];r.history.push({at:r.decidedAt,action});}
+    function localDate(v) {const d=new Date(v);return Number.isFinite(+d)?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`:'';}
+    function dateLabel(v) {return v && Number.isFinite(+new Date(v))?new Date(v).toLocaleString('ar-SA',{calendar:'gregory'}):'غير مسجل';}
+    function hours(r) {return r.createdAt&&r.decidedAt?Math.max(0,(new Date(r.decidedAt)-new Date(r.createdAt))/3600000):null;}
+    function duration(r) {const h=hours(r);return h===null?'—':h<1?`${Math.round(h*60)} دقيقة`:`${h.toFixed(1)} ساعة`;}
+    function filteredRequests() {const q=$('supSearch').value.trim().toLowerCase(),from=$('supFrom').value,to=$('supTo').value;return state.submittedRequests.filter(r=>{const day=localDate(r.createdAt);return (!$('supStatus').value||r.status===$('supStatus').value)&&(!$('supActivity').value||r.selectedActivity===$('supActivity').value)&&(!q||[r.id,r.crNumber,r.crName,r.district].join(' ').toLowerCase().includes(q))&&(!from||(day&&day>=from))&&(!to||(day&&day<=to));});}
+    function bars(entries,max,interactive=false) {return entries.length?entries.map(([key,label,n,color])=>`<${interactive?'button type="button"':'div'} class="sup-bar-row" ${interactive?`data-status="${esc(key)}"`:''}><span class="sup-label">${esc(label)}</span><span class="sup-track"><span class="sup-fill" style="width:${max?n/max*100:0}%;background:${color||'#1b3e5f'}"></span></span><b>${n}</b></${interactive?'button':'div'}>`).join(''):'<p class="sup-empty">لا توجد بيانات ضمن الفلاتر الحالية</p>';}
+    function renderSupervisor() {
+      const rows=filteredRequests(),n=rows.length,counts={submitted:0,transferred:0,returned_to_beneficiary:0};rows.forEach(r=>counts[r.status]++);
+      const done=counts.transferred+counts.returned_to_beneficiary,times=rows.map(hours).filter(h=>h!==null&&Number.isFinite(h));
+      const cards=[['إجمالي الطلبات',n,'ضمن نطاق الفلاتر','#1b3e5f'],['مقبولة ومحالة',counts.transferred,'قبلها الموظف وأحالها','#1e944d'],['مرفوضة ومعادة',counts.returned_to_beneficiary,'أعيدت للمستفيد مع السبب','#dc2626'],['قيد المعالجة',counts.submitted,'بانتظار قرار الموظف','#b7791f'],['نسبة إنجاز المعالجة',n?Math.round(done/n*100)+'%':'—','المقبولة والمرفوضة ÷ إجمالي الطلبات','#1b3e5f'],['متوسط زمن المعالجة',times.length?(times.reduce((a,b)=>a+b,0)/times.length).toFixed(1)+' س':'—','من التقديم إلى القرار؛ للطلبات ذات التوقيت المسجل','#1b3e5f']];
+      $('supKpis').innerHTML=cards.map(([label,v,hint,color])=>`<div class="sup-kpi" style="--accent:${color}"><span>${label}</span><strong>${v}</strong><small>${hint}</small></div>`).join('');
+      $('supDistribution').innerHTML=bars(Object.keys(counts).map(k=>[k,statusNames[k],counts[k],statusColors[k]]),n,true);
+      $('supDistribution').querySelectorAll('[data-status]').forEach(b=>b.onclick=()=>{$('supStatus').value=b.dataset.status;renderSupervisor();});
+      const activities=Object.entries(activityLabels).map(([k,v])=>[k,v,rows.filter(r=>r.selectedActivity===k).length]);$('supActivities').innerHTML=bars(activities,Math.max(1,...activities.map(a=>a[2])));
+      const days=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);const key=localDate(d);return [key,d.toLocaleDateString('ar-SA',{calendar:'gregory',month:'short',day:'numeric'}),rows.filter(r=>localDate(r.createdAt)===key).length];});$('supTrend').innerHTML=bars(days,Math.max(1,...days.map(a=>a[2])));
+      const reasons=new Map();rows.filter(r=>r.status==='returned_to_beneficiary').forEach(r=>{const key=r.rejectionReason||'سبب غير مسجل';reasons.set(key,(reasons.get(key)||0)+1);});
+      $('supReasons').innerHTML=reasons.size?[...reasons].sort((a,b)=>b[1]-a[1]).map(([reason,c])=>`<div class="sup-detail">${esc(reason)} <b>(${c})</b></div>`).join(''):'<p class="sup-empty">لا توجد طلبات مرفوضة ضمن الفلاتر الحالية</p>';
+      $('supRows').innerHTML=rows.length?rows.map(r=>`<tr><td><b>${esc(r.id)}</b><small>${esc(dateLabel(r.createdAt))}</small></td><td>${esc(r.crName)}<small>${esc(r.crNumber)}</small></td><td>${esc(activityLabels[r.selectedActivity]||r.selectedActivity)}<small>${esc(r.district)}</small></td><td><span class="sup-badge" style="color:${statusColors[r.status]};background:${statusColors[r.status]}15">${statusNames[r.status]}</span></td><td>${duration(r)}</td><td><button class="btn btn-outline" data-detail="${esc(r.id)}">عرض</button></td></tr>`).join(''):'<tr><td colspan="6" class="sup-empty">لا توجد طلبات مطابقة. قدّم طلبًا من بوابة المستفيد لبدء ظهور المؤشرات.</td></tr>';
+      $('supRows').querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>showRequest(b.dataset.detail));$('supCount').textContent=`${n} طلب • نسبة القبول من القرارات: ${done?Math.round(counts.transferred/done*100)+'%':'—'}`;
+      $('supUpdated').textContent='آخر تحديث: '+dateLabel(new Date().toISOString())+' • المؤشرات محسوبة على الطلبات المطابقة للفلاتر. الأوقات حسب توقيت الجهاز.';
+    }
+    function showRequest(id) {const r=state.submittedRequests.find(r=>r.id===id);if(!r)return;const fields=[['رقم الطلب',r.id],['المنشأة',r.crName],['السجل التجاري',r.crNumber],['النشاط',activityLabels[r.selectedActivity]],['الموقع',`${r.district} • مخطط ${r.planNumber} • قطعة ${r.parcelNumber}`],['المساحة',r.area+' م²'],['تصنيف المنطقة',zoneLabels[r.zone]],['عقد الإيجار',r.ejarNumber],['المستأجر',r.ejarTenantName],['الحالة',statusNames[r.status]],['تاريخ التقديم',dateLabel(r.createdAt)],['تاريخ القرار',dateLabel(r.decidedAt)],['زمن المعالجة',duration(r)],['سبب الرفض',r.rejectionReason||'—']];$('supDetails').innerHTML=fields.map(([k,v])=>`<div class="sup-detail"><b>${esc(k)}: </b>${esc(v)}</div>`).join('')+'<h3>نتائج التحقق</h3><ul>'+r.verificationSummary.map(v=>`<li>${esc(v)}</li>`).join('')+'</ul><h3>التسلسل الزمني للعملية</h3>'+((r.history||[]).map(h=>`<div class="sup-detail">${esc(h.action)}<div class="sup-muted">${esc(dateLabel(h.at))}</div></div>`).join('')||'<p>لم يُسجل تاريخ لهذه العملية.</p>');$('supDialog').showModal();}
+    function exportReport() {const rows=filteredRequests();const headers=['رقم الطلب','المنشأة','السجل','النشاط','الحي','الحالة','تاريخ التقديم','تاريخ القرار','مدة المعالجة','سبب الرفض'];const data=rows.map(r=>[r.id,r.crName,r.crNumber,activityLabels[r.selectedActivity],r.district,statusNames[r.status],dateLabel(r.createdAt),dateLabel(r.decidedAt),duration(r),r.rejectionReason]);const cell=v=>'"'+String(v??'').replace(/^[\s]*[=+@-]/,m=>"'"+m).replace(/"/g,'""')+'"';const csv='\uFEFF'+[headers,...data].map(row=>row.map(cell).join(',')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));const a=document.createElement('a');a.href=url;a.download='balady-report-'+localDate(new Date())+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+    $('tabSupervisor').onclick=()=>switchTab('supervisor');
+    Object.entries(activityLabels).forEach(([k,v])=>{const o=document.createElement('option');o.value=k;o.textContent=v;$('supActivity').append(o);});
+    ['supSearch','supStatus','supActivity','supFrom','supTo'].forEach(id=>$(id).addEventListener('input',renderSupervisor));
+    $('supReset').onclick=()=>{['supSearch','supStatus','supActivity','supFrom','supTo'].forEach(id=>$(id).value='');renderSupervisor();};
+    $('supExport').onclick=exportReport;$('supPrint').onclick=()=>window.print();$('supClose').onclick=()=>$('supDialog').close();
+    window.addEventListener('storage',e=>{if(e.key===storageKey){loadRequests();renderEmployee();if(state.activeTab==='supervisor')renderSupervisor();}});
+
     // init
+    loadRequests();
     renderStepper();
     refreshButtons();
     refreshStep5Info();

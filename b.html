@@ -384,37 +384,18 @@
         <div id="crStatus" class="status hidden"></div>
         <div class="footer-nav">
           <span></span>
-          <button id="next1" class="btn btn-primary" disabled>المتابعة لخطوة النشاط</button>
+          <button id="next1" class="btn btn-primary" disabled>المتابعة لبيانات العقار</button>
         </div>
       </div>
 
       <div id="step2" class="step-view hidden">
-        <h2>تحديد نوع المنشاة</h2>
-        <div class="group">
-          <select id="establishmentType">
-            <option value="">اختر نوع النشاط</option>
-            <option value="shop">محل تجاري / تجزئة</option>
-            <option value="warehouse">مستودع</option>
-            <option value="workshop">ورشة صيانة</option>
-            <option value="factory">مصنع</option>
-            <option value="office">مكتب اداري</option>
-          </select>
-          <div id="activityStatus" class="status hidden"></div>
-        </div>
-        <div class="footer-nav">
-          <button id="prev2" class="btn btn-outline">السابق</button>
-          <button id="next2" class="btn btn-primary" disabled>المتابعة لبيانات الموقع</button>
-        </div>
-      </div>
-
-      <div id="step3" class="step-view hidden">
         <h2>الموقع وعقد الايجار</h2>
 
         <div class="box">
           <label>البوابة المكانية</label>
           <div class="row row-3">
             <input id="planNumber" type="text" placeholder="رقم المخطط (2500)" />
-            <input id="parcelNumber" type="text" placeholder="رقم القطعة (101 او 102)" />
+            <input id="parcelNumber" type="text" placeholder="رقم القطعة (101، 102 تجاري / 103 صناعي / 104 سكني)" />
             <button id="btnVerifyLocation" class="btn btn-success">استعلام</button>
           </div>
           <div id="locStatus" class="status hidden"></div>
@@ -430,8 +411,21 @@
         </div>
 
         <div class="footer-nav">
+          <button id="prev2" class="btn btn-outline">السابق</button>
+          <button id="next2" class="btn btn-primary" disabled>المتابعة لاختيار النشاط</button>
+        </div>
+      </div>
+
+      <div id="step3" class="step-view hidden">
+        <h2>اختيار النشاط المتوافق مع العقار</h2>
+        <div id="registeredActivities" class="status info">يتم عرض أنشطة السجل التجاري المتوافقة مع موقع العقار فقط.</div>
+        <div class="group">
+          <select id="establishmentType" disabled><option value="">حدد العقار أولًا</option></select>
+          <div id="activityStatus" class="status hidden"></div>
+        </div>
+        <div class="footer-nav">
           <button id="prev3" class="btn btn-outline">السابق</button>
-          <button id="next3" class="btn btn-primary" disabled>المتابعة للمرفقات</button>
+          <button id="next3" class="btn btn-primary" disabled>المتابعة لبيانات الموقع</button>
         </div>
       </div>
 
@@ -518,12 +512,14 @@
 
   <script>
     const crDatabase = {
-      "1010000001": { name: "مؤسسة الرياض للتجزئة", activityInCR: "shop", status: "ساري" },
-      "1010000002": { name: "نجد للخدمات اللوجستية", activityInCR: "warehouse", status: "ساري" }
+      "1010000001": { name: "مؤسسة الرياض للتجزئة", activitiesInCR: ["shop", "warehouse", "office"], status: "ساري" },
+      "1010000002": { name: "نجد للخدمات اللوجستية", activitiesInCR: ["warehouse", "workshop"], status: "ساري" }
     };
 
     const landDatabase = {
       "2500-101": { lat: 24.812, lng: 46.634, zone: "commercial", district: "حي الملقا", area: 450 },
+      "2500-103": { lat: 24.82, lng: 46.64, zone: "industrial", district: "المنطقة الصناعية", area: 600 },
+      "2500-104": { lat: 24.83, lng: 46.65, zone: "residential", district: "حي سكني", area: 150 },
       "2500-102": { lat: 24.813, lng: 46.635, zone: "commercial", district: "حي الملقا", area: 150 }
     };
 
@@ -630,8 +626,8 @@
     function stepCompletion() {
       return {
         step1: !!state.currentCRData,
-        step2: !!(state.currentCRData && state.selectedActivity && state.selectedActivity === state.currentCRData.activityInCR),
-        step3: !!(state.locationData && state.ejarData),
+        step2: !!(state.locationData && state.ejarData),
+        step3: !!(state.currentCRData && state.locationData && compatibleActivities().includes(state.selectedActivity)),
         step4: els.certSalamah.value.trim().startsWith("SR-")
           && els.certLawhati.files.length > 0
           && els.certContainer.files.length > 0
@@ -651,7 +647,7 @@
     }
 
     function renderStepper() {
-      const labels = ["السجل", "النشاط", "العقار", "المتطلبات", "الاعتماد"];
+      const labels = ["السجل", "العقار", "النشاط", "المتطلبات", "الاعتماد"];
       els.stepper.innerHTML = "";
       labels.forEach((label, i) => {
         const idx = i + 1;
@@ -723,6 +719,12 @@
           showStatus(els.crStatus, "err", "رقم السجل غير موجود او منتهي الصلاحية.");
         }
         state.selectedActivity = "";
+        state.locationData = null;
+        state.ejarData = null;
+        state.auditPassed = false;
+        hideStatus(els.locStatus);
+        hideStatus(els.ejarStatus);
+        refreshActivityOptions();
         els.establishmentType.value = "";
         hideStatus(els.activityStatus);
         renderStepper();
@@ -730,30 +732,38 @@
       }, 700);
     }
 
+    const allowedActivitiesByZone = {
+      commercial: ["shop", "office"],
+      industrial: ["factory", "warehouse", "workshop"],
+      residential: []
+    };
+    function compatibleActivities() {
+      if (!state.currentCRData || !state.locationData) return [];
+      return state.currentCRData.activitiesInCR.filter(a => (allowedActivitiesByZone[state.locationData.zone] || []).includes(a));
+    }
+    function refreshActivityOptions() {
+      const registered = state.currentCRData?.activitiesInCR || [];
+      document.getElementById("registeredActivities").textContent = registered.length
+        ? "الأنشطة المضافة مسبقًا في السجل: " + registered.map(a => activityLabels[a]).join(" - ")
+        : "يرجى التحقق من السجل التجاري أولًا.";
+      const options = compatibleActivities();
+      if (!options.includes(state.selectedActivity)) state.selectedActivity = "";
+      els.establishmentType.replaceChildren();
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = !state.locationData ? "حدد العقار أولًا" : options.length ? "اختر النشاط المتوافق مع العقار" : "لا توجد أنشطة متوافقة";
+      els.establishmentType.appendChild(placeholder);
+      options.forEach(a => { const option = document.createElement("option"); option.value = a; option.textContent = activityLabels[a]; els.establishmentType.appendChild(option); });
+      els.establishmentType.disabled = !state.locationData || !options.length;
+      els.establishmentType.value = state.selectedActivity;
+      if (state.locationData && !options.length) showStatus(els.activityStatus, "err", "هذا الموقع لا يقبل الأنشطة المضافة في السجل التجاري");
+      else if (state.selectedActivity) showStatus(els.activityStatus, "ok", "النشاط مضاف في السجل التجاري ومتوافق مع موقع العقار.");
+      else hideStatus(els.activityStatus);
+    }
     function validateActivityMatch() {
-      const activity = els.establishmentType.value;
-      state.selectedActivity = activity;
-      if (!activity) {
-        hideStatus(els.activityStatus);
-        refreshButtons();
-        return;
-      }
-      if (!state.currentCRData) {
-        showStatus(els.activityStatus, "err", "يرجى التحقق من السجل التجاري اولا.");
-        refreshButtons();
-        return;
-      }
-      if (activity === state.currentCRData.activityInCR) {
-        showStatus(els.activityStatus, "ok", "النشاط المطلوب متوافق مع النشاط المرخص في السجل التجاري.");
-      } else {
-        showStatus(
-          els.activityStatus,
-          "err",
-          `السجل التجاري مرخص لنشاط ${activityLabels[state.currentCRData.activityInCR]} فقط. يرجى تعديل النشاط قبل المتابعة.`
-        );
-      }
-      refreshButtons();
-      renderStepper();
+      state.selectedActivity = compatibleActivities().includes(els.establishmentType.value) ? els.establishmentType.value : "";
+      state.auditPassed = false;
+      refreshActivityOptions(); refreshButtons(); renderStepper();
     }
 
     function verifyLocation() {
@@ -761,6 +771,8 @@
       setTimeout(() => {
         const key = `${els.planNumber.value.trim()}-${els.parcelNumber.value.trim()}`;
         const data = landDatabase[key];
+        state.auditPassed = false;
+        state.selectedActivity = "";
         if (data) {
           state.locationData = data;
           showStatus(els.locStatus, "ok", `تم تحديد العقار في ${data.district} بمساحة ${data.area}م2 وتصنيف ${zoneLabels[data.zone]}.`);
@@ -768,6 +780,8 @@
           state.locationData = null;
           showStatus(els.locStatus, "err", "بيانات الموقع غير موجودة في السجل المكاني.");
         }
+        refreshActivityOptions();
+        if (data && compatibleActivities().length === 0) showStatus(els.locStatus, "err", "هذا الموقع لا يقبل الأنشطة المضافة في السجل التجاري");
         refreshButtons();
         renderStepper();
       }, 700);
@@ -823,7 +837,7 @@
       refreshButtons();
 
       setTimeout(() => {
-        if (!state.selectedActivity || !state.locationData) {
+        if (!state.selectedActivity || !state.locationData || !compatibleActivities().includes(state.selectedActivity)) {
           showStatus(els.finalStatus, "err", "لا يمكن اجراء التدقيق قبل استكمال بيانات النشاط والموقع.");
           return;
         }
@@ -874,7 +888,7 @@
     }
 
     function submitApplication() {
-      if (!state.currentCRData || !state.selectedActivity || !state.locationData || !state.ejarData || !state.auditPassed) return;
+      if (!state.currentCRData || !state.selectedActivity || !state.locationData || !state.ejarData || !state.auditPassed || !compatibleActivities().includes(state.selectedActivity)) return;
 
       const requestId = createRequestId();
       const request = {
@@ -892,10 +906,10 @@
         ejarCommercialName: state.ejarData.commercialName,
         verificationSummary: [
           "تم التحقق من السجل التجاري",
-          "تمت مطابقة النشاط مع السجل",
+          "تمت مطابقة النشاط مع أنشطة السجل وتصنيف موقع العقار",
           "تم التحقق من الموقع والتصنيف",
           "تمت مطابقة عقد الايجار مع الاسم التجاري",
-          "تمت مراجعة المرفقات الرقمية",
+          "تمت مراجعة المرفقات الرقمية (شهادة سلامة - شهادة لوحتي - عقد الحاوية - رخصة البناء)",
           "تم اجتياز التدقيق الذكي النهائي"
         ],
         createdAt: new Date().toISOString(),
@@ -939,6 +953,7 @@
       refreshButtons();
       renderStepper();
       refreshStep5Info();
+      refreshActivityOptions();
     }
 
     function transferRequest(id) {
@@ -1044,13 +1059,13 @@
       state.currentCRData = crDatabase[demoCR];
       showStatus(els.crStatus, "ok", `تم العثور على السجل: ${state.currentCRData.name} - الحالة: ${state.currentCRData.status}`);
 
-      els.establishmentType.value = "shop";
       state.selectedActivity = "shop";
       showStatus(els.activityStatus, "ok", "النشاط المطلوب متوافق مع النشاط المرخص في السجل التجاري.");
 
       els.planNumber.value = demoPlan;
       els.parcelNumber.value = demoParcel;
       state.locationData = landDatabase[`${demoPlan}-${demoParcel}`];
+      refreshActivityOptions();
       showStatus(
         els.locStatus,
         "ok",
@@ -1153,6 +1168,7 @@
 
     // init
     loadRequests();
+    refreshActivityOptions();
     renderStepper();
     refreshButtons();
     refreshStep5Info();

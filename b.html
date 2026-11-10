@@ -1134,7 +1134,7 @@
     const $ = id => document.getElementById(id);
     function esc(v) {return String(v ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
     function saveRequests() {try {localStorage.setItem(storageKey,JSON.stringify(state.submittedRequests));$('supStorage').textContent='';} catch(e) {$('supStorage').textContent='تعذر الحفظ في المتصفح. قد تفقد البيانات عند إغلاق الصفحة.';}}
-    function loadRequests() {try {const data=JSON.parse(localStorage.getItem(storageKey)||'[]');if(Array.isArray(data)) state.submittedRequests=data.filter(r=>r && /^BAL-\d+$/.test(r.id) && statusNames[r.status] && Array.isArray(r.verificationSummary));}catch(e){$('supStorage').textContent='تعذر استعادة البيانات المحفوظة.';}}
+    function loadRequests() {try {const data=JSON.parse(localStorage.getItem(storageKey)||'[]');if(Array.isArray(data)) state.submittedRequests=data.filter(r=>r && /^BAL-\d+$/.test(r.id) && statusNames[r.status] && Array.isArray(r.verificationSummary)).map(r=>({...r, verificationSummary:r.verificationSummary.map(item=>String(item).trim()==="تمت مراجعة المرفقات الرقمية" ? "تمت مراجعة المرفقات الرقمية (شهادة سلامة - شهادة لوحتي - عقد الحاوية - رخصة البناء)" : item)}));}catch(e){$('supStorage').textContent='تعذر استعادة البيانات المحفوظة.';}}
     function recordDecision(r,action) {r.decidedAt=new Date().toISOString();r.history=r.history||[];r.history.push({at:r.decidedAt,action});}
     function localDate(v) {const d=new Date(v);return Number.isFinite(+d)?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`:'';}
     function dateLabel(v) {return v && Number.isFinite(+new Date(v))?new Date(v).toLocaleString('ar-SA',{calendar:'gregory'}):'غير مسجل';}

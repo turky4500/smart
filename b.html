@@ -364,6 +364,9 @@
   </header>
 
   <main class="app">
+    <div class="status info"><strong>عرض تجريبي مفتوح بقاعدة بيانات مشتركة:</strong> جميع زوار الرابط يمكنهم مشاهدة الطلبات وملاحظاتها وتعديل حالاتها. لا تستخدم بيانات حقيقية أو حساسة. لا توجد حسابات أو صلاحيات شخصية في هذه النسخة.</div>
+    <div class="toolbar"><button id="cloudRefresh" class="btn btn-outline">تحديث الطلبات</button><button id="cloudImport" class="btn btn-outline" disabled>نقل طلبات هذا المتصفح القديمة</button></div>
+    <div id="cloudStatus" class="status info" role="status" aria-live="polite">جاري الاتصال بقاعدة البيانات المشتركة...</div>
     <div class="tabs">
       <button id="tabBeneficiary" class="tab-btn active">بوابة المستفيد</button>
       <button id="tabEmployee" class="tab-btn">بوابة الموظف</button>
@@ -496,14 +499,14 @@
     </section>
     <section id="inspectorPanel" class="panel hidden">
       <div class="sup-heading"><div><span class="sup-eyebrow">المراجعة الرقابية</span><h2>بوابة المراقب</h2><p class="sup-muted">الطلبات التي قبلها الموظف وأحالها للمراقب</p></div><button id="insRefresh" class="btn btn-outline">تحديث المؤشرات</button></div>
-      <p class="status info">التأخير محسوب بأيام تقويمية من وقت الإحالة للمراقب، للطلبات التي ما زالت لديه فقط. أكثر من ٣ أيام تشمل أيضًا ما تجاوز ٨ أيام. هذه بوابة تجريبية مشتركة للمراقب وليست إسنادًا لحسابات أشخاص منفصلة.</p>
+      <p class="status info">التأخير محسوب بأيام تقويمية من وقت الإحالة للمراقب، للطلبات التي ما زالت لديه فقط. أكثر من ٣ أيام تشمل أيضًا ما تجاوز ٨ أيام. هذه بوابة تجريبية مشتركة بين الأجهزة وليست إسنادًا لحسابات أشخاص منفصلة.</p>
       <div id="insKpis" class="sup-kpis"></div><div id="insMsg" role="status" class="status info hidden"></div>
       <label for="insFilter">عرض الطلبات</label><select id="insFilter"><option value="pending">الطلبات المسندة حاليًا</option><option value="late3">متأخرة أكثر من ٣ أيام</option><option value="late8">متأخرة أكثر من ٨ أيام</option><option value="done">قرارات المراقب السابقة</option></select>
       <div id="insRequests" style="margin-top:18px"></div>
     </section>
     <section id="supervisorPanel" class="panel hidden">
       <div class="sup-heading"><div><span class="sup-eyebrow">الإشراف والمتابعة التشغيلية</span><h2>لوحة مؤشرات الأداء</h2><p class="sup-muted">نظرة شاملة على الطلبات وقرارات المعالجة</p></div><div class="toolbar"><button id="supExport" class="btn btn-success">تصدير CSV</button><button id="supPrint" class="btn btn-outline">طباعة التقرير</button></div></div>
-      <div class="status info">نسخة تجريبية: البيانات محفوظة في هذا المتصفح فقط، ولا تتم مشاركتها بين الأجهزة. تبويب المشرف ليس محميًا بتسجيل دخول. مسار الطلب: الموظف ← المراقب ← المشرف. الاعتماد النهائي يتم من المشرف، ولا يعني إصدار رخصة فعلية من جهة خارجية.</div>
+      <div class="status info">نسخة تجريبية مفتوحة: الطلبات محفوظة في قاعدة بيانات مشتركة وتظهر من أي جهاز. جميع الزوار يمكنهم الاطلاع عليها وتغيير حالاتها، دون تسجيل دخول. مسار الطلب: الموظف ← المراقب ← المشرف. الاعتماد النهائي يتم من المشرف، ولا يعني إصدار رخصة فعلية من جهة خارجية.</div>
       <div class="sup-filters">
         <div><label for="supSearch">البحث في الطلبات</label><input id="supSearch" placeholder="رقم الطلب، السجل، المنشأة أو الحي" type="search"></div>
         <div><label for="supStatus">الحالة</label><select id="supStatus"><option value="">جميع الحالات</option><option value="submitted">جديد لدى الموظف</option><option value="returned_to_employee">معاد من المراقب إلى الموظف</option><option value="supervisor_returned_to_employee">معاد من المشرف إلى الموظف</option><option value="transferred">لدى المراقب</option><option value="supervisor_pending">لدى المشرف</option><option value="approved">معتمدة نهائيًا</option><option value="returned_to_beneficiary">مرفوضة من الموظف</option><option value="inspector_rejected">مرفوضة من المراقب</option><option value="supervisor_rejected">مرفوضة من المشرف</option></select></div>
@@ -695,7 +698,7 @@
       els.next2.disabled = !c.step2;
       els.next3.disabled = !c.step3;
       els.next4.disabled = !c.step4;
-      els.btnSubmit.disabled = !state.auditPassed;
+      els.btnSubmit.disabled = !state.auditPassed || !cloudReady || cloudBusy || cloudLoading;
       els.btnSubmit.textContent = state.auditPassed && instantLicenseEligible() ? "إرسال وطباعة الرخصة" : "إرسال الطلب";
     }
 
@@ -896,10 +899,11 @@
     }
 
     function createRequestId() {
-      return `BAL-${Math.floor(100000 + Math.random() * 900000)}`;
+      return 'BAL-' + Date.now().toString() + String(crypto.getRandomValues(new Uint32Array(1))[0]).padStart(10,'0');
     }
 
-    function submitApplication() {
+    async function submitApplication() {
+      if(!cloudCanWrite())return;
       if (!state.currentCRData || !state.selectedActivity || !state.locationData || !state.ejarData || !state.auditPassed || !compatibleActivities().includes(state.selectedActivity)) return;
 
       if (!stepCompletion().step4) return;
@@ -936,7 +940,7 @@
         request.history.push({at: request.instantLicense.issuedAt, action: 'إصدار رخصة فورية تجريبية للمستفيد؛ الطلب مستمر في مسار المراجعة'});
       }
       state.submittedRequests.unshift(request);
-      saveRequests();
+      if(!await saveRequests()) return;
 
       resetBeneficiaryForm();
       showStatus(els.beneficiaryNotice, "ok", `تم تقديم طلبك بنجاح برقم ${requestId}. تمت احالة المعاملة الى الموظف.`);
@@ -975,7 +979,8 @@
       refreshActivityOptions();
     }
 
-    function transferRequest(id) {
+    async function transferRequest(id) {
+      if(!cloudCanWrite())return;
       const req = state.submittedRequests.find(r => r.id === id);
       if (!req || !["submitted", "returned_to_employee", "supervisor_returned_to_employee"].includes(req.status)) return;
       recordDecision(req, "الموظف: قبول وإحالة الطلب للمراقب");
@@ -985,12 +990,13 @@
       delete req.supervisorDecidedAt;
       delete req.supervisorAssignedAt;
       req.status = "transferred";
-      saveRequests();
+      if(!await saveRequests()) return;
       showStatus(els.employeeMsg, "info", `تم قبول الطلب ${id} وإحالته للمراقب.`);
       renderEmployee();
     }
 
-    function rejectRequest(id) {
+    async function rejectRequest(id) {
+      if(!cloudCanWrite())return;
       const reason = (state.employeeRejectionDraft[id] || "").trim();
       if (!reason) {
         showStatus(els.employeeMsg, "err", "يرجى كتابة سبب الرفض قبل ارجاع الطلب للمستفيد.");
@@ -1001,7 +1007,7 @@
       recordDecision(req, "رفض وإرجاع الطلب: " + reason);
       req.status = "returned_to_beneficiary";
       req.rejectionReason = reason;
-      saveRequests();
+      if(!await saveRequests()) return;
       showStatus(els.employeeMsg, "info", `تم ارجاع الطلب ${id} للمستفيد مع سبب الرفض.`);
       renderEmployee();
     }
@@ -1166,8 +1172,132 @@
     const statusColors = {submitted:'#b7791f',returned_to_employee:'#b7791f',supervisor_returned_to_employee:'#b7791f',transferred:'#2563eb',supervisor_pending:'#7c3aed',approved:'#1e944d',returned_to_beneficiary:'#dc2626',inspector_rejected:'#dc2626',supervisor_rejected:'#dc2626'};
     const $ = id => document.getElementById(id);
     function esc(v) {return String(v ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-    function saveRequests() {try {localStorage.setItem(storageKey,JSON.stringify(state.submittedRequests));$('supStorage').textContent='';} catch(e) {$('supStorage').textContent='تعذر الحفظ في المتصفح. قد تفقد البيانات عند إغلاق الصفحة.';}}
-    function loadRequests() {try {const data=JSON.parse(localStorage.getItem(storageKey)||'[]');if(Array.isArray(data)) state.submittedRequests=data.filter(r=>r && /^BAL-\d+$/.test(r.id) && statusNames[r.status] && Array.isArray(r.verificationSummary)).map(r=>({...r, verificationSummary:r.verificationSummary.map(item=>String(item).trim()==="تمت مراجعة المرفقات الرقمية" ? "تمت مراجعة المرفقات الرقمية (شهادة سلامة - شهادة لوحتي - عقد الحاوية - رخصة البناء)" : item)}));}catch(e){$('supStorage').textContent='تعذر استعادة البيانات المحفوظة.';}}
+    // Public demo access only. This is a publishable key, not an administrative secret.
+    const cloudConfig = {
+      url: 'https://nwyoxdvfjfdbnezpqnkn.supabase.co',
+      key: 'sb_publishable_EF4uk6puNIdyiancT_51rA_C8zA10eu',
+      table: 'balady_demo_requests'
+    };
+    let cloudReady = false, cloudBusy = false, cloudLoading = false;
+    let cloudSnapshot = new Map();
+    function cloudMessage(message, type='info') {
+      $('cloudStatus').className='status '+type;
+      $('cloudStatus').textContent=message;
+    }
+    function setCloudBusy(value) {
+      cloudBusy=value;
+      document.querySelectorAll('.panel, #licenseDialog, #supDialog').forEach(el=>el.inert=value||!cloudReady);
+      $('cloudRefresh').disabled=value||cloudLoading;
+      $('cloudImport').disabled=value||cloudLoading||!cloudReady;
+      refreshButtons();
+    }
+    function cloudCanWrite() {
+      if(cloudBusy||cloudLoading){cloudMessage('توجد عملية حفظ أو مزامنة جارية؛ انتظر اكتمالها.');return false;}
+      if(!cloudReady){cloudMessage('لم يكتمل الاتصال بقاعدة البيانات. اضغط «تحديث الطلبات».','err');return false;}
+      return true;
+    }
+    function validSharedRequest(r) {
+      return !!r && typeof r==='object' && /^BAL-\d{6,24}$/.test(r.id) && Object.hasOwn(statusNames,r.status)
+        && Array.isArray(r.verificationSummary) && r.verificationSummary.every(x=>typeof x==='string')
+        && (!r.history||(Array.isArray(r.history)&&r.history.every(h=>h&&typeof h.action==='string')))
+        && (!r.instantLicense||(typeof r.instantLicense==='object'&&typeof r.instantLicense.number==='string'));
+    }
+    function normalizeSharedRequest(r) {
+      const copy=JSON.parse(JSON.stringify(r));
+      copy.verificationSummary=copy.verificationSummary.map(item=>item.trim()==='تمت مراجعة المرفقات الرقمية' ? 'تمت مراجعة المرفقات الرقمية (شهادة سلامة - شهادة لوحتي - عقد الحاوية - رخصة البناء)' : item);
+      return copy;
+    }
+    async function cloudApi(query='',options={}) {
+      const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),20000);
+      try {
+        const response=await fetch(cloudConfig.url+'/rest/v1/'+cloudConfig.table+query,{
+          method:options.method||'GET',signal:controller.signal,
+          headers:{apikey:cloudConfig.key,'Content-Type':'application/json',...(options.headers||{})},
+          ...(options.body!==undefined?{body:JSON.stringify(options.body)}:{})
+        });
+        if(!response.ok){const error=new Error('تعذر الاتصال بقاعدة البيانات (HTTP '+response.status+').');error.status=response.status;throw error;}
+        if(response.status===204)return [];
+        return await response.json();
+      } finally {clearTimeout(timer);}
+    }
+    function cloudRequestsFromSnapshot() {
+      return [...cloudSnapshot.values()].map(row=>JSON.parse(row.serialized)).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))||b.id.localeCompare(a.id));
+    }
+    function renderCloudViews() {
+      renderEmployee();renderBeneficiaryLicenses();
+      if(state.activeTab==='inspector')renderInspector();
+      if(state.activeTab==='supervisor')renderSupervisor();
+    }
+    async function loadRequests({quiet=false}={}) {
+      if(cloudBusy||cloudLoading)return false;
+      // Do not rebase an open decision form onto another user's newer revision.
+      if($('supDialog').open||$('licenseDialog').open||document.activeElement?.tagName==='TEXTAREA') {
+        if(!quiet)cloudMessage('أغلق نافذة التفاصيل أو أكمل تحرير الملاحظات ثم حدّث الطلبات.');
+        return false;
+      }
+      cloudLoading=true;setCloudBusy(false);
+      if(!quiet)cloudMessage('جاري تحميل الطلبات من قاعدة البيانات المشتركة...');
+      try {
+        const rows=[];let offset=0;
+        while(true){const page=await cloudApi('?select=id,payload,revision&order=created_at.desc,id.asc&limit=500&offset='+offset);rows.push(...page);if(page.length<500)break;offset+=500;}
+        const next=new Map();let skipped=0;
+        rows.forEach(row=>{if(validSharedRequest(row.payload)&&row.id===row.payload.id){const payload=normalizeSharedRequest(row.payload);next.set(row.id,{revision:row.revision,serialized:JSON.stringify(payload)});}else skipped++;});
+        const changed=JSON.stringify([...next])!==JSON.stringify([...cloudSnapshot]);
+        cloudSnapshot=next;state.submittedRequests=cloudRequestsFromSnapshot();cloudReady=true;
+        if(changed||!quiet)renderCloudViews();
+        cloudMessage('متصل بقاعدة البيانات • '+next.size+' طلب مشترك • آخر مزامنة: '+new Date().toLocaleTimeString('ar-SA')+' • تحديث تلقائي كل ٨ ثوانٍ'+(skipped?' • تعذر عرض '+skipped+' سجل غير مكتمل':''),'ok');
+        return true;
+      } catch(error) {
+        cloudMessage('تعذرت المزامنة. '+(cloudReady?'المعروض آخر نسخة تم تحميلها، وليس تأكيدًا للحالة الحالية. ':'')+'تحقق من الاتصال ثم اضغط «تحديث الطلبات».','err');
+        return false;
+      } finally {cloudLoading=false;setCloudBusy(false);}
+    }
+    async function saveRequests() {
+      if(!cloudCanWrite())return false;
+      const dirty=state.submittedRequests.filter(r=>!cloudSnapshot.has(r.id)||cloudSnapshot.get(r.id).serialized!==JSON.stringify(r));
+      if(!dirty.length)return true;
+      if(dirty.length!==1){state.submittedRequests=cloudRequestsFromSnapshot();renderCloudViews();cloudMessage('لم يتم الحفظ: يجب تنفيذ تعديل طلب واحد في كل مرة. حدّث الطلبات.','err');return false;}
+      const r=dirty[0],previous=cloudSnapshot.get(r.id);
+      setCloudBusy(true);cloudMessage('جاري حفظ الطلب '+r.id+' في قاعدة البيانات...');
+      try {
+        if(!validSharedRequest(r))throw new Error('invalid');
+        const result=previous
+          ? await cloudApi('?id=eq.'+encodeURIComponent(r.id)+'&revision=eq.'+previous.revision,{method:'PATCH',headers:{Prefer:'return=representation'},body:{payload:r}})
+          : await cloudApi('',{method:'POST',headers:{Prefer:'return=representation'},body:{id:r.id,payload:r}});
+        if(!result.length){const error=new Error('conflict');error.conflict=true;throw error;}
+        const row=result[0];cloudSnapshot.set(row.id,{revision:row.revision,serialized:JSON.stringify(normalizeSharedRequest(row.payload))});
+        cloudMessage('تم حفظ الطلب '+r.id+' في قاعدة البيانات المشتركة بنجاح.','ok');
+        return true;
+      } catch(error) {
+        state.submittedRequests=cloudRequestsFromSnapshot();renderCloudViews();
+        cloudMessage(error.conflict||error.status===409?'لم يُحفظ هذا التعديل: تغيّر الطلب من جهاز آخر. أغلق التفاصيل وحدّث القائمة ثم راجع الحالة وحاول مجددًا.':'تعذر تأكيد الحفظ في قاعدة البيانات؛ لم نعرض العملية كناجحة. حدّث القائمة للتحقق قبل إعادة المحاولة.','err');
+        return false;
+      } finally {setCloudBusy(false);}
+    }
+    function localLegacyRequests() {
+      try {const data=JSON.parse(localStorage.getItem(storageKey)||'[]');return Array.isArray(data)?data.filter(validSharedRequest).map(normalizeSharedRequest):[];}catch(e){return [];}
+    }
+    async function importLocalRequests() {
+      if(!cloudCanWrite())return;
+      const all=localLegacyRequests(),pending=all.filter(r=>!cloudSnapshot.has(r.id));
+      if(!pending.length){cloudMessage('لا توجد طلبات محلية جديدة لنقلها من هذا المتصفح. الطلبات الموجودة في القاعدة لن تُستبدل.');return;}
+      if(!window.confirm('سيُنقل '+pending.length+' طلب من هذا المتصفح إلى العرض التجريبي المفتوح، ويمكن لأي زائر قراءتها وتعديلها. انقل البيانات الوهمية فقط. لن يتم حذف النسخة المحلية أو استبدال طلب موجود. هل تريد المتابعة؟'))return;
+      setCloudBusy(true);let inserted=0,failed=false;
+      try {
+        for(let i=0;i<pending.length;i+=50){const result=await cloudApi('?on_conflict=id',{method:'POST',headers:{Prefer:'resolution=ignore-duplicates,return=representation'},body:pending.slice(i,i+50).map(r=>({id:r.id,payload:r}))});inserted+=result.length;}
+      }catch(e){failed=true;}finally{setCloudBusy(false);}
+      await loadRequests();
+      cloudMessage(failed?'تعذر إكمال النقل؛ قد يكون نُقل بعض الطلبات. حدّث القائمة ثم أعد المحاولة، ولن تُستبدل الطلبات الموجودة.':'اكتمل النقل: أُضيف '+inserted+' طلب إلى قاعدة البيانات. لم تُحذف النسخة المحلية ولم تُستبدل طلبات موجودة.',failed?'err':'ok');
+    }
+    $('cloudRefresh').onclick=()=>loadRequests();
+    $('cloudImport').onclick=importLocalRequests;
+    const legacyCount=localLegacyRequests().length;
+    $('cloudImport').textContent='نقل طلبات هذا المتصفح القديمة'+(legacyCount?' ('+legacyCount+')':'');
+    window.addEventListener('online',()=>loadRequests());
+    window.addEventListener('offline',()=>cloudMessage('انقطع الاتصال بالإنترنت. لا يمكن تأكيد حفظ التغييرات حتى يعود الاتصال.','err'));
+    window.addEventListener('focus',()=>{if(!document.hidden)loadRequests({quiet:true});});
+    setInterval(()=>{if(!document.hidden)loadRequests({quiet:true});},8000);
+
     function recordDecision(r,action) {r.decidedAt=new Date().toISOString();r.history=r.history||[];r.history.push({at:r.decidedAt,action});}
     function localDate(v) {const d=new Date(v);return Number.isFinite(+d)?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`:'';}
     function dateLabel(v) {return v && Number.isFinite(+new Date(v))?new Date(v).toLocaleString('ar-SA',{calendar:'gregory'}):'غير مسجل';}
@@ -1204,7 +1334,6 @@
     ['supSearch','supStatus','supActivity','supFrom','supTo'].forEach(id=>$(id).addEventListener('input',renderSupervisor));
     $('supReset').onclick=()=>{['supSearch','supStatus','supActivity','supFrom','supTo'].forEach(id=>$(id).value='');renderSupervisor();};
     $('supExport').onclick=exportReport;$('supPrint').onclick=()=>window.print();$('supClose').onclick=()=>$('supDialog').close();
-    window.addEventListener('storage',e=>{if(e.key===storageKey){loadRequests();renderEmployee();if(state.activeTab==='supervisor')renderSupervisor();if(state.activeTab==='inspector')renderInspector();}});
 
     function inspectorAge(r) {return r.inspectorAssignedAt && Number.isFinite(+new Date(r.inspectorAssignedAt)) ? Math.max(0,(Date.now()-new Date(r.inspectorAssignedAt))/86400000) : null;}
     function renderInspector() {
@@ -1217,7 +1346,8 @@
       $('insRequests').querySelectorAll('[data-ins-accept]').forEach(b=>b.onclick=()=>decideInspector(b.dataset.insAccept,true));
       $('insRequests').querySelectorAll('[data-ins-return]').forEach(b=>b.onclick=()=>decideInspector(b.dataset.insReturn,false));
     }
-    function decideInspector(id,accepted) {
+    async function decideInspector(id,accepted) {
+      if(!cloudCanWrite())return;
       const r=state.submittedRequests.find(r=>r.id===id);if(!r||r.status!=='transferred')return;
       const reason=($('insReason-'+id)?.value||'').trim();
       if(!accepted&&!reason){showStatus($('insMsg'),'err','يرجى كتابة سبب إعادة الطلب للموظف.');return;}
@@ -1225,19 +1355,19 @@
       recordDecision(r,accepted?'المراقب: قبول وإحالة للمشرف':'المراقب: إعادة الطلب للموظف - '+reason);
       r.status=accepted?'supervisor_pending':'returned_to_employee';
       if(accepted){r.supervisorAssignedAt=now;delete r.decidedAt;}else{r.inspectorReturnReason=reason;r.inspectorReturnedAt=now;delete r.decidedAt;}
-      saveRequests();renderInspector();renderEmployee();showStatus($('insMsg'),'ok',accepted?'تم قبول الطلب وإحالته للمشرف للقرار النهائي.':'تمت إعادة الطلب للموظف مع إظهار سبب الإعادة له.');
+      if(!await saveRequests()) return;renderInspector();renderEmployee();showStatus($('insMsg'),'ok',accepted?'تم قبول الطلب وإحالته للمشرف للقرار النهائي.':'تمت إعادة الطلب للموظف مع إظهار سبب الإعادة له.');
     }
-    function decideSupervisor(id,accepted) {
+    async function decideSupervisor(id,accepted) {
+      if(!cloudCanWrite())return;
       const r=state.submittedRequests.find(r=>r.id===id);if(!r||r.status!=='supervisor_pending')return;
       const reason=($('supDecisionReason')?.value||'').trim();
       if(!accepted&&!reason){$('supDecisionMsg').textContent='يرجى كتابة ملاحظات المشرف وسبب إعادة الطلب للموظف.';return;}
       recordDecision(r,accepted?'المشرف: اعتماد نهائي':'المشرف: إعادة الطلب للموظف - '+reason);
       r.status=accepted?'approved':'supervisor_returned_to_employee';r.supervisorDecidedAt=r.decidedAt;
       if(!accepted){r.supervisorReturnReason=reason;r.supervisorReturnedAt=r.decidedAt;delete r.decidedAt;}
-      saveRequests();$('supDialog').close();renderSupervisor();renderEmployee();
+      if(!await saveRequests()) return;$('supDialog').close();renderSupervisor();renderEmployee();
     }
-    $('tabInspector').onclick=()=>switchTab('inspector');$('insFilter').onchange=renderInspector;$('insRefresh').onclick=renderInspector;
-    setInterval(()=>{if(state.activeTab==='inspector')renderInspectorMetrics();if(state.activeTab==='supervisor'&&!$('supDialog').open)renderSupervisor();},60000);
+    $('tabInspector').onclick=()=>switchTab('inspector');$('insFilter').onchange=renderInspector;$('insRefresh').onclick=()=>loadRequests();
     function renderInspectorMetrics(){const focused=document.activeElement;if(focused?.closest('#insRequests'))return;renderInspector();}
 
     function instantLicenseEligible() {
@@ -1259,7 +1389,7 @@
     function renderBeneficiaryLicenses() {
       const rows=state.submittedRequests.filter(r=>r.instantLicense);
       $('beneficiaryLicenses').classList.toggle('hidden',!rows.length);
-      $('beneficiaryLicenses').innerHTML=rows.length?'<h3>الرخص الفورية التجريبية الصادرة في هذا المتصفح</h3>'+rows.map(r=>`<div class="sup-detail"><b>${esc(r.instantLicense.number)}</b> — ${esc(r.crName)}<p>${esc(licensePrintLabel(r))}</p><button class="btn btn-outline" data-license-open="${esc(r.id)}">عرض وطباعة الرخصة</button></div>`).join(''):'';
+      $('beneficiaryLicenses').innerHTML=rows.length?'<h3>الرخص الفورية التجريبية الصادرة في قاعدة البيانات المشتركة</h3>'+rows.map(r=>`<div class="sup-detail"><b>${esc(r.instantLicense.number)}</b> — ${esc(r.crName)}<p>${esc(licensePrintLabel(r))}</p><button class="btn btn-outline" data-license-open="${esc(r.id)}">عرض وطباعة الرخصة</button></div>`).join(''):'';
       $('beneficiaryLicenses').querySelectorAll('[data-license-open]').forEach(b=>b.onclick=()=>openInstantLicense(b.dataset.licenseOpen));
     }
     function openInstantLicense(id,autoPrint=false) {
@@ -1268,22 +1398,25 @@
       if(!$('licenseDialog').open)$('licenseDialog').showModal();
       if(autoPrint) requestLicensePrint();
     }
-    function requestLicensePrint() {
+    async function requestLicensePrint() {
+      if(!cloudCanWrite())return;
       const r=state.submittedRequests.find(r=>r.id===activeLicenseRequestId);if(!r?.instantLicense)return;
       const now=new Date().toISOString();r.instantLicense.printRequestedAt=now;r.history=r.history||[];r.history.push({at:now,action:'المستفيد: طلب طباعة الرخصة الفورية التجريبية (لا يؤكد اكتمال الطباعة)'});
-      saveRequests();renderEmployee();renderBeneficiaryLicenses();$('licensePrintArea').innerHTML=licenseMarkup(r);
+      if(!await saveRequests()) return;renderEmployee();renderBeneficiaryLicenses();$('licensePrintArea').innerHTML=licenseMarkup(r);
       document.body.classList.add('printing-license');
       try {window.print();} finally {document.body.classList.remove('printing-license');}
     }
     $('licensePrintBtn').onclick=requestLicensePrint;
     $('licenseCloseBtn').onclick=()=>$('licenseDialog').close();
-    $('licenseConfirmBtn').onclick=()=>{
+    $('licenseConfirmBtn').onclick=async()=>{
+      if(!cloudCanWrite())return;
       const r=state.submittedRequests.find(r=>r.id===activeLicenseRequestId);if(!r?.instantLicense)return;
       if(!r.instantLicense.printRequestedAt){requestLicensePrint();return;}
       if(r.instantLicense.printedConfirmedAt)return;
-      const now=new Date().toISOString();r.instantLicense.printedConfirmedAt=now;r.history.push({at:now,action:'المستفيد: أكد اكتمال طباعة الرخصة الفورية التجريبية'});saveRequests();renderEmployee();renderBeneficiaryLicenses();$('licenseConfirmBtn').disabled=true;
+      const now=new Date().toISOString();r.instantLicense.printedConfirmedAt=now;r.history.push({at:now,action:'المستفيد: أكد اكتمال طباعة الرخصة الفورية التجريبية'});if(!await saveRequests()) return;renderEmployee();renderBeneficiaryLicenses();$('licenseConfirmBtn').disabled=true;
     };
     // init
+    setCloudBusy(false);
     loadRequests();
     renderBeneficiaryLicenses();
     refreshActivityOptions();

@@ -345,6 +345,7 @@
     #licenseDialog {width:min(850px,96vw);max-height:92vh;overflow:auto;border:1px solid var(--line);border-radius:16px;padding:22px;color:var(--text)}#licenseDialog::backdrop {background:#0f243d88}
     .license-paper {background:white;border:3px double #1b3e5f;padding:32px;color:#1b3e5f}.license-paper h2{text-align:center;font-size:28px}.license-watermark {border:2px solid #b45309;background:#fffbeb;text-align:center;padding:12px;color:#92400e;font-weight:800}.license-fields {display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0}.license-fields div{padding:12px;border-bottom:1px solid #e2e8f0}.license-fields b{display:block;font-size:12px;color:#64748b}
     @media(max-width:600px){.license-paper{padding:14px}.license-fields{grid-template-columns:1fr}}
+    .safety-deferred label,.safety-deferred select {opacity:.45}.safety-deferred select {background:#f1f5f9;cursor:not-allowed}
     @media print {body.printing-license > * {display:none!important}body.printing-license > #licensePrintArea{display:block!important}body.printing-license .license-paper {border:3px double #1b3e5f;box-shadow:none}body.printing-license{background:white}.license-paper{break-inside:avoid}.license-fields{grid-template-columns:1fr 1fr}}
     @media print {header,.tabs,.page-footer,.sup-filters,.toolbar,#supDialog,.sup-table button{display:none!important}body{background:white}.app{max-width:none;padding:0}.panel{box-shadow:none;border:0}.sup-card,.sup-kpi{break-inside:avoid}.sup-table-wrap{overflow:visible}}
   </style>
@@ -441,9 +442,10 @@
 
       <div id="step4" class="step-view hidden">
         <h2>المرفقات الرقمية</h2>
-        <div class="group">
-          <label>شهادة سلامة</label>
+        <div class="group" id="safetyCertificateGroup">
+          <label for="certSalamah">شهادة سلامة</label>
           <select id="certSalamah" aria-label="اختر شهادة سلامة"><option value="">اختر شهادة سلامة</option><option value="SR-123">SR-123 — شهادة سلامة تجريبية</option></select>
+          <p id="safetyDeferredNote" class="status info hidden">للورشة والمستودع: شهادة سلامة مؤجلة وغير مطلوبة الآن. الإحالة للمطابقة تأتي بعد قبول المشرف. لا يتم إرسال أو تحقق فعلي من منصة سلامة في هذا العرض.</p>
         </div>
         <div class="group">
           <label>شهادة لوحتي</label>
@@ -509,7 +511,7 @@
       <div class="status info">نسخة تجريبية مفتوحة: الطلبات محفوظة في قاعدة بيانات مشتركة وتظهر من أي جهاز. جميع الزوار يمكنهم الاطلاع عليها وتغيير حالاتها، دون تسجيل دخول. مسار الطلب: الموظف ← المراقب ← المشرف. الاعتماد النهائي يتم من المشرف، ولا يعني إصدار رخصة فعلية من جهة خارجية.</div>
       <div class="sup-filters">
         <div><label for="supSearch">البحث في الطلبات</label><input id="supSearch" placeholder="رقم الطلب، السجل، المنشأة أو الحي" type="search"></div>
-        <div><label for="supStatus">الحالة</label><select id="supStatus"><option value="">جميع الحالات</option><option value="submitted">جديد لدى الموظف</option><option value="returned_to_employee">معاد من المراقب إلى الموظف</option><option value="supervisor_returned_to_employee">معاد من المشرف إلى الموظف</option><option value="transferred">لدى المراقب</option><option value="supervisor_pending">لدى المشرف</option><option value="approved">معتمدة نهائيًا</option><option value="returned_to_beneficiary">مرفوضة من الموظف</option><option value="inspector_rejected">مرفوضة من المراقب</option><option value="supervisor_rejected">مرفوضة من المشرف</option></select></div>
+        <div><label for="supStatus">الحالة</label><select id="supStatus"><option value="">جميع الحالات</option><option value="submitted">جديد لدى الموظف</option><option value="returned_to_employee">معاد من المراقب إلى الموظف</option><option value="supervisor_returned_to_employee">معاد من المشرف إلى الموظف</option><option value="transferred">لدى المراقب</option><option value="supervisor_pending">لدى المشرف</option><option value="safety_pending">بانتظار مطابقة سلامة</option><option value="approved">معتمدة نهائيًا</option><option value="returned_to_beneficiary">مرفوضة من الموظف</option><option value="inspector_rejected">مرفوضة من المراقب</option><option value="supervisor_rejected">مرفوضة من المشرف</option></select></div>
         <div><label for="supActivity">النشاط</label><select id="supActivity"><option value="">جميع الأنشطة</option></select></div>
         <div><label for="supFrom">من تاريخ التقديم</label><input id="supFrom" type="date"></div>
         <div><label for="supTo">إلى تاريخ التقديم</label><input id="supTo" type="date"></div>
@@ -647,7 +649,7 @@
         step1: !!state.currentCRData,
         step2: !!(state.locationData && state.ejarData),
         step3: !!(state.currentCRData && state.locationData && compatibleActivities().includes(state.selectedActivity)),
-        step4: els.certSalamah.value.trim().startsWith("SR-")
+        step4: (requiresDeferredSafety() || els.certSalamah.value.trim().startsWith("SR-"))
           && els.certLawhati.value === "lawhati-demo"
           && els.certContainer.value === "container-demo"
           && els.fileBuilding.value === "building-demo",
@@ -693,6 +695,7 @@
     }
 
     function refreshButtons() {
+      refreshSafetyCertificate();
       const c = stepCompletion();
       els.next1.disabled = !c.step1;
       els.next2.disabled = !c.step2;
@@ -875,7 +878,7 @@
 
         if (allowed.includes(state.selectedActivity)) {
           state.auditPassed = true;
-          showStatus(els.finalStatus, "ok", instantLicenseEligible() ? "تم اجتياز التدقيق بنجاح. يمكنك إرسال الطلب وطباعة رخصة فورية تجريبية، مع استمرار المراجعة لدى الموظف والمراقب والمشرف." : "تم اجتياز التدقيق بنجاح. يُرسل الطلب للمراجعة المعتادة دون إصدار رخصة فورية.");
+          showStatus(els.finalStatus, "ok", instantLicenseEligible() ? "تم اجتياز التدقيق بنجاح. يمكنك إرسال الطلب وطباعة رخصة فورية تجريبية، مع استمرار المراجعة لدى الموظف والمراقب والمشرف." : requiresDeferredSafety() ? "تم اجتياز التدقيق بنجاح. شهادة سلامة مؤجلة حتى قبول المشرف وإحالة الطلب للمطابقة؛ الطلب مستمر في مسار المراجعة." : "تم اجتياز التدقيق بنجاح. يُرسل الطلب للمراجعة المعتادة دون إصدار رخصة فورية.");
           refreshButtons();
           return;
         }
@@ -926,9 +929,12 @@
           "تمت مطابقة النشاط مع أنشطة السجل وتصنيف موقع العقار",
           "تم التحقق من الموقع والتصنيف",
           "تمت مطابقة عقد الايجار مع الاسم التجاري",
-          "تمت مراجعة المرفقات الرقمية (شهادة سلامة - شهادة لوحتي - عقد الحاوية - رخصة البناء)",
+          requiresDeferredSafety() ? "تمت مراجعة المرفقات الرقمية (شهادة لوحتي - عقد الحاوية - رخصة البناء)" : "تمت مراجعة المرفقات الرقمية (شهادة سلامة - شهادة لوحتي - عقد الحاوية - رخصة البناء)",
+          ...(requiresDeferredSafety() ? ["شهادة سلامة: لم يتم التحقق منها؛ مؤجلة إلى ما بعد قبول المشرف والإحالة للمطابقة (محاكاة دون إرسال فعلي)"] : []),
           "تم اجتياز التدقيق الذكي النهائي"
         ],
+        safetyDeferred: requiresDeferredSafety(),
+        safetyStatus: requiresDeferredSafety() ? "deferred_until_supervisor" : "demo_checked",
         createdAt: new Date().toISOString(),
         history: [{at: new Date().toISOString(), action: "تقديم الطلب واجتياز التدقيق الذكي"}],
         status: "submitted",
@@ -1029,6 +1035,7 @@
             <h4>رقم الطلب: ${req.id}</h4>
             ${req.inspectorReturnReason ? `<div class="status info"><strong>${req.status === "returned_to_employee" ? "طلب معاد من المراقب — سبب الإعادة:" : "آخر ملاحظة إعادة من المراقب:"}</strong> ${esc(req.inspectorReturnReason)}<br>تاريخ الإعادة: ${esc(dateLabel(req.inspectorReturnedAt))}</div>` : ""}
             ${req.supervisorReturnReason ? `<div class="status info"><strong>${req.status === "supervisor_returned_to_employee" ? "طلب معاد من المشرف — ملاحظات المشرف:" : "آخر ملاحظات إعادة من المشرف:"}</strong> ${esc(req.supervisorReturnReason)}<br>تاريخ الإعادة: ${esc(dateLabel(req.supervisorReturnedAt))}</div>` : ""}
+            ${requiresDeferredSafety(req.selectedActivity) ? `<div class="status info">سلامة: شهادة سلامة مؤجلة إلى ما بعد قبول المشرف؛ لم يتم إرسال أو تحقق فعلي من سلامة.</div>` : ""}
             ${licenseEmployeeNotice(req)}
             <p>السجل: ${esc(req.crNumber)}</p>
             <p>الاسم التجاري: ${esc(req.crName)}</p>
@@ -1168,8 +1175,8 @@
     els.btnFillDemo.onclick = fillDemoData;
 
     const storageKey = 'balady-requests-v1';
-    const statusNames = {submitted:'لدى الموظف',returned_to_employee:'معاد من المراقب إلى الموظف',supervisor_returned_to_employee:'معاد من المشرف إلى الموظف',transferred:'لدى المراقب',supervisor_pending:'لدى المشرف',approved:'معتمدة نهائيًا',returned_to_beneficiary:'مرفوضة من الموظف',inspector_rejected:'مرفوضة من المراقب',supervisor_rejected:'مرفوضة من المشرف'};
-    const statusColors = {submitted:'#b7791f',returned_to_employee:'#b7791f',supervisor_returned_to_employee:'#b7791f',transferred:'#2563eb',supervisor_pending:'#7c3aed',approved:'#1e944d',returned_to_beneficiary:'#dc2626',inspector_rejected:'#dc2626',supervisor_rejected:'#dc2626'};
+    const statusNames = {submitted:'لدى الموظف',returned_to_employee:'معاد من المراقب إلى الموظف',supervisor_returned_to_employee:'معاد من المشرف إلى الموظف',transferred:'لدى المراقب',supervisor_pending:'لدى المشرف',safety_pending:'بانتظار مطابقة سلامة',approved:'معتمدة نهائيًا',returned_to_beneficiary:'مرفوضة من الموظف',inspector_rejected:'مرفوضة من المراقب',supervisor_rejected:'مرفوضة من المشرف'};
+    const statusColors = {submitted:'#b7791f',returned_to_employee:'#b7791f',supervisor_returned_to_employee:'#b7791f',transferred:'#2563eb',supervisor_pending:'#7c3aed',safety_pending:'#0891b2',approved:'#1e944d',returned_to_beneficiary:'#dc2626',inspector_rejected:'#dc2626',supervisor_rejected:'#dc2626'};
     const $ = id => document.getElementById(id);
     function esc(v) {return String(v ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
     // Public demo access only. This is a publishable key, not an administrative secret.
@@ -1308,7 +1315,7 @@
     function renderSupervisor() {
       const rows=filteredRequests(),n=rows.length,counts=Object.fromEntries(Object.keys(statusNames).map(k=>[k,0]));rows.forEach(r=>counts[r.status]++);
       const rejected=counts.returned_to_beneficiary+counts.inspector_rejected+counts.supervisor_rejected,done=counts.approved+rejected,times=rows.map(hours).filter(h=>h!==null&&Number.isFinite(h));
-      const cards=[['إجمالي الطلبات',n,'ضمن نطاق الفلاتر','#1b3e5f'],['لدى الموظف',counts.submitted+counts.returned_to_employee+counts.supervisor_returned_to_employee,'بانتظار قرار الموظف','#b7791f'],['لدى المراقب',counts.transferred,'قبلها الموظف وأحالها للمراقب','#2563eb'],['لدى المشرف',counts.supervisor_pending,'قبلها المراقب وبانتظار القرار النهائي','#7c3aed'],['معتمدة نهائيًا',counts.approved,'اعتماد المشرف','#1e944d'],['مرفوضة',rejected,'جميع مراحل الرفض','#dc2626'],['متأخرة لدى المراقب > ٣ أيام',rows.filter(r=>r.status==='transferred'&&inspectorAge(r)>3).length,'تشمل ما تجاوز ٨ أيام','#b7791f'],['متأخرة لدى المراقب > ٨ أيام',rows.filter(r=>r.status==='transferred'&&inspectorAge(r)>8).length,'من تاريخ الإحالة للمراقب','#dc2626'],['نسبة الإنجاز النهائي',n?Math.round(done/n*100)+'%':'—','الاعتماد النهائي والرفض ÷ إجمالي الطلبات','#1b3e5f'],['متوسط زمن المعالجة النهائي',times.length?(times.reduce((a,b)=>a+b,0)/times.length).toFixed(1)+' س':'—','من تقديم الطلب إلى القرار الختامي','#1b3e5f']];
+      const cards=[['إجمالي الطلبات',n,'ضمن نطاق الفلاتر','#1b3e5f'],['لدى الموظف',counts.submitted+counts.returned_to_employee+counts.supervisor_returned_to_employee,'بانتظار قرار الموظف','#b7791f'],['لدى المراقب',counts.transferred,'قبلها الموظف وأحالها للمراقب','#2563eb'],['لدى المشرف',counts.supervisor_pending,'قبلها المراقب وبانتظار القرار النهائي','#7c3aed'],['بانتظار مطابقة سلامة',counts.safety_pending,'إحالة تجريبية بعد قبول المشرف — ليست اعتمادًا نهائيًا','#0891b2'],['معتمدة نهائيًا',counts.approved,'اعتماد المشرف','#1e944d'],['مرفوضة',rejected,'جميع مراحل الرفض','#dc2626'],['متأخرة لدى المراقب > ٣ أيام',rows.filter(r=>r.status==='transferred'&&inspectorAge(r)>3).length,'تشمل ما تجاوز ٨ أيام','#b7791f'],['متأخرة لدى المراقب > ٨ أيام',rows.filter(r=>r.status==='transferred'&&inspectorAge(r)>8).length,'من تاريخ الإحالة للمراقب','#dc2626'],['نسبة الإنجاز النهائي',n?Math.round(done/n*100)+'%':'—','الاعتماد النهائي والرفض ÷ إجمالي الطلبات','#1b3e5f'],['متوسط زمن المعالجة النهائي',times.length?(times.reduce((a,b)=>a+b,0)/times.length).toFixed(1)+' س':'—','من تقديم الطلب إلى القرار الختامي','#1b3e5f']];
       $('supKpis').innerHTML=cards.map(([label,v,hint,color])=>`<div class="sup-kpi" style="--accent:${color}"><span>${label}</span><strong>${v}</strong><small>${hint}</small></div>`).join('');
       $('supDistribution').innerHTML=bars(Object.keys(counts).map(k=>[k,statusNames[k],counts[k],statusColors[k]]),n,true);
       $('supDistribution').querySelectorAll('[data-status]').forEach(b=>b.onclick=()=>{$('supStatus').value=b.dataset.status;renderSupervisor();});
@@ -1320,15 +1327,19 @@
       $('supRows').querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>showRequest(b.dataset.detail));$('supCount').textContent=`${n} طلب • نسبة القبول من القرارات: ${done?Math.round(counts.approved/done*100)+'%':'—'}`;
       $('supUpdated').textContent='آخر تحديث: '+dateLabel(new Date().toISOString())+' • المؤشرات محسوبة على الطلبات المطابقة للفلاتر. الأوقات حسب توقيت الجهاز.';
     }
-    function showRequest(id) {const r=state.submittedRequests.find(r=>r.id===id);if(!r)return;const fields=[['رقم الطلب',r.id],['المنشأة',r.crName],['السجل التجاري',r.crNumber],['النشاط',activityLabels[r.selectedActivity]],['الموقع',`${r.district} • مخطط ${r.planNumber} • قطعة ${r.parcelNumber}`],['المساحة',r.area+' م²'],['تصنيف المنطقة',zoneLabels[r.zone]],['عقد الإيجار',r.ejarNumber],['المستأجر',r.ejarTenantName],['الحالة',statusNames[r.status]],['تاريخ التقديم',dateLabel(r.createdAt)],['تاريخ القرار',dateLabel(r.decidedAt)],['زمن المعالجة',duration(r)],['الرخصة الفورية',r.instantLicense ? r.instantLicense.number + ' — ' + licensePrintLabel(r) : 'لم تصدر رخصة فورية'],['سبب الرفض',r.rejectionReason||'—'],['سبب الإعادة للموظف',r.inspectorReturnReason||'—'],['تاريخ الإعادة للموظف',dateLabel(r.inspectorReturnedAt)],['ملاحظات إعادة المشرف',r.supervisorReturnReason||'—'],['تاريخ إعادة المشرف',dateLabel(r.supervisorReturnedAt)]];$('supDetails').innerHTML=fields.map(([k,v])=>`<div class="sup-detail"><b>${esc(k)}: </b>${esc(v)}</div>`).join('')+'<h3>نتائج التحقق</h3><ul>'+r.verificationSummary.map(v=>`<li>${esc(v)}</li>`).join('')+'</ul><h3>التسلسل الزمني للعملية</h3>'+((r.history||[]).map(h=>`<div class="sup-detail">${esc(h.action)}<div class="sup-muted">${esc(dateLabel(h.at))}</div></div>`).join('')||'<p>لم يُسجل تاريخ لهذه العملية.</p>');$('supDetails').innerHTML += `<div class="sup-detail"><b>تاريخ الإحالة للمراقب: </b>${esc(dateLabel(r.inspectorAssignedAt))}</div><div class="sup-detail"><b>قرار المراقب: </b>${esc(dateLabel(r.inspectorDecidedAt))}</div>`;
+    function showRequest(id) {const r=state.submittedRequests.find(r=>r.id===id);if(!r)return;const fields=[['رقم الطلب',r.id],['المنشأة',r.crName],['السجل التجاري',r.crNumber],['النشاط',activityLabels[r.selectedActivity]],['الموقع',`${r.district} • مخطط ${r.planNumber} • قطعة ${r.parcelNumber}`],['المساحة',r.area+' م²'],['تصنيف المنطقة',zoneLabels[r.zone]],['عقد الإيجار',r.ejarNumber],['المستأجر',r.ejarTenantName],['الحالة',statusNames[r.status]],['مسار سلامة',safetyStatusLabel(r)],['تاريخ الإحالة التجريبية لسلامة',dateLabel(r.safetyReferralAt)],['تاريخ التقديم',dateLabel(r.createdAt)],['تاريخ القرار',dateLabel(r.decidedAt)],['زمن المعالجة',duration(r)],['الرخصة الفورية',r.instantLicense ? r.instantLicense.number + ' — ' + licensePrintLabel(r) : 'لم تصدر رخصة فورية'],['سبب الرفض',r.rejectionReason||'—'],['سبب الإعادة للموظف',r.inspectorReturnReason||'—'],['تاريخ الإعادة للموظف',dateLabel(r.inspectorReturnedAt)],['ملاحظات إعادة المشرف',r.supervisorReturnReason||'—'],['تاريخ إعادة المشرف',dateLabel(r.supervisorReturnedAt)]];$('supDetails').innerHTML=fields.map(([k,v])=>`<div class="sup-detail"><b>${esc(k)}: </b>${esc(v)}</div>`).join('')+'<h3>نتائج التحقق</h3><ul>'+r.verificationSummary.map(v=>`<li>${esc(v)}</li>`).join('')+'</ul><h3>التسلسل الزمني للعملية</h3>'+((r.history||[]).map(h=>`<div class="sup-detail">${esc(h.action)}<div class="sup-muted">${esc(dateLabel(h.at))}</div></div>`).join('')||'<p>لم يُسجل تاريخ لهذه العملية.</p>');$('supDetails').innerHTML += `<div class="sup-detail"><b>تاريخ الإحالة للمراقب: </b>${esc(dateLabel(r.inspectorAssignedAt))}</div><div class="sup-detail"><b>قرار المراقب: </b>${esc(dateLabel(r.inspectorDecidedAt))}</div>`;
       if (state.activeTab==='supervisor' && r.status==='supervisor_pending') {
         const box=document.createElement('div'); box.innerHTML='<h3>قرار المشرف</h3><label for="supDecisionReason">ملاحظات المشرف (إلزامية عند إعادة الطلب للموظف)</label><textarea id="supDecisionReason"></textarea><p id="supDecisionMsg" role="status"></p><div class="toolbar"><button id="supApproveFinal" class="btn btn-success">اعتماد نهائي</button><button id="supReturnEmployee" class="btn btn-danger">إعادة الطلب للموظف</button></div>';
+        if(requiresDeferredSafety(r.selectedActivity)) {
+          box.querySelector('#supApproveFinal').textContent='قبول وإحالة إلى سلامة للمطابقة';
+          const note=document.createElement('p');note.className='status info';note.textContent='شهادة سلامة مؤجلة لهذا النشاط. القبول ينقل الطلب إلى «بانتظار مطابقة سلامة»، ولا يُعد اعتمادًا نهائيًا. الإحالة محاكاة داخل الموقع وليست إرسالًا فعليًا إلى سلامة.';box.prepend(note);
+        }
         $('supDetails').appendChild(box);
         $('supApproveFinal').onclick=()=>decideSupervisor(id,true);
         $('supReturnEmployee').onclick=()=>decideSupervisor(id,false);
       }
       $('supDialog').showModal();}
-    function exportReport() {const rows=filteredRequests();const headers=['رقم الطلب','المنشأة','السجل','النشاط','الحي','الحالة','تاريخ التقديم','تاريخ القرار','مدة المعالجة','سبب الرفض','سبب الإعادة للموظف','تاريخ الإعادة للموظف','ملاحظات إعادة المشرف','تاريخ إعادة المشرف'];const data=rows.map(r=>[r.id,r.crName,r.crNumber,activityLabels[r.selectedActivity],r.district,statusNames[r.status],dateLabel(r.createdAt),dateLabel(r.decidedAt),duration(r),r.rejectionReason,r.inspectorReturnReason,dateLabel(r.inspectorReturnedAt),r.supervisorReturnReason,dateLabel(r.supervisorReturnedAt)]);const cell=v=>'"'+String(v??'').replace(/^[\s]*[=+@-]/,m=>"'"+m).replace(/"/g,'""')+'"';const csv='\uFEFF'+[headers,...data].map(row=>row.map(cell).join(',')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));const a=document.createElement('a');a.href=url;a.download='balady-report-'+localDate(new Date())+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+    function exportReport() {const rows=filteredRequests();const headers=['رقم الطلب','المنشأة','السجل','النشاط','الحي','الحالة','تاريخ التقديم','تاريخ القرار','مدة المعالجة','سبب الرفض','سبب الإعادة للموظف','تاريخ الإعادة للموظف','ملاحظات إعادة المشرف','تاريخ إعادة المشرف','مسار سلامة','تاريخ الإحالة التجريبية لسلامة'];const data=rows.map(r=>[r.id,r.crName,r.crNumber,activityLabels[r.selectedActivity],r.district,statusNames[r.status],dateLabel(r.createdAt),dateLabel(r.decidedAt),duration(r),r.rejectionReason,r.inspectorReturnReason,dateLabel(r.inspectorReturnedAt),r.supervisorReturnReason,dateLabel(r.supervisorReturnedAt),safetyStatusLabel(r),dateLabel(r.safetyReferralAt)]);const cell=v=>'"'+String(v??'').replace(/^[\s]*[=+@-]/,m=>"'"+m).replace(/"/g,'""')+'"';const csv='\uFEFF'+[headers,...data].map(row=>row.map(cell).join(',')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));const a=document.createElement('a');a.href=url;a.download='balady-report-'+localDate(new Date())+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
     $('tabSupervisor').onclick=()=>switchTab('supervisor');
     Object.entries(activityLabels).forEach(([k,v])=>{const o=document.createElement('option');o.value=k;o.textContent=v;$('supActivity').append(o);});
     ['supSearch','supStatus','supActivity','supFrom','supTo'].forEach(id=>$(id).addEventListener('input',renderSupervisor));
@@ -1362,14 +1373,32 @@
       const r=state.submittedRequests.find(r=>r.id===id);if(!r||r.status!=='supervisor_pending')return;
       const reason=($('supDecisionReason')?.value||'').trim();
       if(!accepted&&!reason){$('supDecisionMsg').textContent='يرجى كتابة ملاحظات المشرف وسبب إعادة الطلب للموظف.';return;}
-      recordDecision(r,accepted?'المشرف: اعتماد نهائي':'المشرف: إعادة الطلب للموظف - '+reason);
-      r.status=accepted?'approved':'supervisor_returned_to_employee';r.supervisorDecidedAt=r.decidedAt;
+      const deferred=requiresDeferredSafety(r.selectedActivity);
+      recordDecision(r,accepted?(deferred?'المشرف: قبول وإحالة تجريبية إلى سلامة للمطابقة — لم يتم إرسال فعلي':'المشرف: اعتماد نهائي'):'المشرف: إعادة الطلب للموظف - '+reason);
+      r.status=accepted?(deferred?'safety_pending':'approved'):'supervisor_returned_to_employee';r.supervisorDecidedAt=r.decidedAt;
+      if(accepted&&deferred){r.safetyDeferred=true;r.safetyStatus='pending';r.safetyReferralAt=r.decidedAt;delete r.decidedAt;}
       if(!accepted){r.supervisorReturnReason=reason;r.supervisorReturnedAt=r.decidedAt;delete r.decidedAt;}
       if(!await saveRequests()) return;$('supDialog').close();renderSupervisor();renderEmployee();
     }
     $('tabInspector').onclick=()=>switchTab('inspector');$('insFilter').onchange=renderInspector;$('insRefresh').onclick=()=>loadRequests();
     function renderInspectorMetrics(){const focused=document.activeElement;if(focused?.closest('#insRequests'))return;renderInspector();}
 
+    function requiresDeferredSafety(activity=state.selectedActivity) {
+      return ['workshop','warehouse'].includes(activity);
+    }
+    function refreshSafetyCertificate() {
+      const deferred=requiresDeferredSafety();
+      els.certSalamah.disabled=deferred;
+      if(deferred)els.certSalamah.value='';
+      $('safetyCertificateGroup').classList.toggle('safety-deferred',deferred);
+      $('safetyDeferredNote').classList.toggle('hidden',!deferred);
+      els.certSalamah.setAttribute('aria-describedby','safetyDeferredNote');
+    }
+    function safetyStatusLabel(r) {
+      if(r.status==='safety_pending')return 'بانتظار مطابقة سلامة — إحالة تجريبية فقط دون إرسال فعلي';
+      if(requiresDeferredSafety(r.selectedActivity))return 'شهادة سلامة مؤجلة إلى ما بعد قبول المشرف؛ لا تحقق أو إرسال فعلي لسلامة';
+      return 'مسار التحقق التجريبي المعتاد';
+    }
     function instantLicenseEligible() {
       return ['shop','office','administrative'].includes(state.selectedActivity) && !!state.locationData && Number(state.locationData.area)>0 && Number(state.locationData.area)<200;
     }

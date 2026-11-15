@@ -342,6 +342,10 @@
     .sup-charts {display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}.sup-card h3 {margin:0 0 12px;color:var(--balady-blue);font-size:16px}.sup-bar-row {display:flex;align-items:center;gap:12px;margin:12px 0;width:100%;background:none;border:0;text-align:right;color:var(--text);padding:0;font-size:13px}.sup-bar-row button {cursor:pointer}.sup-track {background:#f1f5f9;height:12px;border-radius:10px;flex:1;overflow:hidden}.sup-fill {display:block;height:100%;border-radius:10px;background:var(--balady-green)}.sup-label {width:125px}.sup-badge {display:inline-block;border-radius:20px;padding:4px 10px;font-size:12px;white-space:nowrap}.sup-table-wrap {overflow:auto}.sup-table {width:100%;border-collapse:collapse;text-align:right;font-size:13px}.sup-table th {background:#f8fafc;color:var(--muted)}.sup-table td,.sup-table th {padding:14px 10px;border-bottom:1px solid var(--line)}.sup-table small {display:block;color:var(--muted)}.sup-empty {padding:22px;text-align:center;color:var(--muted)}
     #supDialog {border:1px solid var(--line);border-radius:18px;padding:24px;width:min(700px,94vw);max-height:85vh;overflow:auto;color:var(--text)}#supDialog::backdrop {background:#0f243d88}.sup-detail {border-bottom:1px solid var(--line);padding:10px 0;overflow-wrap:anywhere}.sup-detail b {color:var(--balady-blue)}
     @media(max-width:900px){.sup-filters{grid-template-columns:1fr 1fr}.sup-kpis{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.sup-charts,.sup-filters{grid-template-columns:1fr}.tabs{flex-wrap:wrap}.sup-label{width:105px}}
+    #licenseDialog {width:min(850px,96vw);max-height:92vh;overflow:auto;border:1px solid var(--line);border-radius:16px;padding:22px;color:var(--text)}#licenseDialog::backdrop {background:#0f243d88}
+    .license-paper {background:white;border:3px double #1b3e5f;padding:32px;color:#1b3e5f}.license-paper h2{text-align:center;font-size:28px}.license-watermark {border:2px solid #b45309;background:#fffbeb;text-align:center;padding:12px;color:#92400e;font-weight:800}.license-fields {display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0}.license-fields div{padding:12px;border-bottom:1px solid #e2e8f0}.license-fields b{display:block;font-size:12px;color:#64748b}
+    @media(max-width:600px){.license-paper{padding:14px}.license-fields{grid-template-columns:1fr}}
+    @media print {body.printing-license > * {display:none!important}body.printing-license > #licensePrintArea{display:block!important}body.printing-license .license-paper {border:3px double #1b3e5f;box-shadow:none}body.printing-license{background:white}.license-paper{break-inside:avoid}.license-fields{grid-template-columns:1fr 1fr}}
     @media print {header,.tabs,.page-footer,.sup-filters,.toolbar,#supDialog,.sup-table button{display:none!important}body{background:white}.app{max-width:none;padding:0}.panel{box-shadow:none;border:0}.sup-card,.sup-kpi{break-inside:avoid}.sup-table-wrap{overflow:visible}}
   </style>
 </head>
@@ -373,6 +377,7 @@
       </div>
 
       <div class="status info">وضع العرض التجريبي: اختر البيانات والمستندات من القوائم، ثم اضغط أزرار التحقق. المستندات خيارات محاكاة وليست ملفات فعلية أو تحققًا من جهة خارجية.</div>
+      <div id="beneficiaryLicenses" class="box hidden" style="margin-bottom:14px"></div>
       <div id="beneficiaryNotice" class="status ok hidden"></div>
 
       <div class="stepper" id="stepper"></div>
@@ -513,7 +518,9 @@
       <p id="supUpdated" class="sup-muted"></p><p id="supStorage" role="status" class="sup-muted"></p>
     </section>
     <dialog id="supDialog"><div class="sup-heading"><h2>تفاصيل العملية</h2><button id="supClose" class="btn btn-outline">إغلاق</button></div><div id="supDetails"></div></dialog>
+    <dialog id="licenseDialog"><div class="toolbar"><button id="licensePrintBtn" class="btn btn-success">طباعة الرخصة / حفظ PDF</button><button id="licenseConfirmBtn" class="btn btn-outline">أؤكد أنني طبعت الرخصة</button><button id="licenseCloseBtn" class="btn btn-outline">إغلاق</button></div><p class="sup-muted">فتح الطباعة لا يؤكد اكتمالها. بعد الطباعة يمكنك تأكيدها لتظهر للموظف.</p><div id="licensePreview"></div></dialog>
   </main>
+  <section id="licensePrintArea" style="display:none"></section>
 
   <footer class="page-footer">
     برمجة وتصميم تركي الصقر - قطاع الجنوب
@@ -542,7 +549,7 @@
       warehouse: "مستودع",
       workshop: "ورشة صيانة",
       factory: "مصنع",
-      office: "مكتب اداري"
+      office: "مكاتب / نشاط إداري"
     };
 
     const zoneLabels = {
@@ -689,6 +696,7 @@
       els.next3.disabled = !c.step3;
       els.next4.disabled = !c.step4;
       els.btnSubmit.disabled = !state.auditPassed;
+      els.btnSubmit.textContent = state.auditPassed && instantLicenseEligible() ? "إرسال وطباعة الرخصة" : "إرسال الطلب";
     }
 
     function refreshStep5Info() {
@@ -855,15 +863,6 @@
           return;
         }
 
-        if (state.selectedActivity === "shop" && state.locationData.area > 200) {
-          showStatus(
-            els.finalStatus,
-            "err",
-            `فشل التدقيق: المساحة المختارة (${state.locationData.area}م2) تتطلب موافقة الدفاع المدني المسبقة للمحال التي تتجاوز 200م2.`
-          );
-          return;
-        }
-
         const rules = {
           commercial: ["shop", "office"],
           industrial: ["factory", "warehouse", "workshop"],
@@ -873,7 +872,7 @@
 
         if (allowed.includes(state.selectedActivity)) {
           state.auditPassed = true;
-          showStatus(els.finalStatus, "ok", "تم اجتياز التدقيق الذكي بنجاح. النشاط مسموح به في الموقع والمساحة مطابقة للاشتراطات.");
+          showStatus(els.finalStatus, "ok", instantLicenseEligible() ? "تم اجتياز التدقيق بنجاح. يمكنك إرسال الطلب وطباعة رخصة فورية تجريبية، مع استمرار المراجعة لدى الموظف والمراقب والمشرف." : "تم اجتياز التدقيق بنجاح. يُرسل الطلب للمراجعة المعتادة دون إصدار رخصة فورية.");
           refreshButtons();
           return;
         }
@@ -932,6 +931,10 @@
         rejectionReason: ""
       };
 
+      if (instantLicenseEligible()) {
+        request.instantLicense = {number: 'DEMO-LIC-' + requestId.slice(4), issuedAt: new Date().toISOString(), printRequestedAt: null, printedConfirmedAt: null};
+        request.history.push({at: request.instantLicense.issuedAt, action: 'إصدار رخصة فورية تجريبية للمستفيد؛ الطلب مستمر في مسار المراجعة'});
+      }
       state.submittedRequests.unshift(request);
       saveRequests();
 
@@ -940,6 +943,8 @@
       switchTab("beneficiary");
       goToStep(1);
       renderEmployee();
+      renderBeneficiaryLicenses();
+      if (request.instantLicense) openInstantLicense(request.id, true);
     }
 
     function resetBeneficiaryForm() {
@@ -1015,6 +1020,7 @@
           <div class="request">
             <h4>رقم الطلب: ${req.id}</h4>
             ${req.inspectorReturnReason ? `<div class="status info"><strong>${req.status === "returned_to_employee" ? "طلب معاد من المراقب — سبب الإعادة:" : "آخر ملاحظة إعادة من المراقب:"}</strong> ${esc(req.inspectorReturnReason)}<br>تاريخ الإعادة: ${esc(dateLabel(req.inspectorReturnedAt))}</div>` : ""}
+            ${licenseEmployeeNotice(req)}
             <p>السجل: ${esc(req.crNumber)}</p>
             <p>الاسم التجاري: ${esc(req.crName)}</p>
             <p>النشاط: ${activityLabels[req.selectedActivity]}</p>
@@ -1181,7 +1187,7 @@
       $('supRows').querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>showRequest(b.dataset.detail));$('supCount').textContent=`${n} طلب • نسبة القبول من القرارات: ${done?Math.round(counts.approved/done*100)+'%':'—'}`;
       $('supUpdated').textContent='آخر تحديث: '+dateLabel(new Date().toISOString())+' • المؤشرات محسوبة على الطلبات المطابقة للفلاتر. الأوقات حسب توقيت الجهاز.';
     }
-    function showRequest(id) {const r=state.submittedRequests.find(r=>r.id===id);if(!r)return;const fields=[['رقم الطلب',r.id],['المنشأة',r.crName],['السجل التجاري',r.crNumber],['النشاط',activityLabels[r.selectedActivity]],['الموقع',`${r.district} • مخطط ${r.planNumber} • قطعة ${r.parcelNumber}`],['المساحة',r.area+' م²'],['تصنيف المنطقة',zoneLabels[r.zone]],['عقد الإيجار',r.ejarNumber],['المستأجر',r.ejarTenantName],['الحالة',statusNames[r.status]],['تاريخ التقديم',dateLabel(r.createdAt)],['تاريخ القرار',dateLabel(r.decidedAt)],['زمن المعالجة',duration(r)],['سبب الرفض',r.rejectionReason||'—'],['سبب الإعادة للموظف',r.inspectorReturnReason||'—'],['تاريخ الإعادة للموظف',dateLabel(r.inspectorReturnedAt)]];$('supDetails').innerHTML=fields.map(([k,v])=>`<div class="sup-detail"><b>${esc(k)}: </b>${esc(v)}</div>`).join('')+'<h3>نتائج التحقق</h3><ul>'+r.verificationSummary.map(v=>`<li>${esc(v)}</li>`).join('')+'</ul><h3>التسلسل الزمني للعملية</h3>'+((r.history||[]).map(h=>`<div class="sup-detail">${esc(h.action)}<div class="sup-muted">${esc(dateLabel(h.at))}</div></div>`).join('')||'<p>لم يُسجل تاريخ لهذه العملية.</p>');$('supDetails').innerHTML += `<div class="sup-detail"><b>تاريخ الإحالة للمراقب: </b>${esc(dateLabel(r.inspectorAssignedAt))}</div><div class="sup-detail"><b>قرار المراقب: </b>${esc(dateLabel(r.inspectorDecidedAt))}</div>`;
+    function showRequest(id) {const r=state.submittedRequests.find(r=>r.id===id);if(!r)return;const fields=[['رقم الطلب',r.id],['المنشأة',r.crName],['السجل التجاري',r.crNumber],['النشاط',activityLabels[r.selectedActivity]],['الموقع',`${r.district} • مخطط ${r.planNumber} • قطعة ${r.parcelNumber}`],['المساحة',r.area+' م²'],['تصنيف المنطقة',zoneLabels[r.zone]],['عقد الإيجار',r.ejarNumber],['المستأجر',r.ejarTenantName],['الحالة',statusNames[r.status]],['تاريخ التقديم',dateLabel(r.createdAt)],['تاريخ القرار',dateLabel(r.decidedAt)],['زمن المعالجة',duration(r)],['الرخصة الفورية',r.instantLicense ? r.instantLicense.number + ' — ' + licensePrintLabel(r) : 'لم تصدر رخصة فورية'],['سبب الرفض',r.rejectionReason||'—'],['سبب الإعادة للموظف',r.inspectorReturnReason||'—'],['تاريخ الإعادة للموظف',dateLabel(r.inspectorReturnedAt)]];$('supDetails').innerHTML=fields.map(([k,v])=>`<div class="sup-detail"><b>${esc(k)}: </b>${esc(v)}</div>`).join('')+'<h3>نتائج التحقق</h3><ul>'+r.verificationSummary.map(v=>`<li>${esc(v)}</li>`).join('')+'</ul><h3>التسلسل الزمني للعملية</h3>'+((r.history||[]).map(h=>`<div class="sup-detail">${esc(h.action)}<div class="sup-muted">${esc(dateLabel(h.at))}</div></div>`).join('')||'<p>لم يُسجل تاريخ لهذه العملية.</p>');$('supDetails').innerHTML += `<div class="sup-detail"><b>تاريخ الإحالة للمراقب: </b>${esc(dateLabel(r.inspectorAssignedAt))}</div><div class="sup-detail"><b>قرار المراقب: </b>${esc(dateLabel(r.inspectorDecidedAt))}</div>`;
       if (state.activeTab==='supervisor' && r.status==='supervisor_pending') {
         const box=document.createElement('div'); box.innerHTML='<h3>القرار النهائي للمشرف</h3><label for="supDecisionReason">سبب الرفض (إلزامي عند الرفض)</label><textarea id="supDecisionReason"></textarea><p id="supDecisionMsg" role="status"></p><div class="toolbar"><button id="supApproveFinal" class="btn btn-success">اعتماد نهائي</button><button id="supRejectFinal" class="btn btn-danger">رفض نهائي</button></div>';
         $('supDetails').appendChild(box);
@@ -1231,8 +1237,52 @@
     setInterval(()=>{if(state.activeTab==='inspector')renderInspectorMetrics();if(state.activeTab==='supervisor'&&!$('supDialog').open)renderSupervisor();},60000);
     function renderInspectorMetrics(){const focused=document.activeElement;if(focused?.closest('#insRequests'))return;renderInspector();}
 
+    function instantLicenseEligible() {
+      return ['shop','office','administrative'].includes(state.selectedActivity) && !!state.locationData && Number(state.locationData.area)>0 && Number(state.locationData.area)<200;
+    }
+    function licensePrintLabel(r) {
+      if (!r.instantLicense) return 'لا توجد رخصة فورية';
+      return r.instantLicense.printedConfirmedAt ? 'تمت طباعة الرخصة من المستفيد (بتأكيده)' : r.instantLicense.printRequestedAt ? 'تم إصدار الرخصة وطلب طباعتها من المستفيد — لم يؤكد اكتمال الطباعة' : 'تم إصدار رخصة فورية تجريبية — لم تُطلب طباعتها بعد';
+    }
+    function licenseEmployeeNotice(r) {
+      return r.instantLicense ? `<div class="status ok"><strong>رخصة فورية تجريبية: ${esc(r.instantLicense.number)}</strong><br>${esc(licensePrintLabel(r))}<br>الطلب مستمر في مسار الموظف ← المراقب ← المشرف.</div>` : '';
+    }
+    let activeLicenseRequestId = null;
+    function licenseMarkup(r) {
+      const l=r.instantLicense;
+      const fields=[['رقم الرخصة التجريبية',l.number],['رقم الطلب',r.id],['الاسم التجاري',r.crName],['السجل التجاري',r.crNumber],['النشاط',activityLabels[r.selectedActivity]],['المساحة',r.area+' م²'],['الموقع',r.district],['المخطط / القطعة',r.planNumber+' / '+r.parcelNumber],['تصنيف الموقع',zoneLabels[r.zone]],['عقد الإيجار',r.ejarNumber],['تاريخ الإصدار',dateLabel(l.issuedAt)],['نوع الإصدار','فوري تجريبي — مساحة أقل من ٢٠٠ م²']];
+      return '<article class="license-paper" lang="ar" dir="rtl"><div class="license-watermark">نموذج تجريبي — غير صالح للاستخدام الرسمي</div><p style="text-align:center">منظومة التدقيق الاستباقي • وضع العرض</p><h2>رخصة فورية تجريبية</h2><div class="license-fields">'+fields.map(([k,v])=>`<div><b>${esc(k)}</b>${esc(v)}</div>`).join('')+'</div><p>صدرت هذه الوثيقة آليًا لأغراض العرض فقط. لا تمثل ترخيصًا بلديًا حقيقيًا ولا اعتمادًا من جهة حكومية. الطلب مستمر في مسار المراجعة لدى الموظف والمراقب والمشرف.</p><div class="license-watermark">لا يوجد تحقق أو إصدار فعلي من جهة خارجية</div></article>';
+    }
+    function renderBeneficiaryLicenses() {
+      const rows=state.submittedRequests.filter(r=>r.instantLicense);
+      $('beneficiaryLicenses').classList.toggle('hidden',!rows.length);
+      $('beneficiaryLicenses').innerHTML=rows.length?'<h3>الرخص الفورية التجريبية الصادرة في هذا المتصفح</h3>'+rows.map(r=>`<div class="sup-detail"><b>${esc(r.instantLicense.number)}</b> — ${esc(r.crName)}<p>${esc(licensePrintLabel(r))}</p><button class="btn btn-outline" data-license-open="${esc(r.id)}">عرض وطباعة الرخصة</button></div>`).join(''):'';
+      $('beneficiaryLicenses').querySelectorAll('[data-license-open]').forEach(b=>b.onclick=()=>openInstantLicense(b.dataset.licenseOpen));
+    }
+    function openInstantLicense(id,autoPrint=false) {
+      const r=state.submittedRequests.find(r=>r.id===id);if(!r?.instantLicense)return;
+      activeLicenseRequestId=id;$('licensePreview').innerHTML=licenseMarkup(r);$('licenseConfirmBtn').disabled=!!r.instantLicense.printedConfirmedAt;
+      if(!$('licenseDialog').open)$('licenseDialog').showModal();
+      if(autoPrint) requestLicensePrint();
+    }
+    function requestLicensePrint() {
+      const r=state.submittedRequests.find(r=>r.id===activeLicenseRequestId);if(!r?.instantLicense)return;
+      const now=new Date().toISOString();r.instantLicense.printRequestedAt=now;r.history=r.history||[];r.history.push({at:now,action:'المستفيد: طلب طباعة الرخصة الفورية التجريبية (لا يؤكد اكتمال الطباعة)'});
+      saveRequests();renderEmployee();renderBeneficiaryLicenses();$('licensePrintArea').innerHTML=licenseMarkup(r);
+      document.body.classList.add('printing-license');
+      try {window.print();} finally {document.body.classList.remove('printing-license');}
+    }
+    $('licensePrintBtn').onclick=requestLicensePrint;
+    $('licenseCloseBtn').onclick=()=>$('licenseDialog').close();
+    $('licenseConfirmBtn').onclick=()=>{
+      const r=state.submittedRequests.find(r=>r.id===activeLicenseRequestId);if(!r?.instantLicense)return;
+      if(!r.instantLicense.printRequestedAt){requestLicensePrint();return;}
+      if(r.instantLicense.printedConfirmedAt)return;
+      const now=new Date().toISOString();r.instantLicense.printedConfirmedAt=now;r.history.push({at:now,action:'المستفيد: أكد اكتمال طباعة الرخصة الفورية التجريبية'});saveRequests();renderEmployee();renderBeneficiaryLicenses();$('licenseConfirmBtn').disabled=true;
+    };
     // init
     loadRequests();
+    renderBeneficiaryLicenses();
     refreshActivityOptions();
     renderStepper();
     refreshButtons();

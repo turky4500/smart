@@ -372,6 +372,7 @@
         <button id="btnFillDemo" class="btn btn-outline">تعبئة بيانات تجريبية</button>
       </div>
 
+      <div class="status info">وضع العرض التجريبي: اختر البيانات والمستندات من القوائم، ثم اضغط أزرار التحقق. المستندات خيارات محاكاة وليست ملفات فعلية أو تحققًا من جهة خارجية.</div>
       <div id="beneficiaryNotice" class="status ok hidden"></div>
 
       <div class="stepper" id="stepper"></div>
@@ -379,7 +380,7 @@
       <div id="step1" class="step-view">
         <h2>التحقق من السجل التجاري</h2>
         <div class="row row-2">
-          <input id="crNumber" type="text" placeholder="ادخل رقم السجل (1010000001 او 1010000002)" />
+          <select id="crNumber" aria-label="اختر السجل التجاري التجريبي"><option value="">اختر السجل التجاري التجريبي</option><option value="1010000001">1010000001 — مؤسسة الرياض للتجزئة (تجزئة، مستودع، مكتب)</option><option value="1010000002">1010000002 — نجد للخدمات اللوجستية (مستودع، ورشة)</option></select>
           <button class="btn btn-success" id="btnVerifyCR">التحقق الرقمي</button>
         </div>
         <div id="crStatus" class="status hidden"></div>
@@ -395,8 +396,8 @@
         <div class="box">
           <label>البوابة المكانية</label>
           <div class="row row-3">
-            <input id="planNumber" type="text" placeholder="رقم المخطط (2500)" />
-            <input id="parcelNumber" type="text" placeholder="رقم القطعة (101، 102 تجاري / 103 صناعي / 104 سكني)" />
+            <select id="planNumber" aria-label="اختر رقم المخطط"><option value="">اختر رقم المخطط</option><option value="2500">2500 — مخطط العقارات التجريبية</option></select>
+            <select id="parcelNumber" aria-label="اختر قطعة العقار"><option value="">اختر قطعة العقار</option><option value="101">101 — حي الملقا | تجاري | 450 م²</option><option value="102">102 — حي الملقا | تجاري | 150 م²</option><option value="103">103 — المنطقة الصناعية | صناعي | 600 م²</option><option value="104">104 — حي سكني | سكني | 150 م²</option></select>
             <button id="btnVerifyLocation" class="btn btn-success">استعلام</button>
           </div>
           <div id="locStatus" class="status hidden"></div>
@@ -405,7 +406,7 @@
         <div class="box" style="margin-top:10px;">
           <label>منصة ايجار</label>
           <div class="row row-2">
-            <input id="ejarNumber" type="text" placeholder="رقم العقد (EJR-112233)" />
+            <select id="ejarNumber" aria-label="اختر عقد الإيجار التجريبي"><option value="">اختر عقد الإيجار التجريبي</option><option value="EJR-112233">EJR-112233 — مؤسسة الرياض للتجزئة — محمد سالم</option><option value="EJR-112234">EJR-112234 — نجد للخدمات اللوجستية — محمد احمد</option></select>
             <button id="btnVerifyEjar" class="btn btn-success">التحقق</button>
           </div>
           <div id="ejarStatus" class="status hidden"></div>
@@ -434,19 +435,19 @@
         <h2>المرفقات الرقمية</h2>
         <div class="group">
           <label>شهادة سلامة</label>
-          <input id="certSalamah" type="text" placeholder="SR-123" />
+          <select id="certSalamah" aria-label="اختر شهادة سلامة"><option value="">اختر شهادة سلامة</option><option value="SR-123">SR-123 — شهادة سلامة تجريبية</option></select>
         </div>
         <div class="group">
           <label>شهادة لوحتي</label>
-          <input id="certLawhati" type="file" accept=".pdf,.jpg,.png" />
+          <select id="certLawhati" aria-label="اختر شهادة لوحتي"><option value="">اختر شهادة لوحتي</option><option value="lawhati-demo">شهادة لوحتي — مستند تجريبي جاهز</option></select>
         </div>
         <div class="group">
           <label>عقد الحاوية</label>
-          <input id="certContainer" type="file" accept=".pdf,.jpg,.png" />
+          <select id="certContainer" aria-label="اختر عقد الحاوية"><option value="">اختر عقد الحاوية</option><option value="container-demo">عقد الحاوية — مستند تجريبي جاهز</option></select>
         </div>
         <div class="group">
           <label>رخصة البناء (PDF)</label>
-          <input id="fileBuilding" type="file" accept=".pdf" />
+          <select id="fileBuilding" aria-label="اختر رخصة البناء"><option value="">اختر رخصة البناء</option><option value="building-demo">رخصة البناء — مستند تجريبي جاهز</option></select>
         </div>
         <div class="footer-nav">
           <button id="prev4" class="btn btn-outline">السابق</button>
@@ -637,9 +638,9 @@
         step2: !!(state.locationData && state.ejarData),
         step3: !!(state.currentCRData && state.locationData && compatibleActivities().includes(state.selectedActivity)),
         step4: els.certSalamah.value.trim().startsWith("SR-")
-          && els.certLawhati.files.length > 0
-          && els.certContainer.files.length > 0
-          && els.fileBuilding.files.length > 0,
+          && els.certLawhati.value === "lawhati-demo"
+          && els.certContainer.value === "container-demo"
+          && els.fileBuilding.value === "building-demo",
         step5: state.auditPassed
       };
     }
@@ -838,6 +839,7 @@
     }
 
     function checkAttachments() {
+      state.auditPassed = false;
       refreshButtons();
       renderStepper();
     }
@@ -901,6 +903,7 @@
     function submitApplication() {
       if (!state.currentCRData || !state.selectedActivity || !state.locationData || !state.ejarData || !state.auditPassed || !compatibleActivities().includes(state.selectedActivity)) return;
 
+      if (!stepCompletion().step4) return;
       const requestId = createRequestId();
       const request = {
         id: requestId,
@@ -1091,17 +1094,9 @@
 
       els.certSalamah.value = "SR-123";
 
-      const dt1 = new DataTransfer();
-      dt1.items.add(new File(["demo"], "lawhati.pdf", { type: "application/pdf" }));
-      els.certLawhati.files = dt1.files;
-
-      const dt2 = new DataTransfer();
-      dt2.items.add(new File(["demo"], "container.pdf", { type: "application/pdf" }));
-      els.certContainer.files = dt2.files;
-
-      const dt3 = new DataTransfer();
-      dt3.items.add(new File(["demo"], "building.pdf", { type: "application/pdf" }));
-      els.fileBuilding.files = dt3.files;
+      els.certLawhati.value = "lawhati-demo";
+      els.certContainer.value = "container-demo";
+      els.fileBuilding.value = "building-demo";
 
       state.auditPassed = false;
       showStatus(els.finalStatus, "info", "جاهز للتدقيق...");
@@ -1128,7 +1123,21 @@
     els.prev3.onclick = () => goToStep(2);
     els.next3.onclick = () => goToStep(4);
 
-    els.certSalamah.oninput = checkAttachments;
+    els.certSalamah.onchange = checkAttachments;
+    function invalidateDemoSelection(kind) {
+      state.auditPassed = false;
+      if (kind === 'cr') {
+        state.currentCRData = null; state.locationData = null; state.ejarData = null; state.selectedActivity = '';
+        hideStatus(els.crStatus); hideStatus(els.locStatus); hideStatus(els.ejarStatus);
+      } else if (kind === 'location') {
+        state.locationData = null; state.selectedActivity = ''; hideStatus(els.locStatus);
+      } else {state.ejarData = null; hideStatus(els.ejarStatus);}
+      refreshActivityOptions(); refreshButtons(); renderStepper(); refreshStep5Info();
+      showStatus(els.finalStatus, 'info', 'تم تغيير البيانات؛ يلزم التحقق وإعادة التدقيق.');
+    }
+    els.crNumber.onchange = () => invalidateDemoSelection('cr');
+    els.planNumber.onchange = els.parcelNumber.onchange = () => invalidateDemoSelection('location');
+    els.ejarNumber.onchange = () => invalidateDemoSelection('ejar');
     els.certLawhati.onchange = checkAttachments;
     els.certContainer.onchange = checkAttachments;
     els.fileBuilding.onchange = checkAttachments;

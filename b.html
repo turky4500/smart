@@ -506,7 +506,7 @@
       <div class="status info">نسخة تجريبية: البيانات محفوظة في هذا المتصفح فقط، ولا تتم مشاركتها بين الأجهزة. تبويب المشرف ليس محميًا بتسجيل دخول. مسار الطلب: الموظف ← المراقب ← المشرف. الاعتماد النهائي يتم من المشرف، ولا يعني إصدار رخصة فعلية من جهة خارجية.</div>
       <div class="sup-filters">
         <div><label for="supSearch">البحث في الطلبات</label><input id="supSearch" placeholder="رقم الطلب، السجل، المنشأة أو الحي" type="search"></div>
-        <div><label for="supStatus">الحالة</label><select id="supStatus"><option value="">جميع الحالات</option><option value="submitted">جديد لدى الموظف</option><option value="returned_to_employee">معاد من المراقب إلى الموظف</option><option value="transferred">لدى المراقب</option><option value="supervisor_pending">لدى المشرف</option><option value="approved">معتمدة نهائيًا</option><option value="returned_to_beneficiary">مرفوضة من الموظف</option><option value="inspector_rejected">مرفوضة من المراقب</option><option value="supervisor_rejected">مرفوضة من المشرف</option></select></div>
+        <div><label for="supStatus">الحالة</label><select id="supStatus"><option value="">جميع الحالات</option><option value="submitted">جديد لدى الموظف</option><option value="returned_to_employee">معاد من المراقب إلى الموظف</option><option value="supervisor_returned_to_employee">معاد من المشرف إلى الموظف</option><option value="transferred">لدى المراقب</option><option value="supervisor_pending">لدى المشرف</option><option value="approved">معتمدة نهائيًا</option><option value="returned_to_beneficiary">مرفوضة من الموظف</option><option value="inspector_rejected">مرفوضة من المراقب</option><option value="supervisor_rejected">مرفوضة من المشرف</option></select></div>
         <div><label for="supActivity">النشاط</label><select id="supActivity"><option value="">جميع الأنشطة</option></select></div>
         <div><label for="supFrom">من تاريخ التقديم</label><input id="supFrom" type="date"></div>
         <div><label for="supTo">إلى تاريخ التقديم</label><input id="supTo" type="date"></div>
@@ -977,11 +977,13 @@
 
     function transferRequest(id) {
       const req = state.submittedRequests.find(r => r.id === id);
-      if (!req || !["submitted", "returned_to_employee"].includes(req.status)) return;
+      if (!req || !["submitted", "returned_to_employee", "supervisor_returned_to_employee"].includes(req.status)) return;
       recordDecision(req, "الموظف: قبول وإحالة الطلب للمراقب");
       req.inspectorAssignedAt = new Date().toISOString();
       delete req.decidedAt;
       delete req.inspectorDecidedAt;
+      delete req.supervisorDecidedAt;
+      delete req.supervisorAssignedAt;
       req.status = "transferred";
       saveRequests();
       showStatus(els.employeeMsg, "info", `تم قبول الطلب ${id} وإحالته للمراقب.`);
@@ -995,7 +997,7 @@
         return;
       }
       const req = state.submittedRequests.find(r => r.id === id);
-      if (!req || !["submitted", "returned_to_employee"].includes(req.status)) return;
+      if (!req || !["submitted", "returned_to_employee", "supervisor_returned_to_employee"].includes(req.status)) return;
       recordDecision(req, "رفض وإرجاع الطلب: " + reason);
       req.status = "returned_to_beneficiary";
       req.rejectionReason = reason;
@@ -1005,7 +1007,7 @@
     }
 
     function renderEmployee() {
-      const submitted = state.submittedRequests.filter(r => ["submitted", "returned_to_employee"].includes(r.status));
+      const submitted = state.submittedRequests.filter(r => ["submitted", "returned_to_employee", "supervisor_returned_to_employee"].includes(r.status));
       const transferred = state.submittedRequests.filter(r => r.status === "transferred");
       const rejected = state.submittedRequests.filter(r => r.status === "returned_to_beneficiary");
 
@@ -1020,6 +1022,7 @@
           <div class="request">
             <h4>رقم الطلب: ${req.id}</h4>
             ${req.inspectorReturnReason ? `<div class="status info"><strong>${req.status === "returned_to_employee" ? "طلب معاد من المراقب — سبب الإعادة:" : "آخر ملاحظة إعادة من المراقب:"}</strong> ${esc(req.inspectorReturnReason)}<br>تاريخ الإعادة: ${esc(dateLabel(req.inspectorReturnedAt))}</div>` : ""}
+            ${req.supervisorReturnReason ? `<div class="status info"><strong>${req.status === "supervisor_returned_to_employee" ? "طلب معاد من المشرف — ملاحظات المشرف:" : "آخر ملاحظات إعادة من المشرف:"}</strong> ${esc(req.supervisorReturnReason)}<br>تاريخ الإعادة: ${esc(dateLabel(req.supervisorReturnedAt))}</div>` : ""}
             ${licenseEmployeeNotice(req)}
             <p>السجل: ${esc(req.crNumber)}</p>
             <p>الاسم التجاري: ${esc(req.crName)}</p>
@@ -1159,8 +1162,8 @@
     els.btnFillDemo.onclick = fillDemoData;
 
     const storageKey = 'balady-requests-v1';
-    const statusNames = {submitted:'لدى الموظف',returned_to_employee:'معاد من المراقب إلى الموظف',transferred:'لدى المراقب',supervisor_pending:'لدى المشرف',approved:'معتمدة نهائيًا',returned_to_beneficiary:'مرفوضة من الموظف',inspector_rejected:'مرفوضة من المراقب',supervisor_rejected:'مرفوضة من المشرف'};
-    const statusColors = {submitted:'#b7791f',returned_to_employee:'#b7791f',transferred:'#2563eb',supervisor_pending:'#7c3aed',approved:'#1e944d',returned_to_beneficiary:'#dc2626',inspector_rejected:'#dc2626',supervisor_rejected:'#dc2626'};
+    const statusNames = {submitted:'لدى الموظف',returned_to_employee:'معاد من المراقب إلى الموظف',supervisor_returned_to_employee:'معاد من المشرف إلى الموظف',transferred:'لدى المراقب',supervisor_pending:'لدى المشرف',approved:'معتمدة نهائيًا',returned_to_beneficiary:'مرفوضة من الموظف',inspector_rejected:'مرفوضة من المراقب',supervisor_rejected:'مرفوضة من المشرف'};
+    const statusColors = {submitted:'#b7791f',returned_to_employee:'#b7791f',supervisor_returned_to_employee:'#b7791f',transferred:'#2563eb',supervisor_pending:'#7c3aed',approved:'#1e944d',returned_to_beneficiary:'#dc2626',inspector_rejected:'#dc2626',supervisor_rejected:'#dc2626'};
     const $ = id => document.getElementById(id);
     function esc(v) {return String(v ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
     function saveRequests() {try {localStorage.setItem(storageKey,JSON.stringify(state.submittedRequests));$('supStorage').textContent='';} catch(e) {$('supStorage').textContent='تعذر الحفظ في المتصفح. قد تفقد البيانات عند إغلاق الصفحة.';}}
@@ -1175,7 +1178,7 @@
     function renderSupervisor() {
       const rows=filteredRequests(),n=rows.length,counts=Object.fromEntries(Object.keys(statusNames).map(k=>[k,0]));rows.forEach(r=>counts[r.status]++);
       const rejected=counts.returned_to_beneficiary+counts.inspector_rejected+counts.supervisor_rejected,done=counts.approved+rejected,times=rows.map(hours).filter(h=>h!==null&&Number.isFinite(h));
-      const cards=[['إجمالي الطلبات',n,'ضمن نطاق الفلاتر','#1b3e5f'],['لدى الموظف',counts.submitted+counts.returned_to_employee,'بانتظار قرار الموظف','#b7791f'],['لدى المراقب',counts.transferred,'قبلها الموظف وأحالها للمراقب','#2563eb'],['لدى المشرف',counts.supervisor_pending,'قبلها المراقب وبانتظار القرار النهائي','#7c3aed'],['معتمدة نهائيًا',counts.approved,'اعتماد المشرف','#1e944d'],['مرفوضة',rejected,'جميع مراحل الرفض','#dc2626'],['متأخرة لدى المراقب > ٣ أيام',rows.filter(r=>r.status==='transferred'&&inspectorAge(r)>3).length,'تشمل ما تجاوز ٨ أيام','#b7791f'],['متأخرة لدى المراقب > ٨ أيام',rows.filter(r=>r.status==='transferred'&&inspectorAge(r)>8).length,'من تاريخ الإحالة للمراقب','#dc2626'],['نسبة الإنجاز النهائي',n?Math.round(done/n*100)+'%':'—','الاعتماد النهائي والرفض ÷ إجمالي الطلبات','#1b3e5f'],['متوسط زمن المعالجة النهائي',times.length?(times.reduce((a,b)=>a+b,0)/times.length).toFixed(1)+' س':'—','من تقديم الطلب إلى القرار الختامي','#1b3e5f']];
+      const cards=[['إجمالي الطلبات',n,'ضمن نطاق الفلاتر','#1b3e5f'],['لدى الموظف',counts.submitted+counts.returned_to_employee+counts.supervisor_returned_to_employee,'بانتظار قرار الموظف','#b7791f'],['لدى المراقب',counts.transferred,'قبلها الموظف وأحالها للمراقب','#2563eb'],['لدى المشرف',counts.supervisor_pending,'قبلها المراقب وبانتظار القرار النهائي','#7c3aed'],['معتمدة نهائيًا',counts.approved,'اعتماد المشرف','#1e944d'],['مرفوضة',rejected,'جميع مراحل الرفض','#dc2626'],['متأخرة لدى المراقب > ٣ أيام',rows.filter(r=>r.status==='transferred'&&inspectorAge(r)>3).length,'تشمل ما تجاوز ٨ أيام','#b7791f'],['متأخرة لدى المراقب > ٨ أيام',rows.filter(r=>r.status==='transferred'&&inspectorAge(r)>8).length,'من تاريخ الإحالة للمراقب','#dc2626'],['نسبة الإنجاز النهائي',n?Math.round(done/n*100)+'%':'—','الاعتماد النهائي والرفض ÷ إجمالي الطلبات','#1b3e5f'],['متوسط زمن المعالجة النهائي',times.length?(times.reduce((a,b)=>a+b,0)/times.length).toFixed(1)+' س':'—','من تقديم الطلب إلى القرار الختامي','#1b3e5f']];
       $('supKpis').innerHTML=cards.map(([label,v,hint,color])=>`<div class="sup-kpi" style="--accent:${color}"><span>${label}</span><strong>${v}</strong><small>${hint}</small></div>`).join('');
       $('supDistribution').innerHTML=bars(Object.keys(counts).map(k=>[k,statusNames[k],counts[k],statusColors[k]]),n,true);
       $('supDistribution').querySelectorAll('[data-status]').forEach(b=>b.onclick=()=>{$('supStatus').value=b.dataset.status;renderSupervisor();});
@@ -1187,15 +1190,15 @@
       $('supRows').querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>showRequest(b.dataset.detail));$('supCount').textContent=`${n} طلب • نسبة القبول من القرارات: ${done?Math.round(counts.approved/done*100)+'%':'—'}`;
       $('supUpdated').textContent='آخر تحديث: '+dateLabel(new Date().toISOString())+' • المؤشرات محسوبة على الطلبات المطابقة للفلاتر. الأوقات حسب توقيت الجهاز.';
     }
-    function showRequest(id) {const r=state.submittedRequests.find(r=>r.id===id);if(!r)return;const fields=[['رقم الطلب',r.id],['المنشأة',r.crName],['السجل التجاري',r.crNumber],['النشاط',activityLabels[r.selectedActivity]],['الموقع',`${r.district} • مخطط ${r.planNumber} • قطعة ${r.parcelNumber}`],['المساحة',r.area+' م²'],['تصنيف المنطقة',zoneLabels[r.zone]],['عقد الإيجار',r.ejarNumber],['المستأجر',r.ejarTenantName],['الحالة',statusNames[r.status]],['تاريخ التقديم',dateLabel(r.createdAt)],['تاريخ القرار',dateLabel(r.decidedAt)],['زمن المعالجة',duration(r)],['الرخصة الفورية',r.instantLicense ? r.instantLicense.number + ' — ' + licensePrintLabel(r) : 'لم تصدر رخصة فورية'],['سبب الرفض',r.rejectionReason||'—'],['سبب الإعادة للموظف',r.inspectorReturnReason||'—'],['تاريخ الإعادة للموظف',dateLabel(r.inspectorReturnedAt)]];$('supDetails').innerHTML=fields.map(([k,v])=>`<div class="sup-detail"><b>${esc(k)}: </b>${esc(v)}</div>`).join('')+'<h3>نتائج التحقق</h3><ul>'+r.verificationSummary.map(v=>`<li>${esc(v)}</li>`).join('')+'</ul><h3>التسلسل الزمني للعملية</h3>'+((r.history||[]).map(h=>`<div class="sup-detail">${esc(h.action)}<div class="sup-muted">${esc(dateLabel(h.at))}</div></div>`).join('')||'<p>لم يُسجل تاريخ لهذه العملية.</p>');$('supDetails').innerHTML += `<div class="sup-detail"><b>تاريخ الإحالة للمراقب: </b>${esc(dateLabel(r.inspectorAssignedAt))}</div><div class="sup-detail"><b>قرار المراقب: </b>${esc(dateLabel(r.inspectorDecidedAt))}</div>`;
+    function showRequest(id) {const r=state.submittedRequests.find(r=>r.id===id);if(!r)return;const fields=[['رقم الطلب',r.id],['المنشأة',r.crName],['السجل التجاري',r.crNumber],['النشاط',activityLabels[r.selectedActivity]],['الموقع',`${r.district} • مخطط ${r.planNumber} • قطعة ${r.parcelNumber}`],['المساحة',r.area+' م²'],['تصنيف المنطقة',zoneLabels[r.zone]],['عقد الإيجار',r.ejarNumber],['المستأجر',r.ejarTenantName],['الحالة',statusNames[r.status]],['تاريخ التقديم',dateLabel(r.createdAt)],['تاريخ القرار',dateLabel(r.decidedAt)],['زمن المعالجة',duration(r)],['الرخصة الفورية',r.instantLicense ? r.instantLicense.number + ' — ' + licensePrintLabel(r) : 'لم تصدر رخصة فورية'],['سبب الرفض',r.rejectionReason||'—'],['سبب الإعادة للموظف',r.inspectorReturnReason||'—'],['تاريخ الإعادة للموظف',dateLabel(r.inspectorReturnedAt)],['ملاحظات إعادة المشرف',r.supervisorReturnReason||'—'],['تاريخ إعادة المشرف',dateLabel(r.supervisorReturnedAt)]];$('supDetails').innerHTML=fields.map(([k,v])=>`<div class="sup-detail"><b>${esc(k)}: </b>${esc(v)}</div>`).join('')+'<h3>نتائج التحقق</h3><ul>'+r.verificationSummary.map(v=>`<li>${esc(v)}</li>`).join('')+'</ul><h3>التسلسل الزمني للعملية</h3>'+((r.history||[]).map(h=>`<div class="sup-detail">${esc(h.action)}<div class="sup-muted">${esc(dateLabel(h.at))}</div></div>`).join('')||'<p>لم يُسجل تاريخ لهذه العملية.</p>');$('supDetails').innerHTML += `<div class="sup-detail"><b>تاريخ الإحالة للمراقب: </b>${esc(dateLabel(r.inspectorAssignedAt))}</div><div class="sup-detail"><b>قرار المراقب: </b>${esc(dateLabel(r.inspectorDecidedAt))}</div>`;
       if (state.activeTab==='supervisor' && r.status==='supervisor_pending') {
-        const box=document.createElement('div'); box.innerHTML='<h3>القرار النهائي للمشرف</h3><label for="supDecisionReason">سبب الرفض (إلزامي عند الرفض)</label><textarea id="supDecisionReason"></textarea><p id="supDecisionMsg" role="status"></p><div class="toolbar"><button id="supApproveFinal" class="btn btn-success">اعتماد نهائي</button><button id="supRejectFinal" class="btn btn-danger">رفض نهائي</button></div>';
+        const box=document.createElement('div'); box.innerHTML='<h3>قرار المشرف</h3><label for="supDecisionReason">ملاحظات المشرف (إلزامية عند إعادة الطلب للموظف)</label><textarea id="supDecisionReason"></textarea><p id="supDecisionMsg" role="status"></p><div class="toolbar"><button id="supApproveFinal" class="btn btn-success">اعتماد نهائي</button><button id="supReturnEmployee" class="btn btn-danger">إعادة الطلب للموظف</button></div>';
         $('supDetails').appendChild(box);
         $('supApproveFinal').onclick=()=>decideSupervisor(id,true);
-        $('supRejectFinal').onclick=()=>decideSupervisor(id,false);
+        $('supReturnEmployee').onclick=()=>decideSupervisor(id,false);
       }
       $('supDialog').showModal();}
-    function exportReport() {const rows=filteredRequests();const headers=['رقم الطلب','المنشأة','السجل','النشاط','الحي','الحالة','تاريخ التقديم','تاريخ القرار','مدة المعالجة','سبب الرفض','سبب الإعادة للموظف','تاريخ الإعادة للموظف'];const data=rows.map(r=>[r.id,r.crName,r.crNumber,activityLabels[r.selectedActivity],r.district,statusNames[r.status],dateLabel(r.createdAt),dateLabel(r.decidedAt),duration(r),r.rejectionReason,r.inspectorReturnReason,dateLabel(r.inspectorReturnedAt)]);const cell=v=>'"'+String(v??'').replace(/^[\s]*[=+@-]/,m=>"'"+m).replace(/"/g,'""')+'"';const csv='\uFEFF'+[headers,...data].map(row=>row.map(cell).join(',')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));const a=document.createElement('a');a.href=url;a.download='balady-report-'+localDate(new Date())+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+    function exportReport() {const rows=filteredRequests();const headers=['رقم الطلب','المنشأة','السجل','النشاط','الحي','الحالة','تاريخ التقديم','تاريخ القرار','مدة المعالجة','سبب الرفض','سبب الإعادة للموظف','تاريخ الإعادة للموظف','ملاحظات إعادة المشرف','تاريخ إعادة المشرف'];const data=rows.map(r=>[r.id,r.crName,r.crNumber,activityLabels[r.selectedActivity],r.district,statusNames[r.status],dateLabel(r.createdAt),dateLabel(r.decidedAt),duration(r),r.rejectionReason,r.inspectorReturnReason,dateLabel(r.inspectorReturnedAt),r.supervisorReturnReason,dateLabel(r.supervisorReturnedAt)]);const cell=v=>'"'+String(v??'').replace(/^[\s]*[=+@-]/,m=>"'"+m).replace(/"/g,'""')+'"';const csv='\uFEFF'+[headers,...data].map(row=>row.map(cell).join(',')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));const a=document.createElement('a');a.href=url;a.download='balady-report-'+localDate(new Date())+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
     $('tabSupervisor').onclick=()=>switchTab('supervisor');
     Object.entries(activityLabels).forEach(([k,v])=>{const o=document.createElement('option');o.value=k;o.textContent=v;$('supActivity').append(o);});
     ['supSearch','supStatus','supActivity','supFrom','supTo'].forEach(id=>$(id).addEventListener('input',renderSupervisor));
@@ -1227,10 +1230,10 @@
     function decideSupervisor(id,accepted) {
       const r=state.submittedRequests.find(r=>r.id===id);if(!r||r.status!=='supervisor_pending')return;
       const reason=($('supDecisionReason')?.value||'').trim();
-      if(!accepted&&!reason){$('supDecisionMsg').textContent='يرجى كتابة سبب الرفض النهائي.';return;}
-      recordDecision(r,accepted?'المشرف: اعتماد نهائي':'المشرف: رفض نهائي - '+reason);
-      r.status=accepted?'approved':'supervisor_rejected';r.supervisorDecidedAt=r.decidedAt;
-      if(!accepted){r.rejectionReason=reason;r.rejectedBy='supervisor';}
+      if(!accepted&&!reason){$('supDecisionMsg').textContent='يرجى كتابة ملاحظات المشرف وسبب إعادة الطلب للموظف.';return;}
+      recordDecision(r,accepted?'المشرف: اعتماد نهائي':'المشرف: إعادة الطلب للموظف - '+reason);
+      r.status=accepted?'approved':'supervisor_returned_to_employee';r.supervisorDecidedAt=r.decidedAt;
+      if(!accepted){r.supervisorReturnReason=reason;r.supervisorReturnedAt=r.decidedAt;delete r.decidedAt;}
       saveRequests();$('supDialog').close();renderSupervisor();renderEmployee();
     }
     $('tabInspector').onclick=()=>switchTab('inspector');$('insFilter').onchange=renderInspector;$('insRefresh').onclick=renderInspector;
